@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homeview from '../components/members/login.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
-import Calendar from '../components/calendar.vue'
+import Calendar from '../components/calendars/calendar'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
 
