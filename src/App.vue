@@ -1,4 +1,10 @@
 <template>
+  <nav>
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link> | 
+    <router-link to="/SubscribeBoardList">구독</router-link>
+  </nav>
+  <router-view/>
                   <div class="container" style="width: 60%;">
                       <FullCalendar ref="fullCalendar" :options="calendarOptions" />
                   </div>
