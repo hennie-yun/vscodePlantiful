@@ -17,12 +17,14 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
 
 export default {
+    
     name: 'SubscribeBoardAdd',
 
-    filters(){
-
+    component(){
+        dayjs
     },
     data() {
         return {
@@ -33,7 +35,7 @@ export default {
             total_people: 0,
             // register_date: null,
             // recruit_endperiod: null,
-            payment_date: null,
+            payment_date: dayjs().format("YYYY/MM/DD"),
             // subscribe_startdate: null,
             // subscribe_enddate: null
         }
