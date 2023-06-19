@@ -1,14 +1,17 @@
 <template>
+
         <nav>
      
           <div v-if="loginId == null">
             <router-link to="/join">회원가입</router-link> |
             <router-link to="/login">로그인</router-link> |
             <router-link to="/calendar">달력</router-link> 
+            <router-link to="/SubscribeBoardList">구독</router-link>
           </div>
      
         </nav>
         <router-view/>
+
 </template>
 <script>
 
