@@ -3,6 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homeview from '../components/members/login.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
+import Calendar from '../components/calendar.vue'
+import login from '../components/members/login.vue'
+import join from '../components/members/join.vue'
 
 const routes = [
   // 제일처음 시작할때 나올 로그인 화면 
