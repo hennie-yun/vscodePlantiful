@@ -22,6 +22,26 @@
 export default {
     name: 'App',
     components: {
+    },
+    filters:{
+        yyyyMMdd: function(value){
+            if(value == '') return '';
+
+            var js_date = new Date(value);
+
+            var year = js_date.getFullYear();
+            var month = js_date.getMonth()+1;
+            var day = js_date.getDate();
+
+            if (month <10){
+                month = '0' + month;
+            }
+            if (day <10){
+                day = '0' + day;
+            }
+
+            return year + '-' + month + '-' + day;
+        }
     }
 }
 </script>

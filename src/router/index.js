@@ -3,9 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homeview from '../components/members/login.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
-import login from '../components/members/login.vue'
-import join from '../components/members/join.vue'
-
 
 const routes = [
   // 제일처음 시작할때 나올 로그인 화면 
@@ -18,6 +15,11 @@ const routes = [
     path: "/login",
     name: 'login',
     component: login
+  },
+  {
+    path: '/calendar',
+    name: 'calendar',
+    component: Calendar
   },
   {
     path: "/join",
