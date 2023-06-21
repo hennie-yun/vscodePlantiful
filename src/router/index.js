@@ -58,6 +58,11 @@ const routes = [
         component: SubscribeBoardList
       },
       {
+        path: '/SubscribeBoardDetail',
+        name: 'SubscribeBoardDetail',
+        component: SubscribeBoardDetail
+      },
+      {
         path: '/mypage',
         name: 'mypage',
         component: mypage
