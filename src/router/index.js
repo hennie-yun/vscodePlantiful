@@ -29,7 +29,6 @@ const routes = [
     component: join
   },
   {
-
     path: "/afterlogin",
     component: AfterLogin,
     children: [
@@ -76,22 +75,20 @@ const routes = [
         path: '/group',
         name: 'group',
         component: group
+      },
+      {
+        path: '/chatroom',
+        name: 'chat',
+        component: () => import('../components/chat/ChattingRoom.vue')
+      },
+      {
+        path : '/chatlist',
+        name : 'chatlist',
+        component : () => import('../components/chat/ChatList.vue')
       }
     ]
-
-  },
-  {
-    path: '/chatroom',
-    name: 'chat',
-    component: () => import('../components/chat/ChattingRoom.vue')
-  },
-  {
-    path : '/chatlist',
-    name : 'chatlist',
-    component : () => import('../components/chat/ChatList.vue')
   }
 ]
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
