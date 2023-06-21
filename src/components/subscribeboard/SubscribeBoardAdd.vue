@@ -128,18 +128,16 @@ export default {
             subscribe_startdate: dayjs().format("YYYY/MM/DD"),
             subscribe_enddate: dayjs().format("YYYY/MM/DD"),
 
-            
+
         }
     },
 
     methods: {
-        
+
         add() {
-
-
             const self = this;
             let formdata = new FormData();
-            formdata.append('email', self.email)
+            formdata.append('email', sessionStorage.getItem('loginId'))
             formdata.append('title', self.title)
             formdata.append('site', self.site)
             formdata.append('total_point', self.total_point)
@@ -156,7 +154,27 @@ export default {
                     if (res.status == 200) {
                         let dto = res.data.dto2
                         alert(" 글이 등록되었습니다.")
-                    } else {
+                        // formdata.append('subscribe_num', dto.subscribe_num)
+                        // formdata.append('email', sessionStorage.getItem('loginId'))
+                        // formdata.append('point_basket', dto.divisionResult)
+                        // formdata.append('enddate', dayjs(dto.enddate))
+                        // formdata.append('start_check', 0)
+                        // formdata.append('schedule_num', 0)
+                        // self.$axios.post('http://localhost:8181/subscribeparty', formdata)
+                        //     .then(function (res) {
+                        //         if (res.status == 200) {
+                        //             let dto = res.data.dto
+                        //             if (dto == null) {
+                        //                 alert('이미 가입한 파티입니다')
+                        //             } else {
+                        //                 alert('파티에 추가되었습니다.')
+                        //             }
+
+                        //         } else {
+                        //             alert('에러코드:' + res.status)
+
+                        //         }
+                            // })
                         alert('에러코드:' + res.status)
                     }
                 })
