@@ -6,6 +6,7 @@ import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vu
 import Calendar from '../components/calendars/calendar'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
+import group from '../components/groups/group.vue'
 
 const routes = [
   // 제일처음 시작할때 나올 로그인 화면 
@@ -38,6 +39,11 @@ const routes = [
     path: '/SubscribeBoardList',
     name: 'SubscribeBoardList',
     component: SubscribeBoardList
+  },
+  {
+    path: '/group',
+    name: 'group',
+    component: group
   }
 ]
 const router = createRouter({
