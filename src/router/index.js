@@ -79,7 +79,18 @@ const routes = [
       }
     ]
 
+  },
+  {
+    path: '/chatroom',
+    name: 'chat',
+    component: () => import('../components/chat/ChattingRoom.vue')
+  },
+  {
+    path : '/chatlist',
+    name : 'chatlist',
+    component : () => import('../components/chat/ChatList.vue')
   }
+
 ]
 
 const router = createRouter({
