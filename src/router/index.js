@@ -3,9 +3,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homeview from '../components/members/login.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
+import SubscribeBoardDetail from '../components/subscribeboard/SubscribeBoardDetail.vue'
 import Calendar from '../components/calendars/calendar'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
+import test from '../components/subscribeboard/test.vue'
 
 const routes = [
   // 제일처음 시작할때 나올 로그인 화면 
@@ -13,6 +15,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Homeview
+  },
+  {
+    path: '/test',
+    name:'test',
+    component: test
   },
   {
     path: "/login",
@@ -38,6 +45,11 @@ const routes = [
     path: '/SubscribeBoardList',
     name: 'SubscribeBoardList',
     component: SubscribeBoardList
+  },
+  {
+    path: '/SubscribeBoardDetail',
+    name: 'SubscribeBoardDetail',
+    component: SubscribeBoardDetail
   }
 ]
 const router = createRouter({
