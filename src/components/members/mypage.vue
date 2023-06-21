@@ -1,15 +1,30 @@
 <template>
     <div id="mypage">
         <h3>mypage</h3>
-        <img :src="'http://localhost:8181/members/C:/plantiful/' + dto.email">
+        <div>
+            이미지:
+            <div v-if="changeimg">
+                <img :src="changeimg" @click="imgedit" style="max-width: 200px; max-height: 200px;" />
+            </div>
+            <div v-else>
+                <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @click="imgedit"
+                    style="max-width: 200px; max-height: 200px;" />
+            </div>
+
+            <div v-show="isVisible">
+                <input type="file" id="img" @change="previewImage" accept="image/*">
+                <button @click="editimg">수정</button>
+                <button @click="delimg">삭제</button>
+            </div>
+        </div>
+
         {{ dto.nickname }}
         {{ dto.phone }}
         {{ dto.email }}
         <button v-on:click="out">탈퇴</button>
     </div>
-   
 </template>
-  
+    
 <script>
 export default {
     name: 'mypage',
@@ -20,7 +35,9 @@ export default {
                 nickname: '',
                 phone: '',
                 email: ''
-            }
+            },
+            isVisible: false,
+            changeimg: null
         }
     },
     created: function () {
@@ -38,9 +55,11 @@ export default {
                         self.nickname = self.dto.nickname
                         self.phone = self.dto.phone
                         self.cash = self.dto.cash
-                        self.img = self.dto.img
+                        if (self.dto.img) {
+                            self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
+                        }
                     } else {
-                        alert('없는 아이디 혹은 만료 된 세션 아이디 입니다')
+                        alert('없는 아이디 혹은 만료된 세션 아이디입니다')
                     }
                 } else {
                     alert('에러코드')
@@ -48,23 +67,60 @@ export default {
             })
     },
     methods: {
+        editimg() {
+            const self = this;
+            const form = new FormData();
+            const file = document.getElementById('img').files.item(0);
+            form.append('file', file);
+            self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form)
+                .then(function (res) {
+                    if (res.status == 200) {
+                        alert(res.data.message); // 수정: response 객체의 message 사용
+                    }
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        },
+        delimg(){
+            const self = this; 
+            const form = new FormData()
+            this.email = sessionStorage.getItem('loginId')
+            form.append('email', email)
+            self.$axios.post('http://localhost:8181/members/delprofile' ,form)
+            .then(function (res) {
+                    if (res.status == 200) {
+                        alert('이미지가 삭제 되었습니다')
+                    }
+                });
+        },
+        imgedit() {
+            this.isVisible = true;
+        },
+        previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.changeimg = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
         logout() {
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('loginId')
-      location.href = '/';
-    },
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('loginId')
+            location.href = '/';
+        },
         out() {
             const self = this;
             let token = sessionStorage.getItem('token')
             console.log(token)
-            self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })  
-            .then(function (res) {
+            self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+                .then(function (res) {
                     if (res.status == 200) {
                         if (res.data.flag) {
                             alert('탈퇴완료')
                             self.logout()
-                            location.href ='/'
-                            
+                            location.href = '/'
                         }
                     } else {
                         alert('에러')
@@ -74,3 +130,4 @@ export default {
     }
 }
 </script>
+  

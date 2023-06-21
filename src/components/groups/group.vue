@@ -48,6 +48,7 @@ export default {
             formData.append('schedulegroup_title', this.title)
             formData.append('schedulegroup_color', this.color)
             let token = sessionStorage.getItem('token')
+            alert(token)
             self.$axios.post('http://localhost:8181/schedulegroup', formData, {headers:{'token':token}})
             .then(function(res){
                 if(res.status == 200){

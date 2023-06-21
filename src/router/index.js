@@ -90,7 +90,6 @@ const routes = [
     name : 'chatlist',
     component : () => import('../components/chat/ChatList.vue')
   }
-
 ]
 
 const router = createRouter({
