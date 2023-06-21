@@ -1,6 +1,6 @@
 <template >
     <div>
-        이미지 : <img :src="'C:/plantiful/' + dto.email" ><br/>
+    <!-- 이미지 :  <input type="file" id ="img" :placeholder="img :src='http://localhost:8181/members/C:/plantiful/' + dto.email"><br/> -->
     email:<input type="text" v-model="email" readonly><br />
     pwd:<input type="password" v-model="pwd"><br />
     new pwd:<input type="password" ><br />
