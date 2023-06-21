@@ -1,11 +1,11 @@
 <template lang="">
-    <div>
         <div class="container text-center">
        
             <div class="grid text-center">
                 <h1> 구독 공유 시작하기 </h1>
             </div>
             <div class="row"> 
+                <div class="col">전체보기</div>
                 <div class="col">넷플릭스</div>
                 <div class="col">왓챠</div>
                 <div class="col">티빙</div>
@@ -14,18 +14,74 @@
                 <div class="col-2">프라임 비디오</div>
             </div>
         </div>  
-        <h3><router-link to="/SubscribeBoardAdd">글 등록</router-link>  </h3>
-    </div>
-    
+        <div class="container text-right">
+            <button><router-link to="/SubscribeBoardAdd">글 등록</router-link> </button>
+            <button><router-link to="/test">test</router-link> </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col">
+                    글 번호
+                </div>
+                <div class="col">
+                    사이트
+                </div>
+                <div class="col">
+                    작성자
+                </div>
+                <div class="col">
+                    모집 현황
+                </div>
+            </div>
+            
+            
+                <div class="row" v-for="order in list" :key="order.subscribe_num" v-on:click="detail(order.subscribe_num)">
+                    <div class="col">
+                        {{order.subscribe_num}}
+                    </div>
+                    <div class="col">
+                        {{order.site}}
+                    </div>
+                    <div class="col">
+                        {{order.email.email}}
+                    </div>
+                    <div class="col">
+                        (모집된 인원) / {{order.total_people}}
+                    </div>
+            </div>
+        </div>
+            
 </template>
 <script>
 export default {
-    name: 'App',
+    name: 'SubscribeBoardList',
     components: {
+    },
+    data() {
+        return {
+            list: []
+        }
+    },
+    created: function () { //한번 실행
+        const self = this;
+        let loginId = sessionStorage.getItem('loginId')    
+        self.$axios.get('http://localhost:8181/subscribeboard') //비동기 요청
+            
+            .then(function (res) {
+                if (res.status == 200) {
+                    self.list = res.data.list
+                } else {
+                    alert('에러코드:' + res.status)
+                }
+            })
+    },
+    methods: {
+        detail(subscribe_num) {
+            this.$router.push({ name: 'SubscribeBoardDetail', query: { subscribe_num: subscribe_num }})
+        }
     }
-    
-    
 }
+
 </script>
  
 <style>

@@ -76,6 +76,7 @@ export default {
   components: {
     FullCalendar
   },
+  name : 'calendar',
   data() {
     return {
       showEventForm: false,
