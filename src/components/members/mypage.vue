@@ -1,9 +1,7 @@
 <template>
     <div id="mypage">
         <h3>mypage</h3>
-        <img :src="'C:/plantiful/' + dto.email">
-        <img v-bind:src="'C:/plantiful/' + dto.email" />
-
+        <img :src="'http://localhost:8181/members/C:/plantiful/' + dto.email">
         {{ dto.nickname }}
         {{ dto.phone }}
         {{ dto.email }}

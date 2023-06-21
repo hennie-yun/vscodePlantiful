@@ -10,6 +10,8 @@ import calendar from '../components/calendars/calendar.vue'
 import mypage from '../components/members/mypage.vue'
 import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
+import group from '../components/groups/group.vue'
+
 
 const routes = [
   {
@@ -69,11 +71,16 @@ const routes = [
         path : '/editinfo',
         name : 'editinfo',
         component : editinfo
+      },
+      {
+        path: '/group',
+        name: 'group',
+        component: group
       }
     ]
-  }
-];
 
+  }
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
