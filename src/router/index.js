@@ -2,8 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
+import SubscribeBoardDetail from '../components/subscribeboard/SubscribeBoardDetail.vue'
+import Calendar from '../components/calendars/calendar'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
+import test from '../components/subscribeboard/test.vue'
 import AfterLogin from '../components/AfterLogin.vue'
 import calendar from '../components/calendars/calendar.vue'
 import mypage from '../components/members/mypage.vue'
@@ -16,6 +19,11 @@ const routes = [
     redirect: "/login"
   },
   {
+    path: '/test',
+    name:'test',
+    component: test
+  },
+  {
     path: "/login",
     name: 'login',
     component: login
@@ -26,6 +34,7 @@ const routes = [
     component: join
   },
   {
+
     path: "/afterlogin",
     component: AfterLogin,
     children: [
