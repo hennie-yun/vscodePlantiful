@@ -18,8 +18,6 @@
                   <button class="btn btn-primary btn-sm" style=" color :#4A5157 ;border: none; background-color: white;"
                   v-on:click="emailcheck">확인</button>
                 </div>
-                <span id="mail-check-warn"></span>
-
                 <div class="form-outline form-white mb-4">
                   <input type="password" v-model="pwd" class="form-control form-control-lg" placeholder="password" />
                 </div>
@@ -73,8 +71,9 @@ export default {
       form.append('pwd', self.pwd)
       form.append('nickname', self.nickname)
       form.append('phone', self.phone)
+      if(this.img !=null){
       const file = document.getElementById('img').files.item(0);
-      form.append('f', file);
+      form.append('f', file);} 
       self.$axios.post('http://localhost:8181/members', form)
         .then(function (res) {
           if (res.status == 200) {
