@@ -14,7 +14,7 @@
                     v-on:click="sendEmail">이메일인증</button>
                 </div>
                 <div class="form-outline form-white mb-4">
-                  <input type="text" v-model="echeck" class="form-control form-control-lg" placeholder="인증번호를 입력!" />
+                  <input type="text" class="form-control form-control-lg" placeholder="인증번호를 입력!" @input="updateEmailCheck" />
                   <button class="btn btn-primary btn-sm" style=" color :#4A5157 ;border: none; background-color: white;"
                   v-on:click="emailcheck">확인</button>
                 </div>
@@ -33,7 +33,10 @@
                   <input type="file" id="img" class="form-control form-control-lg" />
                 </div>
                 <button class="btn btn-primary btn-lg" style="color :#4A5157; border: none; background-color: white;"
-                  v-on:click="join">join</button> <!-- 소셜회원가입 -->
+                  v-on:click="join" v-show="isVisible">join</button>
+                  
+                  
+                  <!-- 소셜회원가입 -->
                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
                   <a href="#!" class="text-white"><i class="fab fa-kakao-f fa-lg"></i></a>
                   <a href="#!" class="text-white"><i class="fab fa-naver fa-lg mx-4 px-2"></i></a>
@@ -56,25 +59,28 @@ export default {
       email: '',
       pwd: '',
       nickname: '',
-      phone: ''
+      phone: '',
+      echeck: '',
+      isVisible: false
     }
   },
   methods: {
     join() {
       const self = this;
+      alert(this.email+"/"+this.pwd+"/"+this.nickname+"/"+this.phone +"/"+this.img)
       const form = new FormData();
       form.append('email', self.email)
       form.append('pwd', self.pwd)
       form.append('nickname', self.nickname)
       form.append('phone', self.phone)
-      const file = document.getElementById('img')
-      form.append('f', file.files);
+      const file = document.getElementById('img').files.item(0);
+      form.append('f', file);
       self.$axios.post('http://localhost:8181/members', form)
         .then(function (res) {
           if (res.status == 200) {
             let dto = res.data.dto
-            alert(dto.id + "/" + dto.type)
-            this.$router.push('/login')
+            console.log(dto)
+            location.href="/" 
           } else {
             alert('에러코드 :' + res.status)
           }
@@ -87,7 +93,9 @@ export default {
     form.append('email', self.email);
     self.$axios.post('http://localhost:8181/members/email', form)
       .then(function (res) {
-        if (res.status === 200) {
+        if(res.data.exist){
+          alert(res.data.exist)
+        } else if (res.status == 200) {         
           alert('이메일이 발송되었습니다');
           const key = res.data.key;
           alert(key);
@@ -97,16 +105,20 @@ export default {
         }
       })
   },
+  updateEmailCheck(event) {
+    this.echeck = event.target.value;
+  },
   emailcheck() {
     const self = this;
     if (self.echeck === self.emailKey) {
       alert('확인 완료');
+      this.isVisible =true;
     } else {
       alert('인증번호가 일치하지 않습니다.');
     }
   }
-},
-  }
+}
+}
 </script>
 
 <style>

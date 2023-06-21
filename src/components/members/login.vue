@@ -14,7 +14,7 @@
               <div class="form-outline form-white mb-4">
                 <input type="password" v-model="pwd" class="form-control form-control-lg" placeholder="password" />               
               </div> 
-              <p class="small mb-5 pb-lg-2"><a class="text-black-50" href="#!">Forgot password?</a></p>
+              <p class="small mb-5 pb-lg-2"><a class="text-black-50" href="/newpwd">Forgot password?</a></p>
               <button class="btn btn-primary btn-lg" style="border: none; background-color:white; color:#4A5157;" v-on:click="login" >Login</button>
               <div class="d-flex justify-content-center text-center mt-4 pt-1">
                 <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
@@ -54,13 +54,13 @@ export default {
             const form = new FormData();
             form.append('email', self.email)
             form.append('pwd',self.pwd)
-
             self.$axios.post('http://localhost:8181/members/login', form)
             .then(function(res){
                 if(res.status==200){
                     if(res.data.flag){
                         sessionStorage.setItem('token', res.data.token)
-                        sessionStorage.setItem('loginId', res.data.loginId)                  
+                        sessionStorage.setItem('loginId', res.data.loginId)
+                        location.href="/calendar"                  
                     } else {
                         alert('로그인 실패')
                     }

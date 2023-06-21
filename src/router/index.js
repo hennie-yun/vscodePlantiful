@@ -6,6 +6,9 @@ import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
 import AfterLogin from '../components/AfterLogin.vue'
 import calendar from '../components/calendars/calendar.vue'
+import mypage from '../components/members/mypage.vue'
+import newpwd from '../components/members/newpwd.vue'
+import editinfo from '../components/members/editinfo.vue'
 
 const routes = [
   {
@@ -44,6 +47,21 @@ const routes = [
         path: '/SubscribeBoardList',
         name: 'SubscribeBoardList',
         component: SubscribeBoardList
+      },
+      {
+        path: '/mypage',
+        name: 'mypage',
+        component: mypage
+      },
+      {
+        path: '/newpwd',
+        name : 'newpwd',
+        component : newpwd
+      },
+      {
+        path : '/editinfo',
+        name : 'editinfo',
+        component : editinfo
       }
     ]
   }

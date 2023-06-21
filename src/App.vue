@@ -2,7 +2,10 @@
   <div>
     <Navbar v-if="loginId!=null">
       <router-link to="/calendar">달력</router-link> |
-      <router-link to="/SubscribeBoardList">구독</router-link>
+      <router-link to="/SubscribeBoardList">구독</router-link> |
+      <router-link to="/mypage">마이페이지</router-link>|
+      <router-link to="/editinfo">내 정보 수정</router-link>|
+      <button v-on:click="logout">로그아웃</button> |
     </NavBar>
     <RouterView></RouterView>
   </div>
@@ -18,6 +21,13 @@ name: 'app',
   },
   created:function () {
     this.loginId = sessionStorage.getItem('loginId')
+  },
+  methods: {
+    logout() {
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('loginId')
+      location.href = '/';
+    }
   }
 }
 </script>
