@@ -1,6 +1,7 @@
+<!-- 내가 참여한 구독 목록 -->
 <template lang="">
     <div>
-    <h2>안뇽</h2>
+        
     </div>
 </template>
 <script>
