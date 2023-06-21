@@ -106,15 +106,13 @@
 
 <script>
 import dayjs from 'dayjs'
-import Datepicker from 'vue3-datepicker'
 
 export default {
 
     name: 'SubscribeBoardAdd',
 
     component() {
-        dayjs,
-        Datepicker
+        dayjs
     },
     data() {
         return {
