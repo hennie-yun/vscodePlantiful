@@ -64,9 +64,9 @@ export default {
     },
     created: function () { //한번 실행
         const self = this;
-
+        let loginId = sessionStorage.getItem('loginId')    
         self.$axios.get('http://localhost:8181/subscribeboard') //비동기 요청
-            // let loginId = sessionStorage.getItem('loginId')    
+            
             .then(function (res) {
                 if (res.status == 200) {
                     self.list = res.data.list

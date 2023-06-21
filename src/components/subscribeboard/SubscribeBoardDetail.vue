@@ -40,14 +40,14 @@
     </div>
 
     <!-- 참여하기 버튼 -->
-    <div v-if="dto.email.email != loginId">
+    <div v-if="dto.email != loginId">
         <div>
             <button v-on:click="addparty">참여하기</button>
         </div>
         
     </div>
     <!-- 삭제하기 버튼 -->
-    <div v-else="dto.email.email == loginId">
+    <div v-else="dto.email == loginId">
         <div>
             <button v-on:click="delete">삭제하기</button>
 
@@ -72,7 +72,7 @@ export default {
             startDate: '',
             endDate: '',
 
-            loginId: null
+            loginId: sessionStorage.getItem('loginId')
         }
     },
     methods :{
