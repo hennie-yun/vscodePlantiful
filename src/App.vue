@@ -8,6 +8,7 @@
       <router-link to="/group">그룹</router-link>|
       <router-link to="/chatlist">채팅</router-link>|
       <button v-on:click="logout">로그아웃</button> |
+      <router-link to="/pay">결제</router-link>|
     </NavBar>
     <RouterView></RouterView>
   </div>

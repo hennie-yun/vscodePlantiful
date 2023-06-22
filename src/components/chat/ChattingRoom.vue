@@ -27,7 +27,7 @@
             </v-card-text>
         </v-card>
         <v-container class="mt-12" style="background-color: #7AC6FF;">
-            <v-text-field label="id" variant="solo" v-model="id"/>
+            <!-- <v-text-field label="id" variant="solo" v-model="id"/> -->
             <v-text-field v-model="message" label="message" append-icon="mdi-send" 
             clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
             variant="solo" @click:append="sendMessage" v-on:keyup="sendMessage"/>
@@ -46,7 +46,7 @@ export default {
             flag: true,
             preHeight : 0,
             roomNum : this.$route.query.roomNum,
-            id :'',
+            id :sessionStorage.getItem("loginId"),
             message: '',
             recvList:[]
         }
@@ -58,11 +58,10 @@ export default {
         .then(function(ret) {
             for(let obj of ret.data.list) {
                 let date = new Date(obj.sendTime)
-                console.log(date)
                 obj.sendTime = date.getMonth() + "월 " 
-                + date.getDay() + "일 " + date.getHours() + "시 " 
-                + date.getSeconds() + "분" 
-
+                    + date.getDay() + "일 " 
+                    + date.getHours() + "시 " 
+                    + date.getSeconds() + "분" 
                 list.push(obj)
             }
         })

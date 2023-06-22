@@ -64,17 +64,20 @@ export default {
   },
   methods: {
     join() {
-      const self = this;
-      alert(this.email+"/"+this.pwd+"/"+this.nickname+"/"+this.phone +"/"+this.img)
-      const form = new FormData();
+      const self = this
+      const form = new FormData()
       form.append('email', self.email)
       form.append('pwd', self.pwd)
       form.append('nickname', self.nickname)
       form.append('phone', self.phone)
-      if(this.img !=null){
-      const file = document.getElementById('img').files.item(0);
-      form.append('f', file);} 
-      self.$axios.post('http://localhost:8181/members', form)
+      if(document.getElementById('img').value != null) {
+        const file = document.getElementById('img').files[0];
+        form.append('f', file);      
+        alert(this.email+"/"+this.pwd+"/"+this.nickname+"/"+this.phone +"/"+file)
+      } 
+      
+      self.$axios.post('http://localhost:8181/members', form, 
+          {headers : {'Content-Type' : 'multipart/form-data'}})
         .then(function (res) {
           if (res.status == 200) {
             let dto = res.data.dto
