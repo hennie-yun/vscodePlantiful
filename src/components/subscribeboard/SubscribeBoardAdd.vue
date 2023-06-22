@@ -67,21 +67,21 @@
                 <div class="row">
                     <div class="col">
                         <label for="validationCustom04" class="form-label"> 모집 마감일 </label>
-                        <input type="date" v-on:click="datepicker" v-model="recruit_endperiod" placeholder="날짜 선택"> 
+                        <input type="date" v-on:click="datepicker" v-model="recruit_endperiod" placeholder="날짜 선택" required> 
                     </div>
                     
                     <div class="col">
                         <label for="validationCustom04" class="form-label"> 구독 시작일 </label>
-                        <input type="date" v-on:click="datepicker" v-model="subscribe_startdate" placeholder="날짜 선택"> 
+                        <input type="date" v-on:click="datepicker" v-model="subscribe_startdate" placeholder="날짜 선택" required> 
                     </div>
                     ~
                     <div class="col">
                         <label for="validationCustom04" class="form-label"> 구독 마감일 </label>
-                        <input type="date" v-model="subscribe_enddate" placeholder="날짜 선택"> 
+                        <input type="date" v-model="subscribe_enddate" placeholder="날짜 선택" required> 
                     </div>
                     <div class="col">
                         <label for="validationCustom04" class="form-label"> 포인트 지불 날짜 </label>
-                        <input type="date" v-model="payment_date" placeholder="날짜 선택"> 
+                        <input type="date" v-model="payment_date" placeholder="날짜 선택" required> 
                     </div>
                 </div>
 
