@@ -5,7 +5,7 @@
 </template>
 <script>
 export default {
-    name : pay,
+    name : 'pay',
     methods: {
         pay(){
            const self = this;

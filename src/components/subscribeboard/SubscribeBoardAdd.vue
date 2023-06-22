@@ -46,9 +46,7 @@
                     <div class="col">
                         <label for="validationCustom03" class="form-label">전체 금액 입력</label>
                         <input type="number" class="form-control" v-model="total_point" id="validationCustom03" required>
-                        <div class="invalid-feedback">
-                        Please provide a valid city.
-                        </div>
+                        
                         
                     </div>
                     <div class="col">
@@ -160,7 +158,7 @@ export default {
                     console.log(res.status)
                     if (res.status == 200) {
                         alert("글이 등록되었습니다.")
-                        location.href = "/afterlogin/calendar"
+                        location.href = "/calendar"
                     } else {
                         alert('에러코드:' + res.status)
                     }
