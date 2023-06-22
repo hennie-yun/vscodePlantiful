@@ -123,11 +123,7 @@ export default {
         remove(item, idx) {
             alert(item)
             alert(idx)
-        }, 
-        goBack() {
-           alert("goBack") 
-        }, 
-        
+        },  
     },
     watch : {
         recvList : {
