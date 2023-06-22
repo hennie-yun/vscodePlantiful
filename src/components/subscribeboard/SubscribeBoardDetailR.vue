@@ -58,7 +58,7 @@
 import dayjs from 'dayjs'
 
 export default {
-    name: 'SubscribeBoardDetail',
+    name: 'SubscribeBoardDetailR',
     component() {
         dayjs
     },
@@ -105,14 +105,12 @@ export default {
                     }
                 })
 
-        },
-        delete() {
-
         }
 
     },
     created: function () {
         this.loginId = sessionStorage.getItem('loginId')
+        this
         const self = this;
         self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
             .then(function (res) {
@@ -141,7 +139,10 @@ export default {
                     alert('에러코드:' + res.status)
                 }
             })
-    }
+            this.addparty();
+            alert('등록이 완료되었습니다.')
+        }
+    
 }
 </script>
 <style lang="">

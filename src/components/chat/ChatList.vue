@@ -1,17 +1,5 @@
 <template>
     <v-container>
-        <v-btn>
-            <v-icon icon="mdi-keyboard-backspace" /> 
-        </v-btn>
-        <v-btn>
-            <v-icon icon="mdi-keyboard-backspace" /> 
-        </v-btn>
-        <v-btn>
-            <v-icon icon="mdi-keyboard-backspace" /> 
-        </v-btn>
-        <v-btn>
-            <v-icon icon="mdi-keyboard-backspace" /> 
-        </v-btn>
         <h1>채팅</h1>
          <v-card class="mt-2" id="messages" ref="box">
             <v-card-text>
@@ -31,9 +19,6 @@
                 </v-container>
             </v-card-text>
         </v-card>
-        <v-container class="mt-12" style="background-color: #7AC6FF;">
-            <h4>asdasd</h4>
-        </v-container>
     </v-container>
 </template>
 <script>
@@ -41,8 +26,7 @@ export default {
     name : 'ChatList',
     data() {
         return {
-            // loginId : sessionStorage.getItem("loginId"),
-            loginId : 'asd',
+            loginId : sessionStorage.getItem("loginId"),
             roomList : []
         }
     }, methods : {

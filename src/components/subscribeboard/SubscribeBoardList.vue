@@ -15,16 +15,27 @@
             </div>
         </div>  
         <div class="container text-right">
-            <button><router-link to="/SubscribeBoardAdd">글 등록</router-link> </button>
-            <button><router-link to="/test">test</router-link> </button>
+            <button>
+                <router-link to="/SubscribeBoardAdd">
+                    <button class="btn">글 등록</button>
+                </router-link>
+            </button>
+            <button>
+                <router-link to="/test">
+                    <button class="btn">test</button>
+                </router-link>
+            </button>
         </div>
-        <div>
+        <div class="">
             <div class="row">
                 <div class="col">
                     글 번호
                 </div>
                 <div class="col">
                     사이트
+                </div>
+                <div class="col">
+                    이름
                 </div>
                 <div class="col">
                     작성자
@@ -41,6 +52,9 @@
                     </div>
                     <div class="col">
                         {{order.site}}
+                    </div>
+                    <div class="col">
+                        {{order.title}}
                     </div>
                     <div class="col">
                         {{order.email.email}}
@@ -64,9 +78,9 @@ export default {
     },
     created: function () { //한번 실행
         const self = this;
-        let loginId = sessionStorage.getItem('loginId')    
+        let loginId = sessionStorage.getItem('loginId')
         self.$axios.get('http://localhost:8181/subscribeboard') //비동기 요청
-            
+
             .then(function (res) {
                 if (res.status == 200) {
                     self.list = res.data.list
@@ -77,7 +91,7 @@ export default {
     },
     methods: {
         detail(subscribe_num) {
-            this.$router.push({ name: 'SubscribeBoardDetail', query: { subscribe_num: subscribe_num }})
+            this.$router.push({ name: 'SubscribeBoardDetail', query: { subscribe_num: subscribe_num } })
         }
     }
 }

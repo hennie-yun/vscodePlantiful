@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
-import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd.vue'
+import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd2.vue'
 import SubscribeBoardDetail from '../components/subscribeboard/SubscribeBoardDetail.vue'
+import SubscribeBoardDetailR from '../components/subscribeboard/SubscribeBoardDetailR.vue'
+import SubscribePartyList from '../components/subscribeparty/SubscribePartyList.vue'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
 import AfterLogin from '../components/AfterLogin.vue'
@@ -11,7 +13,7 @@ import mypage from '../components/members/mypage.vue'
 import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
-
+import payment from '../components/pay/payment.vue'
 
 const routes = [
   {
@@ -57,6 +59,17 @@ const routes = [
         component: SubscribeBoardDetail
       },
       {
+        path: '/SubscribeBoardDetailR',
+        name: 'SubscribeBoardDetailR',
+        component: SubscribeBoardDetailR
+      },
+      
+      {
+        path: '/SubscribePartyList',
+        name: 'SubscribePartyList',
+        component: SubscribePartyList
+      },
+      {
         path: '/mypage',
         name: 'mypage',
         component: mypage
@@ -85,6 +98,11 @@ const routes = [
         path : '/chatlist',
         name : 'chatlist',
         component : () => import('../components/chat/ChatList.vue')
+      },
+      {
+        path:'/payment',
+        name: 'payment',
+        component: payment
       }
     ]
   }

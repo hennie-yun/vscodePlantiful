@@ -319,6 +319,11 @@ export default {
     border-radius: 5px;
 }
 
+.calendar_btn {
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
 .head-event-form {
     position: absolute;
     top: 50%;
