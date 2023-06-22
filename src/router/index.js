@@ -11,7 +11,7 @@ import mypage from '../components/members/mypage.vue'
 import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
-
+import payment from '../components/pay/payment.vue'
 
 const routes = [
   {
@@ -85,6 +85,11 @@ const routes = [
         path : '/chatlist',
         name : 'chatlist',
         component : () => import('../components/chat/ChatList.vue')
+      },
+      {
+        path:'/payment',
+        name: 'payment',
+        component: payment
       }
     ]
   }
