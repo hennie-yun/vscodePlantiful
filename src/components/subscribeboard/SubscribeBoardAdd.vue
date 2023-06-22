@@ -27,7 +27,6 @@
                     <div class="col-2 form-check mb-3">
                         <input type="radio" class="form-check-input" id="validationFormCheck3" name="radio-stacked site" v-model="site" required>
                         <label class="form-check-label" for="validationFormCheck3">왓차</label>
-                        <div class="invalid-feedback"> 공유를 진행할 사이트를 선택해주세요.</div>
                     </div>
                 </div>
 
@@ -126,8 +125,7 @@ export default {
             recruit_endperiod: dayjs().format("YYYY/MM/DD"),
             payment_date: dayjs().format("YYYY/MM/DD"),
             subscribe_startdate: dayjs().format("YYYY/MM/DD"),
-            subscribe_enddate: dayjs().format("YYYY/MM/DD"),
-
+            subscribe_enddate: dayjs().format("YYYY/MM/DD")
 
         }
     },
@@ -135,6 +133,14 @@ export default {
     methods: {
 
         add() {
+
+            // 모든 필수 필드가 유효한지 확인
+            const form = document.querySelector('.needs-validation');
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
             const self = this;
             let formdata = new FormData();
             formdata.append('email', sessionStorage.getItem('loginId'))
@@ -151,34 +157,15 @@ export default {
 
             self.$axios.post('http://localhost:8181/subscribeboard', formdata)
                 .then(function (res) {
+                    console.log(res.status)
                     if (res.status == 200) {
-                        let dto = res.data.dto2
-                        alert(" 글이 등록되었습니다.")
-                        // formdata.append('subscribe_num', dto.subscribe_num)
-                        // formdata.append('email', sessionStorage.getItem('loginId'))
-                        // formdata.append('point_basket', dto.divisionResult)
-                        // formdata.append('enddate', dayjs(dto.enddate))
-                        // formdata.append('start_check', 0)
-                        // formdata.append('schedule_num', 0)
-                        // self.$axios.post('http://localhost:8181/subscribeparty', formdata)
-                        //     .then(function (res) {
-                        //         if (res.status == 200) {
-                        //             let dto = res.data.dto
-                        //             if (dto == null) {
-                        //                 alert('이미 가입한 파티입니다')
-                        //             } else {
-                        //                 alert('파티에 추가되었습니다.')
-                        //             }
-
-                        //         } else {
-                        //             alert('에러코드:' + res.status)
-
-                        //         }
-                            // })
+                        alert("글이 등록되었습니다.")
+                        location.href = "/afterlogin/calendar"
+                    } else {
                         alert('에러코드:' + res.status)
                     }
                 })
-
+                
         }
     }
 }

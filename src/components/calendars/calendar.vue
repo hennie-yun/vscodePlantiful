@@ -210,10 +210,10 @@ export default {
     --fc-daygrid-event-dot-width: 5px;
 }
 
-.container {
+/* .container {
     box-shadow: rgba(156, 205, 249, 0.952) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
     border-radius: 5px;
-}
+} */
 
 .head-event-form {
     position: absolute;

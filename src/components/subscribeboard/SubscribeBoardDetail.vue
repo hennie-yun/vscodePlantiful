@@ -38,19 +38,19 @@
             </div>
         </div>
     </div>
+    <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
 
     <!-- 참여하기 버튼 -->
-    <div v-if="dto.email != loginId">
+    <div v-if="dto.email && dto.email.email !== loginId">
         <div>
-            <button v-on:click="addparty">참여하기</button>
+            <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
         </div>
-
     </div>
-    <!-- 삭제하기 버튼 -->
-    <div v-else="dto.email == loginId">
-        <div>
-            <button v-on:click="delete">삭제하기</button>
 
+    <!-- 삭제하기 버튼 -->
+    <div v-else-if="dto.email && dto.email.email === loginId">
+        <div>
+            <button v-on:click="delete" class="btn btn-danger">삭제하기</button>
         </div>
     </div>
 </template>
@@ -93,55 +93,55 @@ export default {
                 .then(function (res) {
                     if (res.status == 200) {
                         let dto = res.data.dto
-                        if(dto == null){
+                        if (dto == null) {
                             alert('이미 가입한 파티입니다')
-                        }else{
+                        } else {
                             alert('파티에 추가되었습니다.')
                         }
-                        
+
                     } else {
                         alert('에러코드:' + res.status)
 
                     }
                 })
 
+        },
+        delete() {
+
+        }
+
     },
-    delete() {
+    created: function () {
+        this.loginId = sessionStorage.getItem('loginId')
+        const self = this;
+        self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
+            .then(function (res) {
+                if (res.status == 200) {
+                    self.dto = res.data.dto;
+                    // 출금일 날짜 변환
+                    self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
 
+                    // 구독 시작날짜와 구독 끝 날짜 변환
+                    self.startDate = dayjs(self.dto.subscribe_startdate).format('YYYY-MM-DD');
+                    self.endDate = dayjs(self.dto.subscribe_enddate).format('YYYY-MM-DD');
+
+
+                    //인당 금액
+                    // 특정 값 두 개 가져오기
+                    const value1 = self.dto.total_point;
+                    const value2 = self.dto.total_people;
+                    // 값 나누기
+                    self.divisionResult = value1 / value2;
+
+                    // 날짜 차이 계산
+                    const registerDate = dayjs(self.dto.register_date);
+                    const recruitEndDate = dayjs(self.dto.recruit_endperiod);
+                    self.dif_day = recruitEndDate.diff(registerDate, 'day');
+                } else {
+                    alert('에러코드:' + res.status)
+                }
+            })
     }
-
-},
-created: function () {
-    this.loginId = sessionStorage.getItem('loginId')
-    const self = this;
-    self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
-        .then(function (res) {
-            if (res.status == 200) {
-                self.dto = res.data.dto;
-                // 출금일 날짜 변환
-                self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
-
-                // 구독 시작날짜와 구독 끝 날짜 변환
-                self.startDate = dayjs(self.dto.subscribe_startdate).format('YYYY-MM-DD');
-                self.endDate = dayjs(self.dto.subscribe_enddate).format('YYYY-MM-DD');
-
-
-                //인당 금액
-                // 특정 값 두 개 가져오기
-                const value1 = self.dto.total_point;
-                const value2 = self.dto.total_people;
-                // 값 나누기
-                self.divisionResult = value1 / value2;
-
-                // 날짜 차이 계산
-                const registerDate = dayjs(self.dto.register_date);
-                const recruitEndDate = dayjs(self.dto.recruit_endperiod);
-                self.dif_day = recruitEndDate.diff(registerDate, 'day');
-            } else {
-                alert('에러코드:' + res.status)
-            }
-        })
-}
 }
 </script>
 <style lang="">

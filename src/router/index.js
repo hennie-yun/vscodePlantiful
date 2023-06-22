@@ -56,6 +56,7 @@ const routes = [
         name: 'SubscribeBoardDetail',
         component: SubscribeBoardDetail
       },
+      
       {
         path: '/mypage',
         name: 'mypage',
