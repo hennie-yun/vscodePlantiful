@@ -14,6 +14,7 @@ import mypage from '../components/members/mypage.vue'
 import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
+import naver from '../components/groups/naver.vue'
 import payment from '../components/pay/payment.vue'
 
 const routes = [
@@ -109,6 +110,11 @@ const routes = [
         path:'/payment',
         name: 'payment',
         component: payment
+      },
+      {
+        path:'/naver',
+        name: 'naver',
+        component: naver
       }
     ]
   }
