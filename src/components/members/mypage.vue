@@ -72,11 +72,13 @@ export default {
             const form = new FormData();
             const file = document.getElementById('img').files.item(0);
             form.append('file', file);
-            self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form)
+            self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
                 .then(function (res) {
-                    if (res.status == 200) {
+                    if (res.status == 200) {                     
                         alert(res.data.message); // 수정: response 객체의 message 사용
+                        window.location.reload(true); //새로고침해야 사진이 떠서 자동으로 페이지 reload 시켜줌              
                     }
+                    self.isVisible=false;
                 })
                 .catch(function (error) {
                     console.error(error);
@@ -85,14 +87,15 @@ export default {
         delimg(){
             const self = this; 
             const form = new FormData()
-            this.email = sessionStorage.getItem('loginId')
-            form.append('email', email)
+            form.append('email',self.email)
             self.$axios.post('http://localhost:8181/members/delprofile' ,form)
-            .then(function (res) {
+            .then(function (res) {                
                     if (res.status == 200) {
                         alert('이미지가 삭제 되었습니다')
+                        window.location.reload(true); 
                     }
                 });
+                self.isVisible=false;
         },
         imgedit() {
             this.isVisible = true;

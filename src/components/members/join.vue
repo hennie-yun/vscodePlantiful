@@ -89,8 +89,11 @@ export default {
         });
     },
     
-  sendEmail() {
+  sendEmail() { 
     const self = this;
+    if (this.email == ''){
+      alert('이메일을 입력해주세요')
+    } else {
     const form = new FormData();
     form.append('email', self.email);
     self.$axios.post('http://localhost:8181/members/email', form)
@@ -106,6 +109,7 @@ export default {
           alert('잘못된 이메일입니다');
         }
       })
+    }
   },
   updateEmailCheck(event) {
     this.echeck = event.target.value;
