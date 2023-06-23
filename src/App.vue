@@ -6,6 +6,7 @@
       <router-link to="/mypage">마이페이지</router-link>|
       <router-link to="/editinfo">내 정보 수정</router-link>|
       <router-link to="/group">그룹</router-link>|
+      <router-link to="/naver">확인</router-link>
       <router-link to="/chatlist">채팅</router-link>|
       <button v-on:click="logout">로그아웃</button> |
       <router-link to="/payment">결제</router-link>|

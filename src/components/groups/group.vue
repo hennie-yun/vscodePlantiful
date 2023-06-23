@@ -1,3 +1,4 @@
+
 <template lang="">
     <section :style="{backgroundColor: '#CEE2F1'}" class="vh-100 gradient-custom background" >
     <div class="container py-5 h-100">
@@ -21,6 +22,9 @@
                                 <span :style="{backgroundColor: '#7E84F7'}" class="dot" v-on:click="a(6)"></span>
                             </div>
                             <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
+                            <button v-on:click="check">체크</button>
+                            <div id="naver_id_login"></div>
+                            
                         </div>
                     </div>
                 </div>
@@ -29,10 +33,35 @@
     </div>
     </section>
 </template>
-<script>
 
-let span = document.getElementsByTagName('span');
+<script>
+import axios from 'axios';
+import $ from 'jquery'
+
+
+ let span = document.getElementsByTagName('span');
 export default {
+    mounted() {
+        const script = document.createElement('script')
+        script.src = 'https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js'
+        script.async = true
+        script.charset = 'utf-8'
+        document.head.appendChild(script)
+
+        script.onload = () => {
+
+            const naver_id_login=new window.naver_id_login("IiiFJKBOyzL3qvfXasPq", "http://localhost:8181/api/naver/")
+            const state = naver_id_login.getUniqState()
+            naver_id_login.setButton("white",2,40)
+            naver_id_login.setDomain("http://localhost:8181/api/naver/oauth")
+            naver_id_login.setState(state)
+            naver_id_login.setPopup()
+            naver_id_login.init_naver_id_login()
+        
+        }
+        
+        
+    },
     name: 'group',
     data(){
         return {
@@ -58,23 +87,37 @@ export default {
                 }
             })
         },
-            a(col) {
+        a(col) {
             let spans = document.querySelectorAll('.dot')
             spans.forEach((el, index) => {
                 el.onclick = () => {
-                   
+                    
                     this.color = index+1
                     alert(this.color)
                     el.classList.add('active')
                    
                 }
                 el.classList.remove('active')
-            })
-            
-    
-            
+            })    
+        },
+        check(){
+            location.href=""
+            //     const self = this;
+            //     let token = sessionStorage.getItem('token');
+            //     alert(token)
+            //     self.$axios.get('http://localhost:8181/api/naver/email', {headers:{'token':token}})
+            //     .then(function(res){
+                //         if(res != null){
+        //             alert(res.data.email)
+        //         }else{
+            //             alert(res.status)
+            //         }
+            //     })
+            // }
+         
         }
-    },
+
+},
 }
 </script>
 <style>
