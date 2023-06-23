@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import SubscribeBoardList from '../components/subscribeboard/SubscribeBoardList.vue'
+import SubscribeBoardMyList from '../components/subscribeboard/SubscribeBoardMyList.vue'
 import SubscribeBoardAdd from '../components/subscribeboard/SubscribeBoardAdd2.vue'
 import SubscribeBoardDetail from '../components/subscribeboard/SubscribeBoardDetail.vue'
 import SubscribeBoardDetailR from '../components/subscribeboard/SubscribeBoardDetailR.vue'
-import SubscribePartyList from '../components/subscribeparty/SubscribePartyList.vue'
+import SubscribePartyDetail from '../components/subscribeparty/SubscribePartyDetail.vue'
 import login from '../components/members/login.vue'
 import join from '../components/members/join.vue'
 import AfterLogin from '../components/AfterLogin.vue'
@@ -55,6 +56,11 @@ const routes = [
         component: SubscribeBoardList
       },
       {
+        path: '/SubscribeBoardMyList',
+        name: 'SubscribeBoardMyList',
+        component: SubscribeBoardMyList
+      },
+      {
         path: '/SubscribeBoardDetail',
         name: 'SubscribeBoardDetail',
         component: SubscribeBoardDetail
@@ -66,9 +72,9 @@ const routes = [
       },
       
       {
-        path: '/SubscribePartyList',
-        name: 'SubscribePartyList',
-        component: SubscribePartyList
+        path: '/SubscribePartyDetail',
+        name: 'SubscribePartyDetail',
+        component: SubscribePartyDetail
       },
       {
         path: '/mypage',
