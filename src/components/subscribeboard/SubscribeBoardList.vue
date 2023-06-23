@@ -21,8 +21,8 @@
                 </router-link>
             </button>
             <button>
-                <router-link to="/test">
-                    <button class="btn">test</button>
+                <router-link to="/SubscribeBoardMyList">
+                    <button class="btn">내 구독 목록</button>
                 </router-link>
             </button>
         </div>
@@ -92,6 +92,9 @@ export default {
     methods: {
         detail(subscribe_num) {
             this.$router.push({ name: 'SubscribeBoardDetail', query: { subscribe_num: subscribe_num } })
+        },
+        mylist(email){
+            this.$router.push({ name: 'SubscribeBoardMyList', query: { email: email.email } })
         }
     }
 }
