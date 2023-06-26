@@ -17,10 +17,10 @@
                 <button @click="editimg">수정</button>
                 <button @click="delimg">삭제</button>
             </div>
-        </div>
+        </div
 
-        <div class="container">
-      <div class="box">
+        <div class="lcontainer">
+      <div class="lbox">
         <p>{{ dto.nickname }}</p>
       </div>
       <div class="box">
@@ -173,7 +173,7 @@ input[type="file"]::-webkit-file-upload-button {
      color: white;
  }
  
- .container {
+ .lcontainer {
 margin-left :30%;
   display: flex;
   flex-direction: column;
@@ -182,7 +182,7 @@ margin-left :30%;
   height: 100vh;
 }
 
-.box {
+.lbox {
   width: 200px;
   height: 30px;
   border: 2px solid #7AC6FF;
@@ -193,7 +193,7 @@ margin-left :30%;
   justify-content: center;
 }
 
-.box p {
+.lbox p {
   margin: 0;
   padding: 10px;
 }

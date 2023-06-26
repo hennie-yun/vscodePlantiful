@@ -19,7 +19,7 @@
                   v-on:click="login">Login</button>
 
                 <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                  <img src="../assets/image/kakao.png" @click="kakaoLogin" />
+                  <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
                 </div>
               </div>
               <button @click="kakaoLogout"> 카카오 로그아웃
