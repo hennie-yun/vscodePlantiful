@@ -1,74 +1,122 @@
 <template>
-                                                                      <div class="container calendar_con" style="width: 70%; padding: 2%; ">
+                      <div class="container calendar_con" style="width: 70%; padding: 2%; height: 100vh;">
+    
+                          <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+    
+                          <div v-if="showEventForm" class="head-event-form">
+    
+                              <div class="event-form">
+    
+                                  <div class="form-row">
+    
+                                      <label for="title">제목</label>
+    
+                                      <input type="text" id="title" v-model="newEvent.title" />
+    
+                                  </div>
+    
+                                  <div class="form-row">
+    
+                                      <label for="start">시작 날짜</label>
+    
+                                      <input type="date" id="start" v-model="newEvent.start" />
+    
+                                  </div>
+    
+                                  <div class="form-row">
+    
+                                      <label for="end">종료 날짜</label>
+    
+                                      <input type="date" id="end" v-model="newEvent.end" />
+    
+                                  </div>
+    
+                                  <div class="form-row">
+    
+                                      <label for="startTime">시작 시간</label>
+    
+                                      <input type="time" id="startTime" v-model="newEvent.startTime" />
+    
+                                  </div>
+    
+                                  <div class="form-row">
+    
+                                      <label for="endTime">종료 시간</label>
+    
+                                      <input type="time" id="endTime" v-model="newEvent.endTime" />
+    
+                                  </div>
+    
+                                  <div class="form-row">
+    
+                                      <label for="info">일정 내용</label>
+    
+                                      <textarea id="info" v-model="newEvent.info"></textarea>
+    
+                                  </div>
+    
+    
+    
+                                  <div class="form-row">
+    
+                                      <label for="notification">알림 설정</label>
+    
+                                      <select id="notification" v-model="newEvent.alert">
+    
+                                                                                                                                                                                     <option value="0">알림 없음</option>
+    
+                                                                                                                                                                                     <option value="30">30분 전</option>
+    
+                                                                                                                                                                                     <option value="60">1시간 전</option>
+    
+                                                                                                                                                                                     <option value="custom">사용자 설정</option>
+    
+                                                                                                                                                                                  </select>
+    
+                                      <input type="time" id="customTime" v-model="newEvent.alert" v-if="newEvent.alert === 'custom'" />
+    
+                                  </div>
+    
+    
+    
+                                  <div class="form-row" v-if="newEvent.start == newEvent.end">
+              <label for="isLoop">일정 반복 여부</label>
+              <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" />반복 안 함
+              <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
+            </div>
 
-                                                                          <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+            <div class="form-row" v-if="newEvent.isLoop === '2'">
+              <label for="day">반복 요일</label>
+              <select id="day" v-model="newEvent.day">
+                <option value="1">월요일</option>
+                <option value="2">화요일</option>
+                <option value="3">수요일</option>
+                <option value="4">목요일</option>
+                <option value="5">금요일</option>
+                <option value="6">토요일</option>
+                <option value="0">일요일</option>
+              </select>
+            </div>
     
-                                                                          <div v-if="showEventForm" class="head-event-form">
+                                  <div class="form-row form-buttons">
     
-                                                                                                                      <div class="event-form">
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="title">제목</label>
-                                                                                                                              <input type="text" id="title" v-model="newEvent.title" />
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="start">시작 날짜</label>
-                                                                                                                              <input type="date" id="start" v-model="newEvent.start" />
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="end">종료 날짜</label>
-                                                                                                                              <input type="date" id="end" v-model="newEvent.end" />
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="startTime">시작 시간</label>
-                                                                                                                              <input type="time" id="startTime" v-model="newEvent.startTime" />
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="endTime">종료 시간</label>
-                                                                                                                              <input type="time" id="endTime" v-model="newEvent.endTime" />
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="info">일정 내용</label>
-                                                                                                                              <textarea id="info" v-model="newEvent.info"></textarea>
-                                                                                                                          </div>
+                                      <button class="calendar_btn" @click="cancel">취소</button>
     
-                                                               <!-- <div class="form-row">
-                            <label for="notification">알림 설정</label>
-                            <select id="notification" v-model="newEvent.alert">
-                            <option value="0">알림 없음</option>
-                            <option value="30">30분 전</option>
-                            <option value="60">1시간 전</option>
-                            <option value="custom">사용자 설정</option>
-                          </select>
-                            <input type="time" id="customTime" v-model="newEvent.alertTime" v-if="newEvent.alert === 'custom'" />
-                        </div> -->
-                
-                                                                                                                          <div class="form-row">
-                                                                                                                              <label for="isLoop">일정 반복 여부</label>
-                                                                                                                              <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1"  />반복안함.
-                                                                                                                              <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row" v-if="newEvent.isLoop == 2">
-                                                                                                                              <label for="day">반복 요일</label>
-                                                                                                                              <select id="day" v-model="newEvent.day">
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="1">월요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="2">화요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                   <option value="3">수요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="4">목요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="5">금요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="6">토요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                    <option value="0">일요일</option>
-                                                                                                                                                                                                                                                                                                                                                                                                  </select>
-                                                                                                                          </div>
-                                                                                                                          <div class="form-row form-buttons">
-                                                                                                                              <button class="calendar_btn" @click="cancel">취소</button>
-                                                                                                                              <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
-                                                                                                                              <button v-else class="calendar_btn" @click="updateEvent">수정</button>
-                                                                                                                              <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
-                                                                                                                          </div>
-                                                                                                                      </div>
-                                                                                                                  </div>
-                                                                                                              </div>
-                                                                                                              <router-view/>
+                                      <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
+    
+                                      <button v-else class="calendar_btn" @click="updateEvent">수정</button>
+    
+                                      <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
+    
+                                  </div>
+    
+                              </div>
+    
+                          </div>
+    
+                      </div>
+    
+                      <router-view/>
 </template>
 
 <script>
@@ -78,6 +126,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import dayjs from 'dayjs'
 import axios from 'axios';
 import { reduce } from 'sockjs-client/lib/transport-list';
+import { start } from '@popperjs/core';
 
 
 export default {
@@ -87,10 +136,8 @@ export default {
   name: 'calendar',
   data() {
     return {
-      email: 'sessionStorage.getItem("email")',
       isNewEvent: true,
       showEventForm: false,
-      //schedule_num: parseInt(this.$route.query.schedule_num),
       newEvent: {
         id: 0,
         title: '',
@@ -99,51 +146,71 @@ export default {
         startTime: '00:00:00',
         endTime: '00:00:00',
         info: '',
+        alert: '00:00',
         isLoop: 1,
-        day: 0,
+        day: null,
       },
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
         headerToolbar: {
           left: '',
           center: 'title',
-          right: 'today prev,next'
+          right: 'today prev,next',
         },
+
         initialView: 'dayGridMonth',
         dateClick: this.handleDateClick,
         eventClick: this.handleEventClick,
         locale: 'ko',
-        events: [],
+        events: [], // 이벤트 데이터를 추가할 배열
         eventSources: [{
           events: this.getFilteredEvents,
           color: '',
           textColor: 'white',
-          startEditable: true, // 시작 시간 편집 가능 설정
-          durationEditable: true, // 종료 시간 편집 가능 설정
+          startEditable: true,
+          durationEditable: true,
         }],
         eventResize: this.handleEventResize
       }
     }
   },
-  created() { // 페이지 시작- 실행되는 함수
+  // 페이지 시작- 실행되는 함수
+  //로그인 한 사람의 일정 보여주기
+  created() {
+    let token = sessionStorage.getItem('token')
+    this.email = sessionStorage.getItem('loginId')
+    console.log(this.email + " 로그인 ");
     const self = this;
-    axios.get("http://localhost:8181/schedules")
+    self.$axios.get("http://localhost:8181/schedules/email/" + self.email, { headers: { 'token': token } })
       .then(function (res) {
         if (res.status === 200) {
           const reslist = res.data.list;
           reslist.forEach(function (item) {
-            self.calendarOptions.events.push({
-              schedule_num: item.schedule_num,
-              title: item.title,
-              start: item.start,
-              end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
-              color: '#7AC6FF',
-              //dayjs(savedEvent.end).add(1, 'day').format('YYYY-MM-DD')
-              display: 'block', // 시간 표시 설정
-              // startEditable: true, // 시작 시간 편집 가능 설정
-              // durationEditable: true, // 종료 시간 편집 가능 설정
-            });
+            if (item.isLoop === 2) { // 반복 설정된 일정
+              self.calendarOptions.events.push({
+                schedule_num: item.schedule_num,
+                title: item.title + (item.startTime ? ' ' + item.startTime : '') + ' ~ ' + (item.endTime || ''),
+                //startTime값이 존재하면 추가, 없으면 공백 
+                start: item.start,
+                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                color: '#7AC6FF',
+                display: 'block',
+                daysOfWeek: item.day,
+              });
+
+            } else { // 반복 설정되지 않은 일정
+              self.calendarOptions.events.push({
+                schedule_num: item.schedule_num,
+                title: item.title + (item.startTime ? ' ' + item.startTime : '') + ' ~ ' + (item.endTime || ''),
+                start: item.start, // start에 날짜와 시간을 함께 표시
+                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                color: '#7AC6FF',
+                display: 'block',
+              });
+            }
           });
+          console.log(start)
+
         } else {
           alert("에러코드: " + res.status);
         }
@@ -151,6 +218,7 @@ export default {
   },
 
   methods: {
+
     //일정 추가
     addEvent() {
       const self = this;
@@ -158,16 +226,17 @@ export default {
       if (self.newEvent.end == 0) {
         self.newEvent.end = self.newEvent.start;
       };
+
+      formData.append('email', sessionStorage.getItem('loginId'));
       formData.append('title', self.newEvent.title);
       formData.append('start', self.newEvent.start);
       formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
       formData.append('startTime', self.newEvent.startTime);
       formData.append('endTime', self.newEvent.endTime);
-      // formData.append('alert', self.newEvent.alert);
       formData.append('info', self.newEvent.info);
+      formData.append('alert', self.newEvent.alert);
       formData.append('isLoop', self.newEvent.isLoop);
       formData.append('day', self.newEvent.day);
-
       // 데이터 전송
       self.$axios.post("http://localhost:8181/schedules", formData)
         .then(response => {
@@ -179,11 +248,10 @@ export default {
             title: savedEvent.title,
             start: savedEvent.start,
             end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
-            color: 'red',
+            daysOfWeek: savedEvent.day,
             display: 'block', // 시간 표시 설정
             // startEditable: true, // 시작 시간 편집 가능 설정
             // durationEditable: true, // 종료 시간 편집 가능 설정
-            daysOfWeek: [parseInt(savedEvent.day)],
 
           });
 
@@ -197,7 +265,7 @@ export default {
             endTime: '',
             // alert: '',
             info: '',
-            isLoop: false,
+            isLoop: 1,
             day: null
           };
           self.$refs.fullCalendar.getApi().refetchEvents();
@@ -208,7 +276,8 @@ export default {
           console.error(error);
         });
     },
-    //날짝클릭하면 입력 폼 나옴
+
+    //날짝 클릭하면 입력 폼 나옴
     handleDateClick(arg) {
       this.showEventForm = true;
       this.isNewEvent = true,
@@ -220,16 +289,18 @@ export default {
           startTime: '',
           endTime: '',
           info: '',
-          isLoop: false,
+          alert: '',
+          isLoop: 1,
           day: null
         };
     },
+
     //폼 취소
     cancel() {
       this.showEventForm = false;
     },
 
-    //일정 상세보기
+    //일정 클릭 상세보기
     handleEventClick(arg) {
       this.showEventForm = true;
       this.isNewEvent = false;
@@ -256,6 +327,8 @@ export default {
           console.error(error);
         });
     },
+
+    //수정
     updateEvent() {
       const self = this;
       const formData = new FormData();
@@ -269,6 +342,7 @@ export default {
       formData.append('startTime', self.newEvent.startTime);
       formData.append('endTime', self.newEvent.endTime);
       formData.append('info', self.newEvent.info);
+      formData.append('alert', self.newEvent.alert);
       formData.append('isLoop', self.newEvent.isLoop);
       formData.append('day', self.newEvent.day);
 
@@ -284,6 +358,7 @@ export default {
               self.startTime = dto.startTime;
               self.endTime = dto.endTime;
               self.info = dto.info;
+              self.alert = dto.alert;
               self.isLoop = dto.isLoop;
               self.day = dto.day;
             }
@@ -293,6 +368,7 @@ export default {
           }
         });
     },
+    //삭제
     deleteEvent() {
       const self = this;
       // 선택한 이벤트 가져오기
@@ -316,14 +392,16 @@ export default {
 
 
 <style>
-
 :root {
     --fc-border-color: black;
     --fc-daygrid-event-dot-width: 5px;
 }
+.fc-direction-ltr{
+  height: 95vh;
 
+}
 .calendar_con {
-  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
     border-radius: 10px;
 }
 
@@ -397,13 +475,13 @@ export default {
     cursor: pointer;
 }
 
-.fc-daygrid-day-number{
-  text-decoration: none;
-  color:black;
+.fc-daygrid-day-number {
+    text-decoration: none;
+    color: black;
 }
 
-.fc-col-header-cell-cushion{
-  text-decoration: none;
-  color:black;
+.fc-col-header-cell-cushion {
+    text-decoration: none;
+    color: black;
 }
 </style>

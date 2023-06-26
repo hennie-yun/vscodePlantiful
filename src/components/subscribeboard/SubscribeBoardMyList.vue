@@ -13,7 +13,7 @@
                 
                 <div class="col mylistbody">
                     <!-- 팀원 -->
-                    <div class="card h-100" v-if="order.subscribe_num.email != order.email.email" >
+                    <div class="card h-100" v-if="order.subscribe_num.email.email != order.email.email" >
                         <div v-if="order.subscribe_num.site =='넷플릭스'"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" class="card-img-top" alt="..." /></div>
                         <div v-else-if="order.subscribe_num.site =='왓챠'"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" class="card-img-top" alt="..."/></div>
                         <div v-else-if="order.subscribe_num.site =='티빙'"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" class="card-img-top" alt="..."/></div>
@@ -25,14 +25,15 @@
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
                             <p class="card-text"> {{order.email.email}} (참여자) {{order.subscribe_num.subscribeNum}}</p>
                             <p class="card-text"> 남은 포인트 {{order.point_basket}}</p>
-                            <p class="card-text"> 남은 날짜 {{left_day}}</p>
+                            <p class="card-text"> 종료일 {{subenddate}}</p>
                             
                             <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
                             <p class="care-text end" v-if="order.start_check==2">종료</p>
                         </div>
                     </div>
-                    <div class="card h-100" v-if="order.subscribe_num.email == order.email.email" >
+
+                    <div class="card h-100" v-if="order.subscribe_num.email.email == order.email.email" >
                         <div v-if="order.subscribe_num.site =='넷플릭스'"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" class="card-img-top" alt="..." /></div>
                         <div v-else-if="order.subscribe_num.site =='왓챠'"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" class="card-img-top" alt="..."/></div>
                         <div v-else-if="order.subscribe_num.site =='티빙'"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" class="card-img-top" alt="..."/></div>
@@ -42,9 +43,9 @@
                         
                         <div class="card-body">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
-                            <p class="card-text"> {{order.email.email}} (참여자)</p>
+                            <p class="card-text"> {{order.email.email}} (모집자)</p>
                             <p class="card-text"> 지급될 총 포인트 {{order.subscribe_num.total_point}}</p>
-                            <p class="card-text"> 남은 날짜 {{left_day}}</p>
+                            <p class="card-text"> 종료일 {{subenddate}}</p>
                             
                             <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
@@ -85,12 +86,12 @@ export default {
                 if (res.status == 200) {
                     self.list = res.data.list
 
-                    // 남은 날짜 
-                    const subscribestartdate = dayjs(self.list.subscribe_startdate);
-                    const subscribeenddate = dayjs(self.list.subscribe_enddate);
-                    self.left_day = subscribeenddate.diff(subscribestartdate, 'day');
-
-
+                    // self.list.forEach((order) => {
+                    //     const subscribestartdate = dayjs(order.subscribe_startdate);
+                    //     const subscribeenddate = dayjs(order.subscribe_enddate);
+                    //     order.left_day = subscribeenddate.diff(subscribestartdate, 'day');
+                    // });
+                    self.subenddate = dayjs(self.list.subscribe_enddate).format('YYYY-MM-DD');
 
                 } else {
                     alert('에러코드:' + res.status)
