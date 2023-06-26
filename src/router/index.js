@@ -16,6 +16,7 @@ import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
 import payment from '../components/pay/payment.vue'
+import kakaojoin from '../components/members/kakaojoin.vue'
 
 const routes = [
   {
@@ -32,6 +33,12 @@ const routes = [
     name: 'join',
     component: join
   },
+  {
+    path: "/kakaojoin",
+    name: 'klogin',
+    component: kakaojoin
+  },
+  
   {
     path: "/afterlogin",
     component: AfterLogin,
@@ -116,6 +123,7 @@ const routes = [
         name: 'naver',
         component: naver
       }
+      
     ]
   }
 ]
