@@ -17,10 +17,9 @@
                 <button @click="editimg">수정</button>
                 <button @click="delimg">삭제</button>
             </div>
-        </div
+        </div>
 
-        <div class="lcontainer">
-      <div class="lbox">
+          <div class="lbox">
         <p>{{ dto.nickname }}</p>
       </div>
       <div class="box">
@@ -30,11 +29,10 @@
         <p>{{ dto.email }}</p>
       </div>
       <button v-on:click="out">탈퇴</button>
-    </div>
+   
 
 
-
-    </div>
+ </div>
 </template>
 
     
@@ -173,7 +171,7 @@ input[type="file"]::-webkit-file-upload-button {
      color: white;
  }
  
- .lcontainer {
+/* .container {
 margin-left :30%;
   display: flex;
   flex-direction: column;
@@ -196,9 +194,6 @@ margin-left :30%;
 .lbox p {
   margin: 0;
   padding: 10px;
-}
-
-
-
+} */
 
 </style>
