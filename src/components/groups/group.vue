@@ -24,7 +24,7 @@
                             <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
                             <button v-on:click="check">체크</button>
                             <div id="naver_id_login"></div>
-                            
+                         
                         </div>
                     </div>
                 </div>
@@ -50,14 +50,15 @@ export default {
 
         script.onload = () => {
 
-            const naver_id_login=new window.naver_id_login("IiiFJKBOyzL3qvfXasPq", "http://localhost:8181/api/naver/")
+            const naver_id_login=new window.naver_id_login("IiiFJKBOyzL3qvfXasPq", "http://localhost:8081/naver")
             const state = naver_id_login.getUniqState()
             naver_id_login.setButton("white",2,40)
-            naver_id_login.setDomain("http://localhost:8181/api/naver/oauth")
+            naver_id_login.setDomain("http://localhost:8181/api/naver")
             naver_id_login.setState(state)
             naver_id_login.setPopup()
             naver_id_login.init_naver_id_login()
-        
+
+            
         }
         
         
@@ -115,7 +116,8 @@ export default {
             //     })
             // }
          
-        }
+        },
+   
 
 },
 }
