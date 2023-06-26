@@ -66,11 +66,22 @@
                 <label for="floatingInputValue" class="form-label">구독 시작일</label>
                 <input type="date" class="form-control" v-model="subscribe_startdate" required>
             </div>
-            ~
+            <div>
+                <label for="subscriptionPeriod">구독 기간</label>
+                <select id="subscriptionPeriod" v-model="subscriptionPeriod">
+                    <option value="1" selected>1개월</option>
+                    <option value="2">2개월</option>
+                    <option value="3">3개월</option>
+                    <option value="4">4개월</option>
+                    <option value="6">6개월</option>
+                    <option value="12">12개월</option>
+                </select>
+            </div>
+            <!-- ~
             <div class="col">
                 <label for="floatingInputValue" class="form-label">구독 마감일</label>
                 <input type="date" class="form-control" v-model="subscribe_enddate" required>
-            </div>
+            </div> -->
         </div>
         <div class="row">
             <button v-on:click="add">글 등록하기 </button>
@@ -82,6 +93,9 @@
 import dayjs from 'dayjs'
 export default {
     name: 'SubscribeBoardAdd',
+    component() {
+        dayjs
+    },
     data() {
         return {
             formValidated: false,
@@ -94,7 +108,7 @@ export default {
             recruit_endperiod: dayjs().format("YYYY/MM/DD"),
             payment_date: dayjs().format("YYYY/MM/DD"),
             subscribe_startdate: dayjs().format("YYYY/MM/DD"),
-            subscribe_enddate: dayjs().format("YYYY/MM/DD"),
+            subscriptionPeriod: '1', // 초기 기본 값은 1개월
         }
     },
     watch: {
@@ -119,11 +133,15 @@ export default {
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },
-        subscribe_enddate(value) {
-            this.formValidated = !!value;
-        },
+
     },
     methods: {
+
+        calculateEndDate(startDate) {
+            const period = parseInt(this.subscriptionPeriod);
+            const endDate = startDate.add(period, 'month').subtract(1, 'day');
+            return endDate.format('YYYY/MM/DD');
+        },
         validateDate(date) {
             const regex = /^\d{4}-\d{2}-\d{2}$/; // 날짜 형식 (YYYY-MM-DD)
             return regex.test(date);
@@ -131,16 +149,25 @@ export default {
         add() {
             this.formValidated = true;
 
-            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.payment_date || !this.subscribe_startdate || !this.subscribe_enddate) {
+            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.payment_date || !this.subscribe_startdate ) {
                 alert('필수 항목을 전부 입력해주세요.')
                 return;
             }
 
-            if (!this.validateDate(this.recruit_endperiod) || !this.validateDate(this.payment_date) || !this.validateDate(this.subscribe_startdate) || !this.validateDate(this.subscribe_enddate)) {
+            if (!this.validateDate(this.recruit_endperiod) || !this.validateDate(this.payment_date) || !this.validateDate(this.subscribe_startdate)) {
                 alert('유효한 날짜를 입력해주세요.')
                 return;
             }
 
+
+            if (!this.validateDate(this.subscribe_startdate)) {
+                alert('유효한 시작 날짜를 입력해주세요.');
+                return;
+            }
+
+            const startDate = dayjs(this.subscribe_startdate);
+            const subscribe_enddate = this.calculateEndDate(startDate);
+           
             const self = this;
             let formdata = new FormData();
             formdata.append('email', sessionStorage.getItem('loginId'))
@@ -153,7 +180,7 @@ export default {
             formdata.append('payment_date', dayjs(self.payment_date))
             formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
             formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
-            formdata.append('subscribe_enddate', dayjs(self.subscribe_enddate))
+            formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
 
             self.$axios.post('http://localhost:8181/subscribeboard', formdata)
                 .then(function (res) {
@@ -162,7 +189,7 @@ export default {
                         let subscribe_num = dto.subscribe_num;
 
                         let data = new FormData();
-                        data.append('subscribe_num',subscribe_num)
+                        data.append('subscribe_num', subscribe_num)
                         self.$router.push({ name: 'SubscribeBoardDetailR', query: { subscribe_num: subscribe_num } })
                     } else {
                         alert('에러코드:' + res.status)
@@ -180,5 +207,12 @@ export default {
 
 .subboardadd div {
     padding: 1%;
+}
+
+#subscriptionPeriod{
+    margin: 10px;
+    padding-left:5px;
+    border: 1.8px solid #7AC6FF;
+    border-radius: 7px;
 }
 </style>
