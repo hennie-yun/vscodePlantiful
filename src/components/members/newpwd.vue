@@ -50,7 +50,7 @@ data() {
   methods: {
     change() {
       const self = this;
-      self.$axios.put('http://localhost:8181/members/newpwd/'+self.email + '/' +self.pwd)
+      self.$axios.put('http://localhost:8181/members/newpwd/'+this.email + '/' +this.pwd)
         .then(function (res) {
           if (res.status == 200) {
             let dto = res.data.dto

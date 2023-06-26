@@ -35,16 +35,16 @@
                   
                   
                   <!-- 소셜회원가입 -->
-                <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                  <a href="#!" class="text-white"><i class="fab fa-kakao-f fa-lg"></i></a>
-                  <a href="#!" class="text-white"><i class="fab fa-naver fa-lg mx-4 px-2"></i></a>
+                  <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                  <img src="../assets/image/kakao.png" @click="kakaojoin" /> 카카오로 간편회원가입
                 </div>
+              </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    
   </section>
 </template>
 
@@ -122,9 +122,17 @@ export default {
     } else {
       alert('인증번호가 일치하지 않습니다.');
     }
+  },
+  kakaojoin(){
+    const param = {
+        redirectUri: "http://localhost:8181/api/login/kakao"
+      };
+      window.Kakao.Auth.authorize(param);
+      location.href = '/kakaojoin'
+    }
   }
 }
-}
+
 </script>
 
 <style>

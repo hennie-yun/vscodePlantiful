@@ -16,7 +16,7 @@
                 {{ dto.total_point }}
             </div>
             <div class="col">
-                (모집된 인원)/{{ dto.total_people }}
+                전체 모집 인원 {{ dto.total_people }}
             </div>
             <div class="col">
                 인당 금액

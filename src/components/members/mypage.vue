@@ -1,31 +1,46 @@
 <template>
     <div id="mypage">
-        <h3>mypage</h3>
+        <br/>
         <div>
-            이미지:
             <div v-if="changeimg">
-                <img :src="changeimg" @click="imgedit" style="max-width: 200px; max-height: 200px;" />
+                <img :src="changeimg" @click="imgedit" style="max-width: 400px; border-radius: 50%; max-height: 400px;" />
             </div>
             <div v-else>
-                <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @click="imgedit"
-                    style="max-width: 200px; max-height: 200px;" />
+                <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @error="replaceImg" @click="imgedit"
+                    style="width: 400px; border-radius: 50%; height: 400px;" />
             </div>
+            <br />
 
             <div v-show="isVisible">
                 <input type="file" id="img" @change="previewImage" accept="image/*">
+
                 <button @click="editimg">수정</button>
                 <button @click="delimg">삭제</button>
             </div>
         </div>
 
-        {{ dto.nickname }}
-        {{ dto.phone }}
-        {{ dto.email }}
-        <button v-on:click="out">탈퇴</button>
+        <div class="container">
+      <div class="box">
+        <p>{{ dto.nickname }}</p>
+      </div>
+      <div class="box">
+        <p>{{ dto.phone }}</p>
+      </div>
+      <div class="box">
+        <p>{{ dto.email }}</p>
+      </div>
+      <button v-on:click="out">탈퇴</button>
+    </div>
+
+
+
     </div>
 </template>
+
     
 <script>
+import img from '@/assets/image/profile.png';
+
 export default {
     name: 'mypage',
     data() {
@@ -37,7 +52,8 @@ export default {
                 email: ''
             },
             isVisible: false,
-            changeimg: null
+            changeimg: null,
+
         }
     },
     created: function () {
@@ -69,33 +85,39 @@ export default {
     methods: {
         editimg() {
             const self = this;
-            const form = new FormData();
-            const file = document.getElementById('img').files.item(0);
-            form.append('file', file);
-            self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
-                .then(function (res) {
-                    if (res.status == 200) {                     
-                        alert(res.data.message); // 수정: response 객체의 message 사용
-                        window.location.reload(true); //새로고침해야 사진이 떠서 자동으로 페이지 reload 시켜줌              
-                    }
-                    self.isVisible=false;
-                })
-                .catch(function (error) {
-                    console.error(error);
-                });
+            const fileInput = document.getElementById('img');
+            if (fileInput.files.length > 0) {
+                const form = new FormData();
+                const file = fileInput.files.item(0);
+                form.append('file', file);
+                self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            alert(res.data.message);
+                            window.location.reload(true);
+                        }
+                        self.isVisible = false;
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            } else {
+                // Handle the case where no file is selected
+                console.error('No file selected.');
+            }
         },
-        delimg(){
-            const self = this; 
+        delimg() {
+            const self = this;
             const form = new FormData()
-            form.append('email',self.email)
-            self.$axios.post('http://localhost:8181/members/delprofile' ,form)
-            .then(function (res) {                
+            form.append('email', self.email)
+            self.$axios.post('http://localhost:8181/members/delprofile', form)
+                .then(function (res) {
                     if (res.status == 200) {
                         alert('이미지가 삭제 되었습니다')
-                        window.location.reload(true); 
+                        window.location.reload(true);
                     }
                 });
-                self.isVisible=false;
+            self.isVisible = false;
         },
         imgedit() {
             this.isVisible = true;
@@ -129,8 +151,54 @@ export default {
                         alert('에러')
                     }
                 });
-        }
+        },
+        replaceImg(e) {
+            e.target.src = img;
+        },
     }
 }
 </script>
-  
+<style> 
+input[type="file"]::-webkit-file-upload-button {
+     width: 150px;
+     height: 30px;
+     background: white;
+     border: 1px solid rgb(77, 77, 77);
+     border-radius: 10px;
+     cursor: pointer;
+ }
+
+ input[type="file"]::-webkit-file-upload-button:hover {
+     background: #7AC6FF;
+     color: white;
+ }
+ 
+ .container {
+margin-left :30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  width: 200px;
+  height: 30px;
+  border: 2px solid #7AC6FF;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box p {
+  margin: 0;
+  padding: 10px;
+}
+
+
+
+
+</style>

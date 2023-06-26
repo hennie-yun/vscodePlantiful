@@ -60,7 +60,7 @@
                         {{order.email.email}}
                     </div>
                     <div class="col">
-                        (모집된 인원) / {{order.total_people}}
+                        {{order.recruitpeople}} / {{order.total_people}}
                     </div>
             </div>
         </div>
@@ -73,8 +73,14 @@ export default {
     },
     data() {
         return {
-            list: []
+            list: [],
+            currentDate: null,
+            flag: false,
         }
+    },
+
+    mounted() {
+        this.currentDate = new Date().toLocaleDateString();
     },
     created: function () { //한번 실행
         const self = this;
@@ -84,17 +90,92 @@ export default {
             .then(function (res) {
                 if (res.status == 200) {
                     self.list = res.data.list
+                    self.checkmember();
                 } else {
                     alert('에러코드:' + res.status)
                 }
             })
+
+
+
     },
     methods: {
         detail(subscribe_num) {
             this.$router.push({ name: 'SubscribeBoardDetail', query: { subscribe_num: subscribe_num } })
         },
-        mylist(email){
+        mylist(email) {
             this.$router.push({ name: 'SubscribeBoardMyList', query: { email: email.email } })
+        },
+        checkmember() {
+            const self = this;
+            const promises = [];
+
+            self.list.forEach(function (order) {
+                const promise = self.$axios.get('http://localhost:8181/subscribeparty/party/' + order.subscribe_num)
+                    .then(function (res) {
+                        if (res.status === 200) {
+                            order.recruitpeople = self.countRecruitPeople(res.data.list);
+                        } else {
+                            alert('에러코드:' + res.status);
+                        }
+                    })
+                    .catch(function (error) {
+                        alert('에러코드:' + error.response.status);
+                    });
+
+                promises.push(promise);
+            });
+
+            Promise.all(promises)
+                .then(function () {
+                    console.log('모든 비동기 요청 완료');
+                    self.list.forEach(function (order) {
+                        console.log(self.list);
+                        if (order.recruitpeople === order.total_people && self.currentDate < order.recruit_endperiod) {
+                            order.flag = true;
+                            console.log('true ' + order.flag);
+                            self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
+                            .then(function (res) {
+                                alert(res.data);
+                                console.log(order.start_check);
+                            })
+                            .catch(function (error) {
+                                alert('에러코드:' + error.response.status);
+                            });
+                        } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
+                            order.flag = false;
+                            console.log('false ' + order.flag);
+                            self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
+                            .then(function (res) {
+                                alert(res.data);
+                                console.log(order.start_check);
+                            })
+                            .catch(function (error) {
+                                alert('에러코드:' + error.response.status);
+                            });
+                        } else {
+                            return;
+                        }
+                        
+                    });
+                })
+                .catch(function (error) {
+                    console.log('에러 발생:', error);
+                });
+
+
+
+
+        },
+
+        countRecruitPeople(emailList) {
+            let count = 0;
+            emailList.forEach(function (email) {
+                if (email.email) {
+                    count++;
+                }
+            });
+            return count;
         }
     }
 }
