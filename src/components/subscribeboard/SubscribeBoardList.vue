@@ -5,13 +5,13 @@
                 <h1> 구독 공유 시작하기 </h1>
             </div>
             <div class="row"> 
-                <div class="col">전체보기</div>
-                <div class="col">넷플릭스</div>
-                <div class="col">왓챠</div>
-                <div class="col">티빙</div>
-                <div class="col">웨이브</div>
-                <div class="col-2">디즈니플러스</div>
-                <div class="col-2">프라임 비디오</div>
+                <div class="col" v-on:click="search('all')">전체보기</div>
+                <div class="col" v-on:click="search('넷플릭스')">넷플릭스</div>
+                <div class="col" v-on:click="search('왓챠')">왓챠</div>
+                <div class="col" v-on:click="search('티빙')">티빙</div>
+                <div class="col" v-on:click="search('웨이브')">웨이브</div>
+                <div class="col-2" v-on:click="search('디즈니플러스')">디즈니플러스</div>
+                <div class="col-2" v-on:click="search('아마존프라임비디오')">프라임 비디오</div>
             </div>
         </div>  
         <div class="container text-right">
@@ -128,6 +128,24 @@ export default {
         },
         mylist(email) {
             this.$router.push({ name: 'SubscribeBoardMyList', query: { email: email.email } })
+        },
+        search(site) {
+            const self = this;
+            alert(site)
+            if (site == 'all') {
+                self.list = self.searchedList;
+            } else {
+                self.$axios.get('http://localhost:8181/subscribeboard/site/' + site)
+                    .then(function (res) {
+                        if (res.status === 200) {
+                            // self.list = res.data.list
+                            // self.checkmember();
+                            self.searchedList = res.data.list;
+                            self.list = self.searchedList;
+                            self.checkmember();
+                        }
+                    })
+            }
         },
         checkmember() {
             const self = this;

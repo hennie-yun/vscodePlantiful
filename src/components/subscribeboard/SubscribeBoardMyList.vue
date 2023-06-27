@@ -37,7 +37,7 @@
                         <div v-if="order.subscribe_num.site =='넷플릭스'"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" class="card-img-top" alt="..." /></div>
                         <div v-else-if="order.subscribe_num.site =='왓챠'"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" class="card-img-top" alt="..."/></div>
                         <div v-else-if="order.subscribe_num.site =='티빙'"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='웨이브'"><img src="https://img.shields.io/badge/WATCHA-004DB4?style=for-the-badge&logo=wish&logoColor=white" class="card-img-top" alt="..."/></div>
+                        <div v-else-if="order.subscribe_num.site =='웨이브'"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white" class="card-img-top" alt="..."/></div>
                         <div v-else-if="order.subscribe_num.site =='디즈니플러스'"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" class="card-img-top" alt="..."/></div>
                         <div v-else-if="order.subscribe_num.site =='아마존프라임비디오'"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" class="card-img-top" alt="..."/></div>
                         
