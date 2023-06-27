@@ -53,46 +53,46 @@ export default {
             })
     },
     methods: {
-        Paybtn() {
-            const self = this;
-            const data = {
-                email: self.email,
-                pwd: self.pwd,
-                nickname: self.nickname,
-                phone: self.phone,
-                cash: self.price
-            };
-            console.log(data)
+        // Paybtn() {
+        //     const self = this;
+        //     const data = {
+        //         email: self.email,
+        //         pwd: self.pwd,
+        //         nickname: self.nickname,
+        //         phone: self.phone,
+        //         cash: self.price
+        //     };
+        //     console.log(data)
 
-            IMP.init("imp66001065");
-            IMP.request_pay({
-                pg: 'kakaopay',
-                merchant_uid: this.email + '_' + new Date().getTime(),
-                name: '람보르기니',
-                amount: this.price,
-                buyer_email: this.email,
-                buyer_name: this.nickname,
-                buyer_tel: this.phone,
-                buyer_addr: '경기도 성남대로34',
-                buyer_postcode: '257'
-            }, rsp => {
-                console.log(rsp);
-                if (rsp.success) {
-                    console.log("결제 성공");
-                    self.$axios.post('http://localhost:8181/payment' + self.email, data, JSON.stringify(data))
-                        .then(function (res) {
-                            if (res.status == 200) {
-                                alert('여기까지DB들어갔니? ');
-                            } else {
-                                alert('에러코드: ' + res.status);
-                            }
-                        });
-                } else {
-                    console.log("결제 실패");
-                }
-            });
+        //     IMP.init("imp66001065");
+        //     IMP.request_pay({
+        //         pg: 'kakaopay',
+        //         merchant_uid: this.email + '_' + new Date().getTime(),
+        //         name: '람보르기니',
+        //         amount: this.price,
+        //         buyer_email: this.email,
+        //         buyer_name: this.nickname,
+        //         buyer_tel: this.phone,
+        //         buyer_addr: '경기도 성남대로34',
+        //         buyer_postcode: '257'
+        //     }, rsp => {
+        //         console.log(rsp);
+        //         if (rsp.success) {
+        //             console.log("결제 성공");
+        //             self.$axios.post('http://localhost:8181/payment' + self.email, data, JSON.stringify(data))
+        //                 .then(function (res) {
+        //                     if (res.status == 200) {
+        //                         alert('여기까지DB들어갔니? ');
+        //                     } else {
+        //                         alert('에러코드: ' + res.status);
+        //                     }
+        //                 });
+        //         } else {
+        //             console.log("결제 실패");
+        //         }
+        //     });
 
-        },
+        // },
         KGpay() {
             const self = this;
             IMP.init("imp66001065");
