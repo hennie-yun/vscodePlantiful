@@ -20,6 +20,7 @@
     "bootstrap-vue-3": "^0.5.1",
     "dayjs": "^1.11.8",
     "fullcalendar": "^6.1.8",
+    "jquery": "^3.7.0",
     "roboto-fontface": "*",
     "sass-loader": "^13.3.2",
     "sockjs-client": "^1.6.1",
