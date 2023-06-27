@@ -131,7 +131,6 @@ export default {
         },
         search(site) {
             const self = this;
-            alert(site)
             if (site == 'all') {
                 self.list = self.searchedList;
             } else {
