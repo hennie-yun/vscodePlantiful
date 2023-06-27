@@ -72,11 +72,11 @@
                         </div>
                 </div>
             </div>
+            
+
             <div v-if="index === 0" class="row">
                 <h3>참여자 정보 </h3>
             </div>
-            
-
             <div class="row">
                 <div class="col">
                     참여 번호
@@ -90,10 +90,17 @@
                 <div class="col">
                     {{ order.email.email }}
                 </div>
+                <div class="col">
+                    남은 포인트
+                </div>
+                <div class="col" v-if="order.email.email === loginId">
+                    {{ order.point_basket }}
+                </div>
+                <div class="col" v-if="order.email.email !== loginId">
+                    비공개 
+                </div>
             </div>
-            
-        </div>
-
+        </div>       
     </div>
 </template>
 <script>
@@ -105,10 +112,12 @@ export default {
     },
     data() {
         return {
-            list: []
+            list: [],
+            loginId: null,
         }
     },
     created: function () {
+        this.loginId = sessionStorage.getItem('loginId')
         this.subscribe_num = this.$route.query.subscribe_num;
         const self = this;
         // subnum에 속한 party 전체 검색

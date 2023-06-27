@@ -5,13 +5,13 @@
                 <h1> 구독 공유 시작하기 </h1>
             </div>
             <div class="row"> 
-                <div class="col">전체보기</div>
-                <div class="col">넷플릭스</div>
-                <div class="col">왓챠</div>
-                <div class="col">티빙</div>
-                <div class="col">웨이브</div>
-                <div class="col-2">디즈니플러스</div>
-                <div class="col-2">프라임 비디오</div>
+                <div class="col" v-on:click="search('all')">전체보기</div>
+                <div class="col" v-on:click="search('넷플릭스')">넷플릭스</div>
+                <div class="col" v-on:click="search('왓챠')">왓챠</div>
+                <div class="col" v-on:click="search('티빙')">티빙</div>
+                <div class="col" v-on:click="search('웨이브')">웨이브</div>
+                <div class="col-2" v-on:click="search('디즈니플러스')">디즈니플러스</div>
+                <div class="col-2" v-on:click="search('아마존프라임비디오')">프라임 비디오</div>
             </div>
         </div>  
         <div class="container text-right">
@@ -37,11 +37,18 @@
                 <div class="col">
                     이름
                 </div>
+                
                 <div class="col">
                     작성자
                 </div>
                 <div class="col">
+                    모집 마감일
+                </div>
+                <div class="col">
                     모집 현황
+                </div>
+                <div class="col">
+                    진행 여부
                 </div>
             </div>
             
@@ -60,14 +67,26 @@
                         {{order.email.email}}
                     </div>
                     <div class="col">
-                        {{order.recruitpeople}} / {{order.total_people}}
+                        {{order.recruit_endperiod}}
                     </div>
+                    
+                    <div class="col">
+                        {{order.recruitpeople}} / {{order.total_people}} 
+                    </div>
+                    <div class="col">
+                        <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
+                        <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
+                        <p class="care-text end" v-if="order.start_check==2">종료</p>
+                    </div>
+                    
             </div>
         </div>
             
 </template>
 <script>
+import dayjs from 'dayjs';
 export default {
+
     name: 'SubscribeBoardList',
     components: {
     },
@@ -75,12 +94,16 @@ export default {
         return {
             list: [],
             currentDate: null,
-            flag: false,
+            flag: 0,
         }
     },
 
     mounted() {
-        this.currentDate = new Date().toLocaleDateString();
+        // this.currentDate = new Date().toLocaleDateString();
+        // const currentDateFormatted = dayjs(this.currentDate, 'YYYY. MM. DD.').format('YYYY-MM-DD');
+        // this.currentDate = currentDateFormatted;
+        this.currentDate = dayjs().format('YYYY-MM-DD');
+
     },
     created: function () { //한번 실행
         const self = this;
@@ -106,6 +129,23 @@ export default {
         mylist(email) {
             this.$router.push({ name: 'SubscribeBoardMyList', query: { email: email.email } })
         },
+        search(site) {
+            const self = this;
+            if (site == 'all') {
+                self.list = self.searchedList;
+            } else {
+                self.$axios.get('http://localhost:8181/subscribeboard/site/' + site)
+                    .then(function (res) {
+                        if (res.status === 200) {
+                            // self.list = res.data.list
+                            // self.checkmember();
+                            self.searchedList = res.data.list;
+                            self.list = self.searchedList;
+                            self.checkmember();
+                        }
+                    })
+            }
+        },
         checkmember() {
             const self = this;
             const promises = [];
@@ -115,6 +155,9 @@ export default {
                     .then(function (res) {
                         if (res.status === 200) {
                             order.recruitpeople = self.countRecruitPeople(res.data.list);
+                            const item = res.data.list[0]; // 첫 번째 항목 선택
+                            order.start_check = item.start_check; // start_check 값 확인
+                            console.log(order.start_check); // start_check 값 출력
                         } else {
                             alert('에러코드:' + res.status);
                         }
@@ -131,32 +174,24 @@ export default {
                     console.log('모든 비동기 요청 완료');
                     self.list.forEach(function (order) {
                         console.log(self.list);
-                        if (order.recruitpeople === order.total_people && self.currentDate < order.recruit_endperiod) {
-                            order.flag = true;
-                            console.log('true ' + order.flag);
-                            self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
-                            .then(function (res) {
-                                alert(res.data);
-                                console.log(order.start_check);
-                            })
-                            .catch(function (error) {
-                                alert('에러코드:' + error.response.status);
-                            });
+                        const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
+                        order.recruit_endperiod = recruitEndPeriodFormatted;
+                        if (order.recruitpeople === order.total_people && self.currentDate > order.recruit_endperiod) {
+                            order.flag = 1;
                         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
-                            order.flag = false;
-                            console.log('false ' + order.flag);
-                            self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
+                            order.flag = 2;
+                        } else {
+                            order.flag = 0;
+                        }
+                        self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
-                                alert(res.data);
+                                // alert(res.data);
                                 console.log(order.start_check);
                             })
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
                             });
-                        } else {
-                            return;
-                        }
-                        
+
                     });
                 })
                 .catch(function (error) {
@@ -192,3 +227,4 @@ export default {
     margin-top: 60px;
 }
 </style>
+

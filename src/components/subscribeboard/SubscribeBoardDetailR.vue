@@ -16,7 +16,7 @@
                 {{ dto.total_point }}
             </div>
             <div class="col">
-                전체 모집 인원 {{ dto.total_people }}
+                {{ count }}/{{ dto.total_people }}
             </div>
             <div class="col">
                 인당 금액
@@ -42,15 +42,18 @@
 
     <!-- 참여하기 버튼 -->
     <div v-if="dto.email && dto.email.email !== loginId">
-        <div>
+        <div v-if="this.currentDate <= this.dto.recruit_endperiod">
             <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
+        </div>
+        <div v-if="this.currentDate > this.dto.recruit_endperiod">
+            모집이 종료되었습니다.<div class=""></div>
         </div>
     </div>
 
     <!-- 삭제하기 버튼 -->
     <div v-else-if="dto.email && dto.email.email === loginId">
         <div>
-            <button v-on:click="delete" class="btn btn-danger">삭제하기</button>
+            <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
         </div>
     </div>
 </template>
@@ -58,7 +61,7 @@
 import dayjs from 'dayjs'
 
 export default {
-    name: 'SubscribeBoardDetailR',
+    name: 'SubscribeBoardDetail',
     component() {
         dayjs
     },
@@ -72,18 +75,24 @@ export default {
             paymentDate: '',
             startDate: '',
             endDate: '',
-            loginId: sessionStorage.getItem('loginId')
+            loginId: sessionStorage.getItem('loginId'),
+            count: 0,
+            currentDate: null,
         }
+    },
+    mounted() {
+        this.currentDate = dayjs().format('YYYY-MM-DD');
+
     },
     methods: {
         addparty() {
             const self = this;
             let formdata = new FormData();
 
-
             formdata.append('subscribe_num', self.subscribe_num)
             formdata.append('email', sessionStorage.getItem('loginId'))
             formdata.append('point_basket', self.divisionResult)
+            // formdata.append('point_basket', self.divisionResult.toString())
             formdata.append('enddate', dayjs(self.enddate))
             formdata.append('start_check', 0)
             formdata.append('schedule_num', 0)
@@ -105,17 +114,62 @@ export default {
                     }
                 })
 
+        },
+        deleteBoard() {
+
+            const self = this;
+            self.$axios.get('http://localhost:8181/subscribeparty/party/' + self.subscribe_num)
+                .then(function (res) {
+                    if (res.status == 200) {
+                        self.flag = res.data.flag
+
+                        if (self.flag) {
+                            alert('flag 불러옴' + self.flag)
+                            self.$axios.delete('http://localhost:8181/subscribeboard/' + self.subscribe_num)
+                                .then(function (res) {
+                                    if (res.status == 200) {
+                                        alert('글이 삭제되었습니다.')
+                                        location.href = "/SubscribeBoardList"
+                                    }
+                                })
+                        } else {
+                            alert('참여자가 있어 삭제가 불가능한 모집 글입니다.')
+                        }
+                    }
+
+                })
+        },
+        checkmember() {
+            const self = this;
+            self.$axios.get('http://localhost:8181/subscribeparty/party/' + self.subscribe_num)
+                .then(function (res) {
+                    if (res.status == 200) {
+                        const partyData = res.data.list; // 검색 결과 데이터
+                        self.count = partyData.length; // 검색된 결과의 개수
+
+                        // count를 사용하여 필요한 로직 수행
+                        // 예시) 결과 개수를 출력
+                        // console.log('검색된 결과 개수:', count);
+                    }
+                })
+                .catch(function (error) {
+                    // 에러 처리
+                    console.error('에러 발생:', error);
+                });
         }
+
+
 
     },
     created: function () {
         this.loginId = sessionStorage.getItem('loginId')
-        this
         const self = this;
+        let flag = false;
         self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
             .then(function (res) {
                 if (res.status == 200) {
                     self.dto = res.data.dto;
+                    self.checkmember();
                     // 출금일 날짜 변환
                     self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
 
@@ -135,14 +189,17 @@ export default {
                     const registerDate = dayjs(self.dto.register_date);
                     const recruitEndDate = dayjs(self.dto.recruit_endperiod);
                     self.dif_day = recruitEndDate.diff(registerDate, 'day');
+
+                    // addparty 호출
+                    self.addparty();
+                    alert('등록이 완료되었습니다.');
                 } else {
                     alert('에러코드:' + res.status)
                 }
             })
-            this.addparty();
-            alert('등록이 완료되었습니다.')
-        }
-    
+        // this.addparty();
+        // alert('등록이 완료되었습니다.')
+    }
 }
 </script>
 <style lang="">

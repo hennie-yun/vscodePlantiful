@@ -42,8 +42,11 @@
 
     <!-- 참여하기 버튼 -->
     <div v-if="dto.email && dto.email.email !== loginId">
-        <div>
+        <div v-if="this.currentDate <= this.dto.recruit_endperiod">
             <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
+        </div>
+        <div v-if="this.currentDate > this.dto.recruit_endperiod">
+            모집이 종료되었습니다.<div class=""></div>
         </div>
     </div>
 
@@ -73,8 +76,13 @@ export default {
             startDate: '',
             endDate: '',
             loginId: sessionStorage.getItem('loginId'),
-            count:0,
+            count: 0,
+            currentDate: null,
         }
+    },
+    mounted() {
+        this.currentDate = dayjs().format('YYYY-MM-DD');
+
     },
     methods: {
         addparty() {
@@ -89,23 +97,26 @@ export default {
             formdata.append('start_check', 0)
             formdata.append('schedule_num', 0)
             // 이미 추가된건지 아닌지 확인해야함 
+            if (self.count < self.dto.total_people) {
+                self.$axios.post('http://localhost:8181/subscribeparty', formdata)
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            let dto = res.data.dto
+                            if (dto == null) {
+                                alert('이미 가입한 파티입니다')
+                            } else {
+                                alert('파티에 추가되었습니다.')
 
-            self.$axios.post('http://localhost:8181/subscribeparty', formdata)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        let dto = res.data.dto
-                        if (dto == null) {
-                            alert('이미 가입한 파티입니다')
+                            }
+
                         } else {
-                            alert('파티에 추가되었습니다.')
+                            alert('에러코드:' + res.status)
+
                         }
-
-                    } else {
-                        alert('에러코드:' + res.status)
-
-                    }
-                })
-
+                    })
+            } else {
+                alert('참여가 불가능한 모집입니다.')
+            }
         },
         deleteBoard() {
 
