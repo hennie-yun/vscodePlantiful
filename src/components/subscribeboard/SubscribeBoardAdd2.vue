@@ -15,7 +15,7 @@
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio4" value="웨이브" required>
-            <label class="form-check-label" for="inlineRadio4"><img src="https://img.shields.io/badge/WATCHA-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></label>
+            <label class="form-check-label" for="inlineRadio4"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></label>
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio5" value="디즈니플러스" required>
@@ -53,10 +53,10 @@
                 <input type="number" class="form-control" v-model="total_people" required>
             </div>
         </div>
-        <div class="col">
+        <!-- <div class="col">
                 <label for="floatingInputValue" class="form-label">포인트 지불일</label>
                 <input type="date" class="form-control" v-model="payment_date" required>
-            </div>
+        </div> -->
         <div class="col">
             지불한 총 금액, 본인을 포함한 인원을 입력해주세요.
         </div>
@@ -65,6 +65,9 @@
             <div class="col">
                 <label for="floatingInputValue" class="form-label">구독 시작일</label>
                 <input type="date" class="form-control" v-model="subscribe_startdate" required>
+            </div>
+            <div class="col">
+            매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.
             </div>
             <div>
                 <label for="subscriptionPeriod">구독 기간</label>
@@ -106,7 +109,7 @@ export default {
             total_people: 0,
             register_date: dayjs().format("YYYY/MM/DD"),
             recruit_endperiod: dayjs().format("YYYY/MM/DD"),
-            payment_date: dayjs().format("YYYY/MM/DD"),
+            // payment_date: dayjs().format("YYYY/MM/DD"),
             subscribe_startdate: dayjs().format("YYYY/MM/DD"),
             subscriptionPeriod: '1', // 초기 기본 값은 1개월
         }
@@ -127,9 +130,9 @@ export default {
         recruit_endperiod(value) {
             this.formValidated = !!value;
         },
-        payment_date(value) {
-            this.formValidated = !!value;
-        },
+        // payment_date(value) {
+        //     this.formValidated = !!value;
+        // },
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },
@@ -149,12 +152,12 @@ export default {
         add() {
             this.formValidated = true;
 
-            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.payment_date || !this.subscribe_startdate ) {
+            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate ) {
                 alert('필수 항목을 전부 입력해주세요.')
                 return;
             }
 
-            if (!this.validateDate(this.recruit_endperiod) || !this.validateDate(this.payment_date) || !this.validateDate(this.subscribe_startdate)) {
+            if (!this.validateDate(this.recruit_endperiod) || !this.validateDate(this.subscribe_startdate)) {
                 alert('유효한 날짜를 입력해주세요.')
                 return;
             }
@@ -177,7 +180,7 @@ export default {
             formdata.append('total_people', self.total_people)
             formdata.append('register_date', dayjs(self.register_date))
             formdata.append('recruit_endperiod', dayjs(self.recruit_endperiod))
-            formdata.append('payment_date', dayjs(self.payment_date))
+            formdata.append('payment_date', dayjs(self.subscribe_startdate))
             formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
             formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
             formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
