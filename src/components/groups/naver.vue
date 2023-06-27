@@ -23,17 +23,30 @@ export default {
  
   authorize(){
     let clientId = "IiiFJKBOyzL3qvfXasPq"
-    let clientSecret = "PtvyRoMmt_"
+    let redirectURI = "http://localhost:8181/api/naver/callback"
+    let state = ""
     const self = this
     self.$axios.get("http://localhost:8181/api/naver/go")
     .then(function(res){
       if(res.status == 200){
-        console.log(res.data)
+        state = res.data.state
+      
+
       } else {
         alert(res.status)
+      
       }
     })
-    location.href="http://localhost:8181/api/naver/login"
+    let apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
+        apiURL += "&client_id=" + clientId;
+        apiURL += "&redirect_uri=" + redirectURI;
+        apiURL += "&state=" + state;
+       self.$axios.get(apiURL)
+        .then(function(res){
+          if(res.status==200){
+            alert(res.data)
+          }
+        })
   }
   }
 }   
