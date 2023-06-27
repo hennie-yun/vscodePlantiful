@@ -42,8 +42,11 @@
 
     <!-- 참여하기 버튼 -->
     <div v-if="dto.email && dto.email.email !== loginId">
-        <div>
+        <div v-if="this.currentDate < this.dto.recruit_endperiod">
             <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
+        </div>
+        <div v-if="this.currentDate > this.dto.recruit_endperiod">
+            이미 종료된 모집입니다<div class=""></div>
         </div>
     </div>
 
@@ -74,7 +77,12 @@ export default {
             endDate: '',
             loginId: sessionStorage.getItem('loginId'),
             count:0,
+            currentDate: null,
         }
+    },
+    mounted() {
+        this.currentDate = dayjs().format('YYYY-MM-DD');
+
     },
     methods: {
         addparty() {
