@@ -36,7 +36,7 @@
                   
                   <!-- 소셜회원가입 -->
                   <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                  <img src="../assets/image/kakao.png" @click="kakaojoin" /> 카카오로 간편회원가입
+                  <img :src="require('@/assets/image/kakao.png')" @click="kakaojoin" /> 
                 </div>
               </div>
               </div>
@@ -59,35 +59,38 @@ export default {
       nickname: '',
       phone: '',
       echeck: '',
+      img :'',
       isVisible: false
     }
   },
   methods: {
     join() {
-      const self = this
-      const form = new FormData()
-      form.append('email', self.email)
-      form.append('pwd', self.pwd)
-      form.append('nickname', self.nickname)
-      form.append('phone', self.phone)
-      if(document.getElementById('img').value != null) {
-        const file = document.getElementById('img').files[0];
-        form.append('f', file);      
-        alert(this.email+"/"+this.pwd+"/"+this.nickname+"/"+this.phone +"/"+file)
-      } 
-      
-      self.$axios.post('http://localhost:8181/members', form, 
-          {headers : {'Content-Type' : 'multipart/form-data'}})
-        .then(function (res) {
-          if (res.status == 200) {
-            let dto = res.data.dto
-            console.log(dto)
-            location.href="/" 
-          } else {
-            alert('에러코드 :' + res.status)
-          }
-        });
-    },
+    const self = this
+    const form = new FormData()
+    form.append('email', self.email)
+    form.append('pwd', self.pwd)
+    form.append('nickname', self.nickname)
+    form.append('phone', self.phone)
+
+    if (document.getElementById('img').value !== '') {
+      const file = document.getElementById('img').files[0]
+      form.append('f', file)
+      alert(this.email + '/' + this.pwd + '/' + this.nickname + '/' + this.phone + '/' + file)
+    }
+    self.$axios.post('http://localhost:8181/members', form , { headers: { "Content-Type": "multipart/form-data" } })
+      .then(function (res) {
+        if (res.status === 200) {
+          let dto = res.data.dto
+          console.log(dto)
+          location.href = '/'
+        } else {
+          alert('에러코드 :' + res.status)
+        }
+      })
+      .catch(function (error) {
+        alert('에러 :' + error)
+      })
+  },
     
   sendEmail() { 
     const self = this;

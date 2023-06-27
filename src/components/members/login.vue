@@ -52,7 +52,7 @@ export default {
   methods: {
   
     kakaoLogin() {
-      const redirect_uri = 'http://localhost:8181/kakaologin';
+      const redirect_uri = 'http://localhost:8081/calendar';
       const clientId = 'd54083f94196531e75d7de474142e52e';
       const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
       window.location.href = Auth_url;
