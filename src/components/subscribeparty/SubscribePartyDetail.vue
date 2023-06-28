@@ -29,12 +29,9 @@
                     <div class="col subboardtitle">
                         진행 상황
                     </div>
-                    <div class="col">
-                       
-                        <h6 class="recruit" v-if="order.start_check==0">모집 중</h6>
-                        <h6 class="ing" v-if="order.start_check==1">진행 중</h6>
-                        <h6 class="end" v-if="order.start_check==2">종료</h6>
-                    </div>
+                        <div class="recruit col" v-if="order.start_check==0">모집 중</div>
+                        <div class="ing col" v-if="order.start_check==1">진행 중</div>
+                        <div class="end col" v-if="order.start_check==2">종료</div>
                     <div class="col subboardtitle">
                         구독 사이트
                     </div>
@@ -115,6 +112,9 @@ export default {
         return {
             list: [],
             loginId: null,
+            calendarOptions: {  // calendarOptions 객체 생성
+                events: []
+            }
         }
     },
     methods: {
@@ -138,6 +138,7 @@ export default {
                         daysOfWeek: savedEvent.day,
                         display: 'block',
                     });
+                    alert('일정이 추가되었습니다.')
                 })
         },
     },
