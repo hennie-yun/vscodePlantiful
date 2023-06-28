@@ -178,6 +178,7 @@ export default {
                         order.recruit_endperiod = recruitEndPeriodFormatted;
                         if (order.recruitpeople === order.total_people && self.currentDate > order.recruit_endperiod) {
                             order.flag = 1;
+
                         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
                             order.flag = 2;
                         } else {

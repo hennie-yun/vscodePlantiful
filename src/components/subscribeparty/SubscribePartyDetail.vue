@@ -3,11 +3,12 @@
     <div>
         <div v-for="(order, index) in list" :key="order.party">
             <div v-if="index === 0" class="row subscribeboardform">
-                <!-- <div class="row">
-                    {{order.subscribe_num}}
-                </div> -->
+
                 <div class="row">
                     <h2>{{order.subscribe_num.title}}</h2>
+                </div>
+                <div v-if="order.start_check==1" class="row">
+                    <button v-on:click="addSchedule">캘린더에 일정 추가하기</button>
                 </div>
                 <div class="row">
                     <div class="col subboardtitle">
@@ -115,6 +116,30 @@ export default {
             list: [],
             loginId: null,
         }
+    },
+    methods: {
+        addSchedule() {
+            const self = this;
+            let form = new FormData();
+            form.append('email', sessionStorage.getItem('loginId'));
+            form.append('title', this.list[0].subscribe_num.site + '구독 일정');
+            form.append('start', this.list[0].subscribe_num.subscribe_startdate);
+            form.append('end', this.list[0].subscribe_num.subscribe_enddate);
+            form.append('info', this.list[0].subscribe_num.title);
+            form.append('day', null);
+            self.$axios.post("http://localhost:8181/schedules", form)
+                .then(response => {
+                    // 저장된 이벤트 변수에 저장
+                    const savedEvent = response.data.dto;
+                    self.calendarOptions.events.push({
+                        title: savedEvent.title,
+                        start: savedEvent.start,
+                        end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+                        daysOfWeek: savedEvent.day,
+                        display: 'block',
+                    });
+                })
+        },
     },
     created: function () {
         this.loginId = sessionStorage.getItem('loginId')
