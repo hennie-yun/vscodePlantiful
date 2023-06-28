@@ -1,34 +1,44 @@
 <template>
     <v-container>
-        <v-btn @click="$router.go(-1)">
-            <v-icon icon="mdi-keyboard-backspace" /> 
-        </v-btn>
-        <h1>채팅</h1>
-         <v-card class="mt-2" id="messages" ref="box">
+        <div>
+            <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
+                <v-icon icon="mdi-keyboard-backspace" /> 
+            </b-button>
+            <h1>asd</h1>
+        </div>
+        <div class="mx-auto rounded-lg elevation-3" id="messages" ref="box" style="border-radius: 1px;">
             <v-card-text>
                 <v-container>
                     <div class="mt-12" v-for="(item, idx) in recvList" v-bind:key="idx">
-                        <v-card class="mt-2 mb-2" max-width="400" :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
+                        <div class="col-5 rounded-lg elevation-1" max-width="400" :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
                             <v-card-text>
-                                <div v-on:click="remove(item, idx)">
-                                    ID : {{ item.member.email }}
-                                </div>
-                                <div v-on:click="remove(item, idx)">
-                                    NICKNAME : {{ item.member.nickname }}
-                                </div>
-                                <div>MESSAGE : {{ item.message }}</div>
-                                <div>
-                                    Time : {{ item.sendTime }}
-                                </div>
+                                <v-row>
+                                    <v-col style="padding:0;">
+                                        <div class="text-left pl-6" style="color : #737373; font-size: 16px;" v-on:click="remove(item, idx)">
+                                            {{ item.member.nickname }}
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col style="padding:0;">
+                                        <div class="text-left pl-6 fs-5" > {{ item.message }}</div>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col style="padding:0;">
+                                        <div class="text-right pr-3" style="font-size: 14px; color:#737373"> {{ item.sendTime }} </div>
+                                    </v-col>
+                                </v-row>
+
                             </v-card-text>
-                        </v-card>
+                        </div>
                     </div>
                 </v-container>
             </v-card-text>
-        </v-card>
-        <v-container class="mt-12" style="background-color: #7AC6FF;">
+        </div>
+        <v-container class="pa-5 mt-12 mx-auto rounded-lg" style="background-color: #7AC6FF;">
             <!-- <v-text-field label="id" variant="solo" v-model="id"/> -->
-            <v-text-field v-model="message" label="message" append-icon="mdi-send" 
+            <v-text-field class="ma-auto" v-model="message" label="메세지 보내기" append-icon="mdi-send" 
             clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
             variant="solo" @click:append="sendMessage" v-on:keyup="sendMessage"/>
 
@@ -107,7 +117,13 @@ export default {
                     console.log("소켓 연결 성공", frame)
                     this.stompClient.subscribe("/sub", res => {
                         console.log("구독 메세지 ", res.body)
-                        this.recvList.push(JSON.parse(res.body))
+                        let obj = JSON.parse(res.body)
+                        let date = new Date(obj.sendTime)
+                        obj.sendTime = date.getMonth() + "월 " 
+                        + date.getDay() + "일 " 
+                        + date.getHours() + "시 " 
+                        + date.getSeconds() + "분" 
+                        this.recvList.push(obj)
                         // this.scrollToBottom()
                     })
                 }, 
