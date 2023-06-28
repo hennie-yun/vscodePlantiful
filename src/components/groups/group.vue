@@ -22,8 +22,9 @@
                                 <span :style="{backgroundColor: '#7E84F7'}" class="dot" v-on:click="a(6)"></span>
                             </div>
                             <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
-                            <div id="naver_id_login"></div>
                           
+                            <div id="naver_id_login"></div>
+                            
                             
                         </div>
                     </div>
@@ -104,7 +105,7 @@ naver_id_login.init_naver_id_login()
                 el.classList.remove('active')
             })    
         },
-   
+      
          
     }
 
