@@ -70,23 +70,17 @@ export default {
 
         self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
         .then(function (res) {
-                if (res.status === 200) {
-                    console.log(res.data.paydto);
-                    self.paydto = res.data.paydto;
-                    console.log(self.paydto.paidamount);
-                    if (self.paydto != null) {
+            console.log(res)
+                if (res.status == 200) {                                     
+                    if (res.data.paydto != null) {
                         self.paidamount = self.paydto.paidamount;
                     } else {
-                        alert('에러1');
+                        alert(res.data.message);
                     }
-                } else {
-                    alert('에러2');
-                }
+                 }
+                
             })
-            .catch((error) => {
-                console.error(error);
-                alert('에러가 발생했습니다');
-            });
+            
     },
     methods: {
        
