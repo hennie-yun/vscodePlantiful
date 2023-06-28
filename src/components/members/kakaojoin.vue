@@ -8,7 +8,7 @@
       아이디: <input type="text" v-model="form.id" required />
       비밀번호: <input type="text" v-model="form.pwd" required />
       <button type="submit">등록</button>
-      <button type="reset">재등록</button>
+      
     </b-form>
   </div>
 </template>
@@ -49,7 +49,7 @@ export default {
     getToken() {
       const self = this;
       self.$axios
-        .get('http://localhost:8181/kakaologin', { code: self.codes })
+        .get('http://localhost:8181/kakaojoin', { code: self.codes })
         .then((res) => {
           this.form.email = res.data.email;
           this.form.pwd = res.data.id;
