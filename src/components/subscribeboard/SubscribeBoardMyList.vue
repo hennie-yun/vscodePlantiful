@@ -3,10 +3,10 @@
     <div>
         <h1> {{loginId}} 님의 구독 목록</h1>
 
-        <!-- <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
+        <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
             {{order.subscribe_num.subscribe_num}}
             {{order.subscribe_num.site}}
-        </div> -->
+        </div>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">

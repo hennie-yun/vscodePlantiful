@@ -3,12 +3,11 @@
     <div>
         <div v-for="(order, index) in list" :key="order.party">
             <div v-if="index === 0" class="row subscribeboardform">
-
+                <!-- <div class="row">
+                    {{order.subscribe_num}}
+                </div> -->
                 <div class="row">
                     <h2>{{order.subscribe_num.title}}</h2>
-                </div>
-                <div v-if="order.start_check==1" class="row">
-                    <button v-on:click="addSchedule">캘린더에 일정 추가하기</button>
                 </div>
                 <div class="row">
                     <div class="col subboardtitle">

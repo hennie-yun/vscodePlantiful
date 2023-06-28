@@ -39,7 +39,7 @@
             
             <div class="col ">
                 <label for="floatingInputValue" class="form-label">모집 마감일</label>
-                <input type="date" class="form-control" v-model="recruit_endperiod" required :min="minDate">
+                <input type="date" class="form-control" v-model="recruit_endperiod" required>
             </div>
         </div>
 
@@ -64,7 +64,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <label for="floatingInputValue" class="form-label">구독 시작일</label>
-                <input type="date" class="form-control" v-model="subscribe_startdate" required :min="minStartDate">
+                <input type="date" class="form-control" v-model="subscribe_startdate" required>
             </div>
             <div class="col">
             매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.
@@ -99,14 +99,6 @@ export default {
     component() {
         dayjs
     },
-    computed: {
-        minDate() {
-            return dayjs().add(2, 'day').format('YYYY-MM-DD')
-        },
-        minStartDate() {
-            return dayjs(this.recruit_endperiod).add(1, 'day').format('YYYY-MM-DD');
-        },
-    },
     data() {
         return {
             formValidated: false,
@@ -127,10 +119,6 @@ export default {
         }
     },
     watch: {
-        subscribe_startdate(value) {
-            this.formValidated = !!value;
-            this.checkStartDate();
-        },
         site(value) {
             this.formValidated = !!value;
         },
@@ -195,6 +183,7 @@ export default {
                 alert('구독 시작일은 모집 마감일 이후여야 합니다.');
             }
         },
+
         calculateEndDate(startDate) {
             const period = parseInt(this.subscriptionPeriod);
             const endDate = startDate.add(period, 'month').subtract(1, 'day');
@@ -207,7 +196,7 @@ export default {
         add() {
             this.formValidated = true;
 
-            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate) {
+            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate ) {
                 alert('필수 항목을 전부 입력해주세요.')
                 return;
             }
@@ -240,7 +229,6 @@ export default {
                 // formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
                 formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
                 formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
-
                 self.$axios.post('http://localhost:8181/subscribeboard', formdata)
                     .then(function (res) {
                         if (res.status == 200) {
@@ -272,9 +260,9 @@ export default {
     padding: 1%;
 }
 
-#subscriptionPeriod {
+#subscriptionPeriod{
     margin: 10px;
-    padding-left: 5px;
+    padding-left:5px;
     border: 1.8px solid #7AC6FF;
     border-radius: 7px;
 }
