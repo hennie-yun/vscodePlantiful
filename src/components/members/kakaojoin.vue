@@ -8,7 +8,7 @@
       아이디: <input type="text" v-model="form.id" required />
       비밀번호: <input type="text" v-model="form.pwd" required />
       <button type="submit">등록</button>
-      
+
     </b-form>
   </div>
 </template>
@@ -18,11 +18,16 @@ export default {
   name: 'kakaojoin',
   data() {
     return {
-      codes: '',
+      code: this.$route.query.code,
+      email: '',
+      pwd: '',
+      nickname: '',
+      phone: '',
+      echeck: '',
+      img: '',
       form: {
         email: '',
         nickname: '',
-        id : null,
         phone: '',
         pwd: '',
         kakaotoken : ''
@@ -110,9 +115,7 @@ export default {
         this.klogin();
       });
     },
-    onReset() {
-      this.form.phone = '';
-    }
+
   }
 };
 </script>
