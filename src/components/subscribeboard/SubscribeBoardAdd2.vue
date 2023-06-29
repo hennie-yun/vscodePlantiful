@@ -87,7 +87,7 @@
             </div> -->
         </div>
         <div class="row">
-            <button v-on:click="add">글 등록하기 </button>
+            <button v-on:click="checkcash">글 등록하기 </button>
         </div>
 
     </div>
@@ -147,23 +147,23 @@ export default {
             const self = this;
             self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
                 .then(function (res) {
-                    console.log(res)
                     if (res.status == 200) {
                         if (res.data.paydto != null) {
                             self.paidamount = self.paydto.paidamount;
-
                             let form = new FormData();
-                            formdata.append('paidamount', self.divisionResult)
-                            self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
+                            form.append('paidamount', self.total_point / self.total_people)
+                            self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
                                 .then(function (res) {
                                     if (res.status == 200) {
-                                        alert(res.data.message)
-                                        let dto = res.data.dto
+                                        let dto = res.data
                                         if (dto != null) {
                                             //돈 있음
                                             self.fflag = true;
+                                            alert("true : " + self.fflag)
+                                            self.add()
                                         } else {
                                             self.fflag = false;
+                                            alert("false : " + self.fflag)
                                         }
                                     } else {
                                         alert(res.data.message)
@@ -184,41 +184,41 @@ export default {
             }
         },
 
-        checkcash() {
-            const self = this;
-            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-                .then(function (res) {
-                    console.log(res)
-                    if (res.status == 200) {
-                        if (res.data.paydto != null) {
-                            self.paidamount = self.paydto.paidamount;
+        // checkcash() {
+        //     const self = this;
+        //     self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+        //         .then(function (res) {
+        //             console.log(res)
+        //             if (res.status == 200) {
+        //                 if (res.data.paydto != null) {
+        //                     self.paidamount = self.paydto.paidamount;
 
-                            let form = new FormData();
-                            formdata.append('paidamount', self.divisionResult)
-                            self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
-                                .then(function (res) {
-                                    if (res.status == 200) {
-                                        alert(res.data.message)
-                                        let dto = res.data.dto
-                                        if (dto != null) {
-                                            //돈 있음
-                                            self.fflag = true;
-                                        } else {
-                                            self.fflag = false;
-                                        }
-                                    } else {
-                                        alert(res.data.message)
-                                    }
-                                })
-                        } else {
-                            alert(res.data.message);
-                        }
-                    } else if (res.status == 500) {
-                        alert('현금없음');
-                    }
-                })
+        //                     let form = new FormData();
+        //                     formdata.append('paidamount', self.divisionResult)
+        //                     self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
+        //                         .then(function (res) {
+        //                             if (res.status == 200) {
+        //                                 alert(res.data.message)
+        //                                 let dto = res.data.dto
+        //                                 if (dto != null) {
+        //                                     //돈 있음
+        //                                     self.fflag = true;
+        //                                 } else {
+        //                                     self.fflag = false;
+        //                                 }
+        //                             } else {
+        //                                 alert(res.data.message)
+        //                             }
+        //                         })
+        //                 } else {
+        //                     alert(res.data.message);
+        //                 }
+        //             } else if (res.status == 500) {
+        //                 alert('현금없음');
+        //             }
+        //         })
 
-        },
+        // },
         calculateEndDate(startDate) {
             const period = parseInt(this.subscriptionPeriod);
             const endDate = startDate.add(period, 'month').subtract(1, 'day');
@@ -249,8 +249,7 @@ export default {
 
             const startDate = dayjs(this.subscribe_startdate);
             const subscribe_enddate = this.calculateEndDate(startDate);
-
-            if (self.fflag == true) {
+            if (this.fflag == true) {
                 const self = this;
                 let formdata = new FormData();
                 formdata.append('email', sessionStorage.getItem('loginId'))
@@ -280,7 +279,7 @@ export default {
 
             } else {
                 alert('캐시가 부족합니다.')
-                location.href="/payment"
+                // location.href="/payment"
             }
         }
     }

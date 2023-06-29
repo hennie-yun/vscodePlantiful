@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <div class="elevation-12 h-100 text-center" style="width: 75%; margin: 0 auto;">
+        <div class="elevation-12 h-100 text-center" style="width: 65%; margin: 0 auto;">
             <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
                 <!-- <button class="" style="vertical-align: center;">ㅁㄴㅇ</button> -->
             </div>

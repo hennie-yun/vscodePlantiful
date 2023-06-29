@@ -190,7 +190,8 @@ export default {
                         } else {
                             order.flag = 0;
                         }
-                        self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
+                        self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag
+                            , {email : order.email})
                             .then(function (res) {
                                 // alert(res.data);
                                 console.log(order.start_check);
