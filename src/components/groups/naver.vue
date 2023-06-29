@@ -89,7 +89,7 @@ export default {
 
     // Initialize Naver login
     script.onload = () => {
-      const naverIdLogin = new window.naver_id_login(clientId, callbackUrl);
+      const naverIdLogin = new window.naverIdLogin(clientId, callbackUrl);
       this.naverIdLogin = naverIdLogin;
     };
   
@@ -108,6 +108,8 @@ export default {
         if(res.status == 200){
           alert('complete')
           console.log(res.data)
+        } else {
+          alert(res.data)
         }
       })
       
