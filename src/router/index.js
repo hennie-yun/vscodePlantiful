@@ -15,6 +15,7 @@ import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
+import navercalendar from '../components/groups/navcalendar.vue'
 import payment from '../components/pay/payment.vue'
 import kakaojoin from '../components/members/kakaojoin.vue'
 
@@ -122,6 +123,11 @@ const routes = [
         path:'/naver',
         name: 'naver',
         component: naver
+      },
+      {
+        path:'/navercalendar',
+        name: 'navercalendar',
+        component: navercalendar
       }
       
     ]
