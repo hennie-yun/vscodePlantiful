@@ -3,9 +3,7 @@
     <div>
         <div v-for="(order, index) in list" :key="order.party">
             <div v-if="index === 0" class="row subscribeboardform">
-                <!-- <div class="row">
-                    {{order.subscribe_num}}
-                </div> -->
+
                 <div class="row">
                     <h2>{{order.subscribe_num.title}}</h2>
                 </div>

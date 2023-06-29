@@ -3,24 +3,17 @@
     <div>
         <h1> {{loginId}} 님의 구독 목록</h1>
 
-        <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
+        <!-- <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
             {{order.subscribe_num.subscribe_num}}
             {{order.subscribe_num.site}}
-        </div>
+        </div> -->
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
-                
+            <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)" >
                 <div class="col mylistbody">
                     <!-- 팀원 -->
-                    <div class="card h-100" v-if="order.subscribe_num.email.email != order.email.email" >
-                        <div v-if="order.subscribe_num.site =='넷플릭스'"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" class="card-img-top" alt="..." /></div>
-                        <div v-else-if="order.subscribe_num.site =='왓챠'"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='티빙'"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='웨이브'"><img src="https://img.shields.io/badge/WATCHA-004DB4?style=for-the-badge&logo=wish&logoColor=white" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='디즈니플러스'"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='아마존프라임비디오'"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" class="card-img-top" alt="..."/></div>
-                        
+                    <div class="card h-100" >
+                        <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
                         <div class="card-body">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
                             <p class="card-text"> {{order.email.email}} (참여자) {{order.subscribe_num.subscribeNum}}</p>
@@ -33,14 +26,8 @@
                         </div>
                     </div>
 
-                    <div class="card h-100" v-if="order.subscribe_num.email.email == order.email.email" >
-                        <div v-if="order.subscribe_num.site =='넷플릭스'"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" class="card-img-top" alt="..." /></div>
-                        <div v-else-if="order.subscribe_num.site =='왓챠'"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='티빙'"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='웨이브'"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='디즈니플러스'"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" class="card-img-top" alt="..."/></div>
-                        <div v-else-if="order.subscribe_num.site =='아마존프라임비디오'"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" class="card-img-top" alt="..."/></div>
-                        
+                    <!-- <div class="card h-100" v-if="order.subscribe_num.email.email == order.email.email" >
+                        <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
                         <div class="card-body">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
                             <p class="card-text"> {{order.email.email}} (모집자)</p>
@@ -51,7 +38,7 @@
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
                             <p class="care-text end" v-if="order.start_check==2">종료</p>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -76,7 +63,35 @@ export default {
     methods: {
         detail(subscribe_num) {
             this.$router.push({ name: 'SubscribePartyDetail', query: { subscribe_num: subscribe_num } });
-        }
+        },
+        getSiteLogo(site) {
+            if (site === '넷플릭스') {
+                return 'https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix';
+            } else if (site === '왓챠') {
+                return 'https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B';
+            } else if (site === '티빙') {
+                return 'https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100';
+            } else if (site === '웨이브') {
+                return 'https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white';
+            } else if (site === '디즈니플러스') {
+                return 'https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white';
+            } else if (site === '아마존프라임비디오') {
+                return 'https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black';
+            } else {
+                return '';
+            }
+        },
+        // getStartCheckText(start_check) {
+        //     if (start_check === '1') {
+        //         return '서비스 시작';
+        //     } else if (start_check === '0') {
+        //         return '서비스 미시작';
+        //     } else if (start_check === '2') {
+        //         return '서비스 종료';
+        //     } else {
+        //         return '';
+        //     }
+        // },
     },
     created: function () {
         const self = this;

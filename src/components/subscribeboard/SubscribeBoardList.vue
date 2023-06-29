@@ -53,32 +53,90 @@
         </div>
 
 
-        <div class="row" v-for="order in list" :key="order.subscribe_num" v-on:click="detail(order.subscribe_num)">
-            <div class="col">
-                {{ order.subscribe_num }}
-            </div>
-            <div class="col">
-                {{ order.site }}
-            </div>
-            <div class="col">
-                {{ order.title }}
-            </div>
-            <div class="col">
-                {{ order.email.email }}
-            </div>
-            <div class="col">
-                {{ order.recruit_endperiod }}
-            </div>
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
 
-            <div class="col">
-                {{ order.recruitpeople }} / {{ order.total_people }}
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
             </div>
-            <div class="col">
-                <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
-                <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
-                <p class="care-text end" v-if="order.start_check == 2">종료</p>
-            </div>
+        </div>
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row inglist" v-if="order.start_check === 1" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
 
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
+            </div>
+            
+        </div>
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row endlist" v-if="order.start_check === 2" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
+
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -94,6 +152,8 @@ export default {
             list: [],
             currentDate: null,
             flag: 0,
+            partylist: [],
+            email: sessionStorage.getItem('loginId'),
         }
     },
 
@@ -117,8 +177,9 @@ export default {
                     alert('에러코드:' + res.status)
                 }
             })
-        // this.checkEnd();
-
+        // .then(function () {
+        //     self.checkEnd();
+        // })
 
     },
     methods: {
@@ -153,6 +214,7 @@ export default {
                 const promise = self.$axios.get('http://localhost:8181/subscribeparty/party/' + order.subscribe_num)
                     .then(function (res) {
                         if (res.status === 200) {
+                            self.partylist = res.data.list
                             order.recruitpeople = self.countRecruitPeople(res.data.list);
                             const item = res.data.list[0]; // 첫 번째 항목 선택
                             order.start_check = item.start_check; // start_check 값 확인
@@ -183,9 +245,9 @@ export default {
                         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
-                        // } else if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
-                        //     // 인원수 같음 & 구독 종료일 지남
-                        //     order.flag = 2;
+                            // } else if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
+                            //     // 인원수 같음 & 구독 종료일 지남
+                            //     order.flag = 2;
                         } else {
                             order.flag = 0;
                         }
@@ -197,52 +259,48 @@ export default {
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
                             });
-
                     });
+
+                    // point basket & cash 관리 
+                    if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
+                        // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
+                        if (order.point_basket != 0) {
+                            self.$axios
+                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                .then(function (res) {
+                                    if (res.status === 200) {
+                                        alert('구독 종료일 지나서 0으로 만들고 돌아감');
+                                    }
+                                });
+                        } else {
+                            alert('이미 실행됨');
+                        }
+                    }
+                    else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
+                        // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
+                        if (order.point_basket != 0) {
+                            self.$axios
+                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                .then(function (res) {
+                                    if (res.status === 200) {
+                                        alert('취소돼서 0으로 만들고 돌아감');
+                                    }
+                                });
+                        } else {
+                            alert('이미 실행됨');
+                        }
+                    }
                 })
+                // .then(function () {
+                //     console.log('모든 비동기 요청 완료');
+                //     self.checkEnd(); // 다른 메소드 호출
+                // })
                 .catch(function (error) {
                     console.log('에러 발생:', error);
                 });
-
-
-
-
         },
 
-        // checkEnd() {
-        //     const self = this;
-        //     const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
-        //     order.subscribe_enddate = subEnddateFormatted;
-        //     this.self.list.forEach((order) => {
-        //         if (order.recruitpeople == self.order.total_people && self.currentDate > self.order.subscribe_enddate) {
-        //             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
-        //             if (order.point_basket != 0) {
-        //                 self.$axios.post('http://localhost:8181/subscribeparty/' + order.subscribe_num)
-        //                     .then(function (res) {
-        //                         if (res.status === 200) {
-        //                             alert('구독 종료일 지나서 0으로 만들고 돌아감')
-        //                         }
-        //                     })
-        //             } else {
-
-        //                 alert('이미 실행됨')
-        //             }
-        //         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
-        //             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-        //             if (order.point_basket != 0) {
-        //                 self.$axios.post('http://localhost:8181/subscribeparty/' + order.subscribe_num)
-        //                     .then(function (res) {
-        //                         if (res.status === 200) {
-        //                             alert('취소돼서 0으로 만들고 돌아감')
-        //                         }
-        //                     })
-        //             } else {
-        //                 alert('이미 실행됨')
-        //             }
-        //         }
-        //     })
-            
-        // },
+        
 
         countRecruitPeople(emailList) {
             let count = 0;
@@ -266,6 +324,15 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+}
+.beforelist{
+    /* background-color: aliceblue; */
+}
+.inglist{
+
+}
+.endlist{
+    background-color: lightgray;
 }
 </style>
 
