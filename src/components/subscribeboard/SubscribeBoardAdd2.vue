@@ -143,6 +143,46 @@ export default {
 
     },
     methods: {
+        checkcash() {
+            const self = this;
+            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                .then(function (res) {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if (res.data.paydto != null) {
+                            self.paidamount = self.paydto.paidamount;
+
+                            let form = new FormData();
+                            formdata.append('paidamount', self.divisionResult)
+                            self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
+                                .then(function (res) {
+                                    if (res.status == 200) {
+                                        alert(res.data.message)
+                                        let dto = res.data.dto
+                                        if (dto != null) {
+                                            //돈 있음
+                                            self.fflag = true;
+                                        } else {
+                                            self.fflag = false;
+                                        }
+                                    } else {
+                                        alert(res.data.message)
+                                    }
+                                })
+                        } else {
+                            alert(res.data.message);
+                        }
+                    } else if (res.status == 500) {
+                        alert('현금없음');
+                    }
+                })
+
+        },
+        checkStartDate() {
+            if (dayjs(this.subscribe_startdate).isSameOrBefore(this.recruit_endperiod)) {
+                alert('구독 시작일은 모집 마감일 이후여야 합니다.');
+            }
+        },
 
         checkcash() {
             const self = this;
@@ -230,7 +270,6 @@ export default {
                         if (res.status == 200) {
                             let dto = res.data.dto2;
                             let subscribe_num = dto.subscribe_num;
-
                             let data = new FormData();
                             data.append('subscribe_num', subscribe_num)
                             self.$router.push({ name: 'SubscribeBoardDetailR', query: { subscribe_num: subscribe_num } })
@@ -238,7 +277,8 @@ export default {
                             alert('에러코드:' + res.status)
                         }
                     })
-            }else {
+
+            } else {
                 alert('캐시가 부족합니다.')
                 location.href="/payment"
             }
