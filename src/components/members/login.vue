@@ -8,8 +8,9 @@
       <div class="show-reset" @click="showReset">PW 찾기</div>
     </div>
     <div class="form-elements">
-      <div class="form-element">
-        <input v-model="email" type="text" placeholder="email" :disabled="isVisible">
+      <div class="form-element" style="display: flex;">
+        <input v-model="email" type="text" placeholder="email"  style="flex: 1; margin-right: 5px;" :disabled="isVisible">
+        <button @click="sendEmail" style="font-size : 13px; width: 80px; height:40px;">메일 체크</button>
       </div>
 
       <div class="form-element">
@@ -25,11 +26,12 @@
       </div>
 
       <div style="margin-top : 10px;">
-        <!-- <label v-if="activeForm == 'signup'" class="form-element" >
-          {{ uploadButtonText }} -->
-          <input type="file" id="img-input-file" class="form-element"  @change="handleFileUpload" />
-        <!-- </label> -->
+        <label v-if="activeForm === 'signup'" class="input-file-wrapper">
+          <div class="upload-button-text" style="text-align: left;">{{ uploadButtonText }}</div>
+          <input type="file" id="img-input-file" class="form-element" style="display :none;" @change="handleFileUpload" />
+        </label>
       </div>
+
       <div class="form-element" v-show="isVisible" style="display: flex;">
         <input type="text" placeholder="인증번호를 입력하세요" @input="updateEmailCheck" style="flex: 1; margin-right: 5px;">
         <button @click="emailcheck" style="width: 65px; height:40px;">확인</button>
@@ -37,11 +39,12 @@
 
       <div class="form-element">
         <button id="submit-btn" @click="handleButtonClick">{{ submitText }}</button>
-      </div><br />
-
+      </div>
+      <br />
       <div>
         <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
       </div>
+     
     </div>
   </div>
 </template>
@@ -63,7 +66,7 @@ export default {
       isVisible: false,
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
-      submitText: "이메일 인증"
+      submitText: "가입"
     }
   },
   methods: {
@@ -77,20 +80,18 @@ export default {
     },
     showSignup() {
       this.activeForm = "signup";
-      this.submitText = "Sign Up";
+      this.submitText = "가입";
     },
     showSignin() {
       this.activeForm = "signin";
-      this.submitText = "Sign In";
+      this.submitText = "회원가입";
     },
     showReset() {
       this.activeForm = "reset";
-      this.submitText = "Reset";
+      this.submitText = "비밀번호 변경";
     },
     handleButtonClick() {
       if (this.activeForm === 'signup') {
-        this.sendEmail();
-      } else if (this.activeForm === 'sendEmail') {
         this.join();
       } else if (this.activeForm === 'signin') {
         this.login();
@@ -128,6 +129,8 @@ export default {
       const self = this;
       if (self.echeck === self.emailKey) {
         alert('확인 완료');
+        self.mailVisible = false;
+        self.button = true;
       } else {
         alert('인증번호가 일치하지 않습니다.');
       }
@@ -196,8 +199,7 @@ export default {
 </script>
 
 
-<style scoped> 
-.form {
+<style scoped> .form {
    position: absolute;
    top: 30%;
    left: 50%;
@@ -249,6 +251,16 @@ export default {
  }
 
  .form .form-elements input {
+   width: 100%;
+   padding: 10px;
+   font-size: 16px;
+   margin: 5px 0px;
+   border-radius: 10px;
+   box-sizing: border-box;
+   background: #f5f5f5;
+ }
+
+ .form .form-elements label {
    width: 100%;
    padding: 10px;
    font-size: 16px;
