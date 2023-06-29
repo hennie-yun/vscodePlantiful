@@ -108,7 +108,7 @@
                     <p class="care-text end" v-if="order.start_check == 2">종료</p>
                 </div>
             </div>
-            
+
         </div>
         <div v-for="order in list" :key="order.subscribe_num">
             <div class="row endlist" v-if="order.start_check === 2" v-on:click="detail(order.subscribe_num)">
@@ -300,7 +300,7 @@ export default {
                 });
         },
 
-        
+
 
         countRecruitPeople(emailList) {
             let count = 0;
@@ -325,13 +325,14 @@ export default {
     color: #2c3e50;
     margin-top: 60px;
 }
-.beforelist{
+
+.beforelist {
     /* background-color: aliceblue; */
 }
-.inglist{
 
-}
-.endlist{
+.inglist {}
+
+.endlist {
     background-color: lightgray;
 }
 </style>

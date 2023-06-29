@@ -3,23 +3,16 @@
         {{ dto.email }}
         전화번호 : {{ dto.phone }}
         {{ dto.nickname }} 님
-
-
         <input type="number" placeholder="금액 입력" v-model="price">
         <div @click="Paybtn">카카오페이 가상 결제</div>
         <div @click="KGpay">이니시스 진짜로 결제</div>
 
-
-
-        남은 금액 : {{ paydto.paidamount }} <br/>
-
-       계좌 번호 입력 하세요~~ <input type="number" placeholder="인출 입력" v-model="withdraw">
         <button @click="checkmyinfo">본인인증</button>
-
     </section>
 </template>
   
 <script>
+
 const { IMP } = window;
 
 export default {
@@ -27,63 +20,79 @@ export default {
     data() {
         return {
             price: 0,
-            withdraw : 0,
             email: this.$route.query.email,
             dto: {
                 nickname: '',
                 phone: '',
                 email: ''
             },
-            paydto:{
-                paidamount : 0 
-            }
-        };
+        }
     },
-    created() {
-        let token = sessionStorage.getItem('token');
-        this.email = sessionStorage.getItem('loginId');
+    created: function () {
+        let token = sessionStorage.getItem('token')
+        this.email = sessionStorage.getItem('loginId')
         console.log(this.email);
         const self = this;
-
         self.$axios.get('http://localhost:8181/members/getmember/' + self.email, { headers: { 'token': token } })
             .then(function (res) {
-                if (res.status === 200) {
-                    self.dto = res.data.dto;
+                if (res.status == 200) {
+                    self.dto = res.data.dto
                     if (self.dto != null) {
-                        self.email = self.dto.email;
-                        self.nickname = self.dto.nickname;
-                        self.phone = self.dto.phone;
+                        self.email = self.dto.email
+                        self.nickname = self.dto.nickname
+                        self.phone = self.dto.phone
                         if (self.dto.img) {
                             self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
                         }
                     } else {
-                        alert('없는 아이디 혹은 만료된 세션 아이디입니다');
+                        alert('없는 아이디 혹은 만료된 세션 아이디입니다')
                     }
                 } else {
-                    alert('에러코드');
+                    alert('에러코드')
                 }
             })
-            .catch(function (error) {
-                console.error(error);
-                alert('에러가 발생했습니다');
-            });
-
-        self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-        .then(function (res) {
-            console.log(res)
-                if (res.status == 200) {                                     
-                    if (res.data.paydto != null) {
-                        self.paidamount = self.paydto.paidamount;
-                    } else {
-                        alert(res.data.message);
-                    }
-                 }
-                
-            })
-            
     },
     methods: {
-       
+        // Paybtn() {
+        //     const self = this;
+        //     const data = {
+        //         email: self.email,
+        //         pwd: self.pwd,
+        //         nickname: self.nickname,
+        //         phone: self.phone,
+        //         cash: self.price
+        //     };
+        //     console.log(data)
+
+        //     IMP.init("imp66001065");
+        //     IMP.request_pay({
+        //         pg: 'kakaopay',
+        //         merchant_uid: this.email + '_' + new Date().getTime(),
+        //         name: '람보르기니',
+        //         amount: this.price,
+        //         buyer_email: this.email,
+        //         buyer_name: this.nickname,
+        //         buyer_tel: this.phone,
+        //         buyer_addr: '경기도 성남대로34',
+        //         buyer_postcode: '257'
+        //     }, rsp => {
+        //         console.log(rsp);
+        //         if (rsp.success) {
+        //             console.log("결제 성공");
+        //             self.$axios.post('http://localhost:8181/payment' + self.email, data, JSON.stringify(data))
+        //                 .then(function (res) {
+        //                     if (res.status == 200) {
+        //                         alert('여기까지DB들어갔니? ');
+        //                     } else {
+        //                         alert('에러코드: ' + res.status);
+        //                     }
+        //                 });
+        //         } else {
+        //             console.log("결제 실패");
+        //         }
+        //     });
+
+        // },
         KGpay() {
             const self = this;
             IMP.init("imp66001065");
@@ -92,7 +101,7 @@ export default {
                 pay_method: 'card',
                 merchant_uid: this.email + '_' + new Date().getTime(),
                 name: 'Plantiful Point',
-                amount: this.price,
+                amount: 100,
                 buyer_email: this.email,
                 buyer_name: this.email,
                 buyer_tel: this.phone,
@@ -113,7 +122,7 @@ export default {
                     form.append('paidamount', rsp.paid_amount)
                     form.append('applynum', rsp.apply_num)
                     form.append('email', self.email)
-                    console.log('폼데이터에 뭐있냐면' + form)
+                    console.log(form)
                     self.$axios.post('http://localhost:8181/payment', form)
                         .then(function (res) {
                             if (res == 200) {
@@ -134,40 +143,29 @@ export default {
         checkmyinfo() {
             IMP.init("imp66001065");
             const self = this;
-            const form = new FormData();
-            const withdraw = self.withdraw;
-            const email = self.email;
-            form.append("paidamount", withdraw)
-            form.append ("email", email)
             IMP.certification({
                 pg: 'MIIiasTest',
                 merchant_uid: 'merchant_' + new Date().getTime(),
-                m_redirect_url: "http://localhost:8181"
+                m_redirect_url: "http://localhost:8181/members/checkmyinfo"
             }, function (rsp) {
                 if (rsp.success) {
-                    // 인증성공
+                    // 인증성공D
+                    console.log(rsp.imp_uid);
+                    console.log(rsp.merchant_uid);
                     const data = {
                         imp_uid: rsp.imp_uid,
-                        email: self.email
+                        email : self.email
                     };
-                    self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
+                    self.$axios.get("http://localhost:8181/members/certifications/redirect", {
+                        params: data})
                         .then(function (res) {
-                            console.log(res.data);
-                            console.log(res.data.flag);
-                            if (res.data.flag === false) {
-                                alert('등록된 전화번호와 본인인증 전화번호가 일치하지 않습니다');
-
-                                // 돈 안빠져나가게 하는 로직 추가
+                            console.log(res.data)
+                            if(res.data == false){
+                                alert('등록 된 전화번호와 본인인증 전화번호가 일치하지 않습니다')
+                                // 뭐 돈 안빠져나가게 하는 로직 어쩌고~
                             } else {
-                                alert('인출이 완료되었습니다');
-                             self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
-                             .then(function (res) { 
-                                if(res.status ==200){
-                                    alert(res.data.message)
-                                } else {
-                                    alert(res.data.message)
-                                }
-                             }); 
+                             alert('인출이 완료 되었습니다')
+                             location.href ="/mypage"
                             }
                         });
 

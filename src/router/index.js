@@ -35,7 +35,7 @@ const routes = [
   },
   {
     path: "/kakaojoin",
-    name: 'kakaojoin',
+    name: 'klogin',
     component: kakaojoin
   },
   
