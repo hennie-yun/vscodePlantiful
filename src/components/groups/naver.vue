@@ -1,7 +1,8 @@
-<!-- <template>
+<template>
   <div>
 
     <button @click="authorize">Authorize with Naver</button>
+    <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="calendar">calendar</button>
   </div>
 </template> 
 
@@ -16,11 +17,9 @@ export default {
     }
   },
   created:function(){ 
- this.authorize()
-
   },
  
-  methods: {
+  methods: {  
  
   authorize(){
     let clientId = "IiiFJKBOyzL3qvfXasPq"
@@ -38,7 +37,7 @@ export default {
             apiURL += "&state=" + state;
         
            window.location.href=apiURL
-           this.calendar
+
       } else {
         alert(res.status)
       
@@ -46,7 +45,7 @@ export default {
     })
   },
   calendar(){
-    $axios.get('http://localhost:8181/api/naver/callback')
+    this.$axios.get('http://localhost:8181/api/naver/callback')
     .then(function(res){
       if(res.status == 200){
         alert(res.data)

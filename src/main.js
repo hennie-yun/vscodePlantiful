@@ -11,7 +11,7 @@ import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 // Use calendar defaults (optional)
-
+import '@/assets/fonts/font.css';
 
 loadFonts()
 

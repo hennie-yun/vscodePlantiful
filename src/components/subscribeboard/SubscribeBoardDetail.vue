@@ -78,6 +78,10 @@ export default {
             loginId: sessionStorage.getItem('loginId'),
             count: 0,
             currentDate: null,
+            paydto: {
+                paidamount: 0
+            },
+            fflag: false,
         }
     },
     mounted() {
@@ -85,37 +89,77 @@ export default {
 
     },
     methods: {
+        checkcash() {
+            const self = this;
+            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                .then(function (res) {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if (res.data.paydto != null) {
+                            self.paidamount = self.paydto.paidamount;
+                            
+                            let form = new FormData();
+                            formdata.append('paidamount', self.divisionResult)
+                            self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
+                             .then(function (res) { 
+                                if(res.status ==200){
+                                    alert(res.data.message)
+                                    let dto = res.data.dto
+                                    if(dto != null){
+                                        //돈 있음
+                                        self.fflag = true;
+                                    }else{
+                                        self.fflag = false;
+                                    }                        
+                                } else {
+                                    alert(res.data.message)
+                                }
+                            })
+                        } else {
+                            alert(res.data.message);
+                        }
+                    } else if (res.status == 500) {
+                        alert('현금없음');
+                    }
+                })
+
+        },
         addparty() {
             const self = this;
-            let formdata = new FormData();
 
+            this.checkcash();
+            if(self.fflag == true){
+                let formdata = new FormData();
+                formdata.append('subscribe_num', self.subscribe_num)
+                formdata.append('email', sessionStorage.getItem('loginId'))
+                formdata.append('point_basket', self.divisionResult)
+                formdata.append('enddate', dayjs(self.enddate))
+                formdata.append('start_check', 0)
+                formdata.append('schedule_num', 0)
+                // 이미 추가된건지 아닌지 확인해야함 
+                if (self.count < self.dto.total_people) {
+                    self.$axios.post('http://localhost:8181/subscribeparty', formdata)
+                        .then(function (res) {
+                            if (res.status == 200) {
+                                let dto = res.data.dto
+                                if (dto == null) {
+                                    alert('이미 가입한 파티입니다')
+                                } else {
+                                    alert('파티에 추가되었습니다.')
 
-            formdata.append('subscribe_num', self.subscribe_num)
-            formdata.append('email', sessionStorage.getItem('loginId'))
-            formdata.append('point_basket', self.divisionResult)
-            formdata.append('enddate', dayjs(self.enddate))
-            formdata.append('start_check', 0)
-            formdata.append('schedule_num', 0)
-            // 이미 추가된건지 아닌지 확인해야함 
-            if (self.count < self.dto.total_people) {
-                self.$axios.post('http://localhost:8181/subscribeparty', formdata)
-                    .then(function (res) {
-                        if (res.status == 200) {
-                            let dto = res.data.dto
-                            if (dto == null) {
-                                alert('이미 가입한 파티입니다')
+                                }
+
                             } else {
-                                alert('파티에 추가되었습니다.')
+                                alert('에러코드:' + res.status)
 
                             }
-
-                        } else {
-                            alert('에러코드:' + res.status)
-
-                        }
-                    })
-            } else {
-                alert('참여가 불가능한 모집입니다.')
+                        })
+                } else {
+                    alert('참여가 불가능한 모집입니다.')
+                }
+            }else {
+                alert('캐시가 부족합니다.')
+                location.href="/payment"
             }
         },
         deleteBoard() {
@@ -159,44 +203,45 @@ export default {
                     // 에러 처리
                     console.error('에러 발생:', error);
                 });
-        }
+        },
+        
 
 
+},
+created: function () {
+    this.loginId = sessionStorage.getItem('loginId')
+    const self = this;
+    let flag = false;
+    self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
+        .then(function (res) {
+            if (res.status == 200) {
+                self.dto = res.data.dto;
+                self.checkmember();
+                // 출금일 날짜 변환
+                self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
 
-    },
-    created: function () {
-        this.loginId = sessionStorage.getItem('loginId')
-        const self = this;
-        let flag = false;
-        self.$axios.get('http://localhost:8181/subscribeboard/' + self.subscribe_num)
-            .then(function (res) {
-                if (res.status == 200) {
-                    self.dto = res.data.dto;
-                    self.checkmember();
-                    // 출금일 날짜 변환
-                    self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
-
-                    // 구독 시작날짜와 구독 끝 날짜 변환
-                    self.startDate = dayjs(self.dto.subscribe_startdate).format('YYYY-MM-DD');
-                    self.endDate = dayjs(self.dto.subscribe_enddate).format('YYYY-MM-DD');
+                // 구독 시작날짜와 구독 끝 날짜 변환
+                self.startDate = dayjs(self.dto.subscribe_startdate).format('YYYY-MM-DD');
+                self.endDate = dayjs(self.dto.subscribe_enddate).format('YYYY-MM-DD');
 
 
-                    //인당 금액
-                    // 특정 값 두 개 가져오기
-                    const value1 = self.dto.total_point;
-                    const value2 = self.dto.total_people;
-                    // 값 나누기
-                    self.divisionResult = value1 / value2;
+                //인당 금액
+                // 특정 값 두 개 가져오기
+                const value1 = self.dto.total_point;
+                const value2 = self.dto.total_people;
+                // 값 나누기
+                self.divisionResult = value1 / value2;
 
-                    // 날짜 차이 계산
-                    const registerDate = dayjs(self.dto.register_date);
-                    const recruitEndDate = dayjs(self.dto.recruit_endperiod);
-                    self.dif_day = recruitEndDate.diff(registerDate, 'day');
-                } else {
-                    alert('에러코드:' + res.status)
-                }
-            })
-    }
+                // 날짜 차이 계산
+                const registerDate = dayjs(self.dto.register_date);
+                const recruitEndDate = dayjs(self.dto.recruit_endperiod);
+                self.dif_day = recruitEndDate.diff(registerDate, 'day');
+            } else {
+                alert('에러코드:' + res.status)
+            }
+        })
+
+}
 }
 </script>
 <style lang="">
