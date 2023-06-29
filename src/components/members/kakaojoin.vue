@@ -1,16 +1,35 @@
 <template>
-  <div class ="klogin">
-    <b-form class="form" @submit="onSubmit" @reset="onReset" v-if="show">
-      <h2>카카오 회원가입</h2>
-      이름: <input type="text" v-model="form.email" required disabled />
-      닉네임: <input type="text" v-model="form.nickname" required disabled />
-      전화번호: <input type="text" v-model="form.phone" required />
-      아이디: <input type="text" v-model="form.id" required />
-      비밀번호: <input type="text" v-model="form.pwd" required />
-      <button type="submit">등록</button>
+  <section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card bg-white text-black" style="border-radius: 25px;">
+            <div class="card-body p-5 text-center" style="border-radius : 25px; background-color: #CEE2F1;">
+              <div class="mb-md-5 mt-md-4 pb-5">
+                <h2 class="fw-bold mb-2" style="color:#4A5157">카카오톡 회원가입</h2>
+                <br />
+                <div class="form-outline form-white mb-4">
+                  <input type="text" v-model="form.email" class="form-control form-control-lg" required disabled />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input type="text" v-model="form.nickname" class="form-control form-control-lg" />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input type="text" class="form-control form-control-lg" placeholder="전화번호" />
+                </div>
+                <div class="form-outline form-white mb-4">
+                  <input type="file" id="img" class="form-control form-control-lg" />
+                </div>
+                <button class="btn btn-primary btn-lg" style="color :#4A5157; border: none; background-color: white;"
+                  @click="onSubmit">join</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    </b-form>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -31,17 +50,17 @@ export default {
         phone: '',
         pwd: '',
         kakaotoken : ''
-
       },
       show: true
     };
   },
   created() {
-    this.codes = this.$route.query.code;
+    this.code = this.$route.query.code;
+    console.log(this.code)
     this.getToken();
   },
   methods: {
-    klogin() {
+    klogin() { //아이디 저장이 되어 있으면 갈 곳 
       const self = this;
       const loginform = new FormData();
       loginform.append('email', self.form.email)
@@ -85,35 +104,33 @@ export default {
                 }
               }
             });
-
-      self.$axios
-        .post('http://localhost:8181/memebers/login', self.form)
-        .then((res) => {
-          if (res.data !== null) {
-            document.cookie = `accessToken=${res.data}`;
-            this.$axios.defaults.headers.common['x-access-token'] = res.data;
-            location.href = '/calendar';
+        });
+    },
+    onSubmit() {
+      const self = this
+      const form = new FormData()
+      form.append('email', self.form.email)
+      form.append('pwd', self.form.pwd)
+      form.append('nickname', self.form.nickname)
+      form.append('phone', self.phone)
+      form.append('id', 1)
+      if (document.getElementById('img').value !== '') {
+        const file = document.getElementById('img').files[0]
+        form.append('f', file)
+      }
+      self.$axios.post('http://localhost:8181/members', form, { headers: { "Content-Type": "multipart/form-data" } })
+        .then(function (res) {
+          if (res.status === 200) {
+            let dto = res.data.dto
+            console.log(dto)
+            self.klogin();
+          } else {
+            alert('에러코드 :' + res.status)
           }
-        });
-    },
-    getToken() {
-      const self = this;
-      self.$axios
-        .get('http://localhost:8181/kakaojoin', { code: self.codes })
-        .then((res) => {
-          this.form.email = res.data.email;
-          this.form.pwd = res.data.id;
-          this.form.nickname = res.data.nickname;
-          this.klogin();
-        });
-    },
-    onSubmit(event) {
-      const self = this;
-      event.preventDefault();
-      self.$axios.post('http://localhost:8181/members', self.form).then((res) => {
-        console.log(res.status);
-        this.klogin();
-      });
+        })
+        .catch(function (error) {
+          alert('에러 :' + error)
+        })
     },
 
   }
