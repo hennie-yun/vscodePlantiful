@@ -6,30 +6,43 @@
             </b-button>
             <h1>asd</h1>
         </div>
-        <div class="mx-auto rounded-lg elevation-3" id="messages" ref="box" style="border-radius: 1px;">
+        <div class="mx-auto rounded-lg elevation-3 overflow-y-auto overflow-x-hidden" 
+            id="messages" ref="box" style="border-radius: 1px;">
             <v-card-text>
                 <v-container>
-                    <div class="mt-12" v-for="(item, idx) in recvList" v-bind:key="idx">
-                        <div class="col-5 rounded-lg elevation-1" max-width="400" :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
+                    <div class="pt-5" v-for="(item, idx) in recvList" v-bind:key="idx">
+                        <div class="v-col-4 rounded-lg elevation-1" max-width="400" 
+                            :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
                             <v-card-text>
-                                <v-row>
-                                    <v-col style="padding:0;">
-                                        <div class="text-left pl-6" style="color : #737373; font-size: 16px;" v-on:click="remove(item, idx)">
-                                            {{ item.member.nickname }}
+                                <v-row @click="remove(item, idx, $event)">
+                                    <v-col cols="2" style="padding:0;">
+                                        <div class="pl-6 pt-3" 
+                                            style="color : #737373; font-size: 16px;" >
+                                            <div>
+                                                <div class="rounded-circle" style="background-color: white; width:44px; height: 44px;">
+                                                    <img class="rounded-circle" :src="'http://localhost:8181/chat/' + item.member.email"
+                                                    @error="replaceProfile" style="width:42px; height: 42px; margin:0px;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </v-col>
+                                    <v-col align-self="center" cols="4">
+                                        {{ item.member.nickname }}
+                                    </v-col>
+                                    <v-col align-self="end">
+                                        <div class="text-right pr-6" 
+                                            style="font-size: 14px; color:#737373"> 
+                                            {{ item.sendTime }} 
                                         </div>
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col style="padding:0;">
-                                        <div class="text-left pl-6 fs-5" > {{ item.message }}</div>
+                                    <v-col class="py-3" >
+                                        <div class="text-left pl-6 fs-4" > {{ item.message }}
+                                        </div>
                                     </v-col>
                                 </v-row>
-                                <v-row>
-                                    <v-col style="padding:0;">
-                                        <div class="text-right pr-3" style="font-size: 14px; color:#737373"> {{ item.sendTime }} </div>
-                                    </v-col>
-                                </v-row>
-
+                                
                             </v-card-text>
                         </div>
                     </div>
@@ -48,6 +61,9 @@
 <script lang="js">
 import Stomp from 'webstomp-client'
 import SockJS from 'sockjs-client' 
+import img from '@/assets/image/profile.png'
+
+window.addEventListener("contextmenu", e => e.preventDefault())
 
 export default {
     name : "ChatRoom",
@@ -64,12 +80,12 @@ export default {
     created : function() {
         let self = this
         let list = this.recvList
-        self.$axios.get('http://localhost:8181/chat/joinroom', {params:{roomNum : this.roomNum}})
+        self.$axios.get('http://localhost:8181/chat/joinroom', {params:{ roomNum : this.roomNum}})
         .then(function(ret) {
             for(let obj of ret.data.list) {
                 let date = new Date(obj.sendTime)
-                obj.sendTime = date.getMonth() + "월 " 
-                    + date.getDay() + "일 " 
+                obj.sendTime = (date.getMonth() + 1) + "월 " 
+                    + (date.getDay() + 25)+ "일 " 
                     + date.getHours() + "시 " 
                     + date.getSeconds() + "분" 
                 list.push(obj)
@@ -119,8 +135,8 @@ export default {
                         console.log("구독 메세지 ", res.body)
                         let obj = JSON.parse(res.body)
                         let date = new Date(obj.sendTime)
-                        obj.sendTime = date.getMonth() + "월 " 
-                        + date.getDay() + "일 " 
+                        obj.sendTime = (date.getMonth() + 1) + "월 " 
+                        + (date.getDay() + 25) + "일 " 
                         + date.getHours() + "시 " 
                         + date.getSeconds() + "분" 
                         this.recvList.push(obj)
@@ -136,9 +152,16 @@ export default {
         clearMessage() {
             this.message = ''
         },
-        remove(item, idx) {
-            alert(item)
-            alert(idx)
+
+        replaceProfile(e) {
+            e.target.src = img
+        },
+        
+        remove(item, idx, e) {
+            console.log(item)
+            console.log(idx)
+            console.log(e)
+            console.log(item.member.email == this.id ? true : false)
         },  
     },
     watch : {
@@ -170,10 +193,15 @@ export default {
     }
 
     #messages {
-        overflow-x: hidden; 
-        overflow-y: auto; 
+    
         width: 100%; 
         height: 450px; 
         padding: 10px;
+    }
+
+    img {
+        width : 54px;
+        height : 54px;
+        border-radius: 16px;
     }
 </style>
