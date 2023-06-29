@@ -149,8 +149,9 @@
                       </div>
                       <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
                         <div style="display: flex; align-items: center;">
-              
-                          <div id="naver_id_login" class="share-btn" @click="naver">네이버</div>
+
+                          <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')" style="margin-right: 10px; width:50px" />naver</button>
+                        </div>
                         </div>
                         <div style="display: flex; align-items: center;">
 
@@ -161,7 +162,7 @@
                         <button class="share-btn" @click="cancel2">아니오</button>
                       </div>
                     </div>
-                  </div>
+                
 
                  <router-view/>
 </template>
@@ -176,18 +177,18 @@ import axios from 'axios';
 
 
 export default {
-mounted(){
- 
-        
 
-  
+  mounted() {
+   
 },
+
 components: {
 FullCalendar
 },
 name: 'calendar',
 data() {
 return {
+
 access_token:'',
 isNewEvent: true,
 showEventForm: false,
@@ -285,64 +286,26 @@ alert("에러코드: " + res.status);
 
 methods: {
 naver(){
+
+  const clientId = "IiiFJKBOyzL3qvfXasPq"
+  const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
   
-  const script = document.createElement('script')
-        script.src = 'https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js'
-        script.async = true
-        script.charset = 'utf-8'
-        document.head.appendChild(script)
+  const state = this.generateRandomState()
+  const naverAuthURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectURI}&state=${state}`;
 
-        // initialize naver login
-        script.onload = () => {
-            const naver_id_login=new window.naver_id_login("IiiFJKBOyzL3qvfXasPq", "http://localhost:8081/naver")
-            const state = naver_id_login.getUniqState()
-            naver_id_login.setButton("white",2,40)
-            naver_id_login.setDomain("http://localhost:8081/calendar")
-            naver_id_login.setState(state)
-            naver_id_login.setPopup()
-            naver_id_login.init_naver_id_login()
-           
-        }
+  window.location.href = naverAuthURL;
 },
-login(){
-  //print access token 
-  alert(this.naver_id_login.oauthParams.access_token);
-  // user profile
-  this.naver_id_login.get_naver_userprofile('naverSingInCallback()')
-},
-naverSignInCallback(){
-  alert(this.naverInLogin.getProfileData('email'))
-  alert(this.naverIdLogin.getProfileData('nickname'))
-  alert(this.naverIdLogin.getProfileData('age'))
-},
+generateRandomState() {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let state = "";
 
-//네이버 로그인
-authorize(){
-    let clientId = "IiiFJKBOyzL3qvfXasPq"
-    let redirectURI = "http://localhost:8181/api/naver/callback"
-
-    const self = this
-    self.$axios.get("http://localhost:8181/api/naver/naverLogin")
-    .then(function(res){
-      if(res.status == 200){
-        alert(res.data)
-       
-        
-      } else {
-        alert(res.status)
-      
+      for (let i = 0; i < 16; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        state += characters.charAt(randomIndex);
       }
-    })
-  },
-calendar(){
-  const self = this;
-  self.$axios.get('http://localhost:8181/api/naver/caledar', {headers:{'access_token':this.access_token}})
-  .then(function(res){
-    if(res.status == 200){
-      console.log(res.data)
-    }
-  })
-},
+
+      return state;
+    },
 
 
 //카카오톡 메세지
@@ -571,12 +534,13 @@ window.location.reload();
 } else {
 alert("에러코드:" + res.status);
 }
-})
+}
+)
+}
 }
 
+}
 
-}
-}
 </script>
 
 
@@ -729,5 +693,23 @@ color: rgb(240, 179, 179);
 margin-left: 35px;
 }
 
+
+.naver{
+    padding: 0.6em 1em;
+    border-radius: 0.25em;
+    font-size: 0.8rem;
+    margin-top: 0.7em;
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    box-shadow: var(--shadow-1);
+    background-color: #03C75A;
+    color: white;
+}
+.naver img{
+    height:0.9rem;
+    margin-right: 0.7em;
+    margin-left: 0.2em;
+}
 
 </style>
