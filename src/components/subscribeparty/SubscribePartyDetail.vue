@@ -7,6 +7,9 @@
                 <div class="row">
                     <h2>{{order.subscribe_num.title}}</h2>
                 </div>
+                <div v-if="order.start_check==1" class="row">
+                    <button v-on:click="addSchedule">캘린더에 일정 추가하기</button>
+                </div>
                 <div class="row">
                     <div class="col subboardtitle">
                         구독 게시글 번호
