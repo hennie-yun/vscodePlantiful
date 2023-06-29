@@ -1,8 +1,8 @@
 <template>
     <v-app>
         <div class="elevation-12 h-100 text-center" style="width: 75%; margin: 0 auto;">
-            <div class="text-left" style="height: 10%; background-color: blueviolet;">
-                <button class="" style="vertical-align: center;">asd</button>
+            <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
+                <!-- <button class="" style="vertical-align: center;">ㅁㄴㅇ</button> -->
             </div>
             <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->

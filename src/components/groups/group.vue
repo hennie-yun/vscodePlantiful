@@ -22,7 +22,6 @@
                                 <span :style="{backgroundColor: '#7E84F7'}" class="dot" v-on:click="a(6)"></span>
                             </div>
                             <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
-
                             <button v-on:click="check">체크</button>
                             <div id="naver_id_login"></div>
                          
@@ -102,7 +101,6 @@ export default {
                 el.classList.remove('active')
             })    
         },
-      
         check(){
             location.href=""
             //     const self = this;

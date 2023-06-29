@@ -15,6 +15,7 @@ import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
+import navercalendar from '../components/groups/navcalendar.vue'
 import payment from '../components/pay/payment.vue'
 import kakaojoin from '../components/members/kakaojoin.vue'
 
@@ -38,7 +39,11 @@ const routes = [
     name: 'klogin',
     component: kakaojoin
   },
-  
+  {
+    path: '/newpwd',
+    name : 'newpwd',
+    component : newpwd
+  },
   {
     path: "/afterlogin",
     component: AfterLogin,
@@ -88,11 +93,7 @@ const routes = [
         name: 'mypage',
         component: mypage
       },
-      {
-        path: '/newpwd',
-        name : 'newpwd',
-        component : newpwd
-      },
+      
       {
         path : '/editinfo',
         name : 'editinfo',
@@ -122,6 +123,11 @@ const routes = [
         path:'/naver',
         name: 'naver',
         component: naver
+      },
+      {
+        path:'/navercalendar',
+        name: 'navercalendar',
+        component: navercalendar
       }
       
     ]

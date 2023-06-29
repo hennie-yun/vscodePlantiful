@@ -95,6 +95,8 @@ export default {
             list: [],
             currentDate: null,
             flag: 0,
+            partylist: [],
+            email: sessionStorage.getItem('loginId'),
         }
     },
 
@@ -154,6 +156,7 @@ export default {
                 const promise = self.$axios.get('http://localhost:8181/subscribeparty/party/' + order.subscribe_num)
                     .then(function (res) {
                         if (res.status === 200) {
+                            self.partylist = res.data.list
                             order.recruitpeople = self.countRecruitPeople(res.data.list);
                             const item = res.data.list[0]; // 첫 번째 항목 선택
                             order.start_check = item.start_check; // start_check 값 확인
@@ -176,9 +179,13 @@ export default {
                         console.log(self.list);
                         const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
                         order.recruit_endperiod = recruitEndPeriodFormatted;
+                        const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
+                        order.subscribe_enddate = subEnddateFormatted;
                         if (order.recruitpeople === order.total_people && self.currentDate > order.recruit_endperiod) {
+                            // 인원수 같음 & 모집일 지남
                             order.flag = 1;
                         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
+                            // 인원수 다름 & 모집일 지남
                             order.flag = 2;
                         } else {
                             order.flag = 0;
@@ -191,16 +198,45 @@ export default {
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
                             });
-
                     });
+
+                    // point basket & cash 관리 
+                    if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
+                        // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
+                        if (order.point_basket != 0) {
+                            self.$axios
+                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                .then(function (res) {
+                                    if (res.status === 200) {
+                                        alert('구독 종료일 지나서 0으로 만들고 돌아감');
+                                    }
+                                });
+                        } else {
+                            alert('이미 실행됨');
+                        }
+                    }
+                    else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
+                        // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
+                        if (order.point_basket != 0) {
+                            self.$axios
+                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                .then(function (res) {
+                                    if (res.status === 200) {
+                                        alert('취소돼서 0으로 만들고 돌아감');
+                                    }
+                                });
+                        } else {
+                            alert('이미 실행됨');
+                        }
+                    }
                 })
+                // .then(function () {
+                //     console.log('모든 비동기 요청 완료');
+                //     self.checkEnd(); // 다른 메소드 호출
+                // })
                 .catch(function (error) {
                     console.log('에러 발생:', error);
                 });
-
-
-
-
         },
 
         countRecruitPeople(emailList) {
@@ -225,6 +261,16 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
+}
+
+.beforelist {
+    /* background-color: aliceblue; */
+}
+
+.inglist {}
+
+.endlist {
+    background-color: lightgray;
 }
 </style>
 

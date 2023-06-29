@@ -304,13 +304,13 @@ export default {
     },
 
 
-    //일정 추가
-    addEvent() {
-      const self = this;
-      const formData = new FormData();
-      if (self.newEvent.end == 0) {
-        self.newEvent.end = self.newEvent.start;
-      };
+//일정 추가
+addEvent() {
+const self = this;
+const formData = new FormData();
+if (self.newEvent.end == 0) {
+self.newEvent.end = self.newEvent.start;
+};
 
       formData.append('email', sessionStorage.getItem('loginId'));
       formData.append('title', self.newEvent.title);
@@ -341,91 +341,98 @@ export default {
             // durationEditable: true, // 종료 시간 편집 가능 설정
           });
 
-          // 입력된 값들 초기화
-          self.newEvent = {
-            title: '',
-            start: '',
-            end: '',
-            startTime: '',
-            endTime: '',
-            // alert: '',
-            info: '',
-            isLoop: 1,
-            day: null
-          };
-          self.$refs.fullCalendar.getApi().refetchEvents();
+// 입력된 값들 초기화
+self.newEvent = {
+title: '',
+start: '',
+end: '',
+startTime: '',
+endTime: '',
+// alert: '',
+info: '',
+isLoop: 1,
+day: null
+};
+self.$refs.fullCalendar.getApi().refetchEvents();
 
-          // self.$router.go(0);
-          self.showEventForm = false;
-          self.shareEvent = true;
-        })
+// self.$router.go(0);
+self.showEventForm = false;
+self.shareEvent = true;
+})
 
-        .catch(error => {
-          console.error(error);
-        });
+.catch(error => {
+console.error(error);
+});
 
-    },
+},
 
-    //폼 취소
-    cancel() {
-      this.showEventForm = false;
-      this.shareEvent = false;
-      window.location.reload();
+//폼 취소
+cancel() {
+this.showEventForm = false;
+this.shareEvent = false;
+this.snsEvent = true;
 
-    },
 
-    //일정 클릭 상세보기
-    handleEventClick(arg) {
-      this.showEventForm = true;
-      this.isNewEvent = false;
-      const event = arg.event;
-      const schedule_num = event.extendedProps.schedule_num;
-      this.schedule_num = schedule_num; // 이벤트의 schedule_num 값 가져오기
-      const self = this;
-      self.$axios.get("http://localhost:8181/schedules/" + schedule_num)
-        .then(response => {
-          const scheduleData = response.data.dto;
-          // 조회된 데이터를 폼에 보여주기
-          self.newEvent = {
-            title: scheduleData.title,
-            start: scheduleData.start,
-            end: scheduleData.end,
-            startTime: scheduleData.startTime,
-            endTime: scheduleData.endTime,
-            info: scheduleData.info,
-            isLoop: scheduleData.info,
-            day: scheduleData.day
-          };
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
+},
 
-    //수정
-    updateEvent() {
-      const self = this;
-      const formData = new FormData();
-      if (self.newEvent.end == 0) {
-        self.newEvent.end = self.newEvent.start;
-      };
-      formData.append('schedule_num', self.schedule_num);
-      formData.append('title', self.newEvent.title);
-      formData.append('start', self.newEvent.start);
-      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
-      formData.append('startTime', self.newEvent.startTime);
-      formData.append('endTime', self.newEvent.endTime);
-      formData.append('info', self.newEvent.info);
-      formData.append('alert', self.newEvent.alert);
-      if (self.newEvent.isLoop === '2') {
-        // 반복하는 일정인 경우
-        formData.append('isLoop', '2');
-        formData.append('day', self.newEvent.day); // 요일 정보 추가
-      } else {
-        // 반복하지 않는 일정인 경우
-        formData.append('isLoop', '1');
-        formData.append('day', null); // 요일 정보 null로 설정
-      }
+cancel2(){
+
+  this.snsEvent = false;
+  this.showEventForm = false;
+},
+
+//일정 클릭 상세보기
+handleEventClick(arg) {
+this.showEventForm = true;
+this.isNewEvent = false;
+const event = arg.event;
+const schedule_num = event.extendedProps.schedule_num;
+this.schedule_num = schedule_num; // 이벤트의 schedule_num 값 가져오기
+const self = this;
+self.$axios.get("http://localhost:8181/schedules/" + schedule_num)
+.then(response => {
+const scheduleData = response.data.dto;
+// 조회된 데이터를 폼에 보여주기
+self.newEvent = {
+title: scheduleData.title,
+start: scheduleData.start,
+end: scheduleData.end,
+startTime: scheduleData.startTime,
+endTime: scheduleData.endTime,
+info: scheduleData.info,
+isLoop: scheduleData.info,
+day: scheduleData.day
+};
+})
+.catch(error => {
+console.error(error);
+});
+},
+
+//수정
+updateEvent() {
+const self = this;
+const formData = new FormData();
+if (self.newEvent.end == 0) {
+self.newEvent.end = self.newEvent.start;
+};
+formData.append('schedule_num', self.schedule_num);
+formData.append('title', self.newEvent.title);
+formData.append('start', self.newEvent.start);
+formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+formData.append('startTime', self.newEvent.startTime);
+formData.append('endTime', self.newEvent.endTime);
+formData.append('info', self.newEvent.info);
+formData.append('alert', self.newEvent.alert);
+if (self.newEvent.isLoop === '2') {
+// 반복하는 일정인 경우
+formData.append('isLoop', '2');
+formData.append('day', self.newEvent.day); // 요일 정보 추가
+} else {
+// 반복하지 않는 일정인 경우
+formData.append('isLoop', '1');
+formData.append('day', null); // 요일 정보 null로 설정
+}
 
       // 데이터 전송
       self.$axios.put("http://localhost:8181/schedules", formData)
@@ -443,32 +450,32 @@ export default {
               self.day = dto.day;
             }
 
-            self.showEventForm = false; // 폼 닫기
-            self.event = null; // 선택한 이벤트 초기화
-            location.reload();
+self.showEventForm = false; // 폼 닫기
+self.event = null; // 선택한 이벤트 초기화
+location.reload();
 
-          }
-        });
-    },
-    //삭제
-    deleteEvent() {
-      const self = this;
-      // 선택한 이벤트 가져오기
-      const schedule_num = self.schedule_num; // 이벤트의 schedule_num 값 가져오기
-      self.$axios.delete("http://localhost:8181/schedules/" + schedule_num)
-        .then(function (res) {
-          if (res.status === 200) {
-            self.showEventForm = false; // 폼 닫기
-            self.event = null; // 선택한 이벤트 초기화
-            window.location.reload();
-          } else {
-            alert("에러코드:" + res.status);
-          }
-        })
-    }
+}
+});
+},
+//삭제
+deleteEvent() {
+const self = this;
+// 선택한 이벤트 가져오기
+const schedule_num = self.schedule_num; // 이벤트의 schedule_num 값 가져오기
+self.$axios.delete("http://localhost:8181/schedules/" + schedule_num)
+.then(function (res) {
+if (res.status === 200) {
+self.showEventForm = false; // 폼 닫기
+self.event = null; // 선택한 이벤트 초기화
+window.location.reload();
+} else {
+alert("에러코드:" + res.status);
+}
+})
+}
 
 
-  }
+}
 }
 </script>
 
@@ -476,35 +483,35 @@ export default {
 
 <style>
 :root {
-    --fc-border-color: black;
-    --fc-daygrid-event-dot-width: 5px;
+--fc-border-color: black;
+--fc-daygrid-event-dot-width: 5px;
 }
 @font-face {
-  font-family: 'Pretendard-Regular';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
+font-family: 'Pretendard-Regular';
+src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+font-weight: 400;
+font-style: normal;
 }
 .fc-direction-ltr{
-  height: 95vh;
+height: 95vh;
 
 }
 .calendar_con {
-    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
-    border-radius: 45px;
+box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+border-radius: 45px;
 }
 .fc .fc-toolbar-title{
-  font-family: 'Pretendard-Regular', sans-serif;
+font-family: 'Pretendard-Regular', sans-serif;
 }
 
 .calendar_btn {
-    border: 1px solid black;
-    border-radius: 10px;
+border: 1px solid black;
+border-radius: 10px;
 }
 
 .calendar_btn {
-    border: 1px solid black;
-    border-radius: 5px;
+border: 1px solid black;
+border-radius: 5px;
 }
 
 .head-event-form {
@@ -544,67 +551,67 @@ export default {
 }
 
 .event-form {
-    background-color: #fff;
-    padding: 20px;
-    width: 34s0px;
-    border-radius: 10px;
+background-color: #fff;
+padding: 20px;
+width: 34s0px;
+border-radius: 10px;
 }
 
 .form-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+display: flex;
+align-items: center;
+margin-bottom: 10px;
 }
 
 .form-row label {
-    width: 100px;
-    font-weight: bold;
+width: 100px;
+font-weight: bold;
 }
 
 .form-row input[type="text"],
 .form-row input[type="date"],
 .form-row input[type="time"],
 .form-row select {
-    flex: 1;
-    padding: 5px;
+flex: 1;
+padding: 5px;
 }
 
 .form-buttons {
-    display: flex;
-    justify-content: flex-end;
+display: flex;
+justify-content: flex-end;
 }
 
 .form-buttons button {
-    padding: 5px 10px;
-    background-color: #9adaf6;
-    color: white;
-    border: none;
-    cursor: pointer;
+padding: 5px 10px;
+background-color: #9adaf6;
+color: white;
+border: none;
+cursor: pointer;
 }
 
 .fc .fc-daygrid-day.fc-day-today {
-    background-color: #ffffe1;
+background-color: #ffffe1;
 }
 
 .fc-event fc-event-start fc-daygrid-event fc-daygrid-block-event fc-h-event {
-    border-radius: 10px;
+border-radius: 10px;
 }
 
 .fc-event {
-    cursor: pointer;
+cursor: pointer;
 }
 
 .fc-daygrid-day-number {
-    text-decoration: none;
-    color: black;
+text-decoration: none;
+color: black;
 }
 
 .fc-col-header-cell-cushion {
-    text-decoration: none;
-    color: black;
+text-decoration: none;
+color: black;
 }
 /* /* .fc-event-title.fc-sticky{
-    white-space: normal;
+white-space: normal;
 /* } 이벤트 내용 잘릴 때 */
 
 .error {
