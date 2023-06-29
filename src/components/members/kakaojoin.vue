@@ -49,6 +49,7 @@ export default {
         nickname: '',
         phone: '',
         pwd: '',
+        kakaotoken : ''
       },
       show: true
     };
@@ -66,12 +67,23 @@ export default {
       loginform.append('pwd', self.form.pwd)
       self.$axios.post('http://localhost:8181/members/login', loginform)
         .then(function (res) {
-          if (res.status == 200) {
+          sessionStorage.setItem('token', res.data.token)
+          sessionStorage.setItem('loginId', res.data.loginId)
+          const addform = new FormData();
+          addform.append('email', self.form.email)
+          addform.append('token', self.form.kakaotoken)         
+          console.log(self.form.kakaotoken)
+          self.$axios.post('http://localhost:8181/tokensave', addform)
+          .then(function (rep) {
+          if (rep.status == 200) {
+            alert('토큰세이브')
+          }
+        });
             if (res.data.flag) {
               location.href = "/afterlogin"
             }
-          }
-        });
+          })
+        
     },
     getToken() { //토큰 냅다 받아~~ 
       const self = this;
@@ -81,11 +93,12 @@ export default {
           self.form.email = res.data.email;
           self.form.pwd = res.data.id;
           self.form.nickname = res.data.nickname;
+          self.form.kakaotoken = res.data.accessToken;
           self.$axios.get('http://localhost:8181/members/getKakaomember/' + self.form.email)
             .then(function (res) {
               if (res.status == 200) {
-                if (res.data.messeage) {
-                  alert('회원가입을하세요')
+                if (res.data.flag === false) {
+                alert('회원가입을하세요')
                 } else {
                   self.klogin()
                 }

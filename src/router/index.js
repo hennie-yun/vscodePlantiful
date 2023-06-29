@@ -38,7 +38,11 @@ const routes = [
     name: 'kakaojoin',
     component: kakaojoin
   },
-  
+  {
+    path: '/newpwd',
+    name : 'newpwd',
+    component : newpwd
+  },
   {
     path: "/afterlogin",
     component: AfterLogin,
@@ -88,11 +92,7 @@ const routes = [
         name: 'mypage',
         component: mypage
       },
-      {
-        path: '/newpwd',
-        name : 'newpwd',
-        component : newpwd
-      },
+      
       {
         path : '/editinfo',
         name : 'editinfo',
