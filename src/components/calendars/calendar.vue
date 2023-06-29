@@ -59,15 +59,14 @@
 <textarea id="info" v-model="newEvent.info"></textarea>
 
 </div>
-<div class="form-row" >
-        <label for="group_num">개인/그룹</label>
-             <select id="group_num" v-model="newEvent.group_num" >
-              <option value="0">개인 일정</option>
-              <option v-for="group in list" :key="group.num" :value="group.num">{{ group.title }}</option>
-    
-      </select>
-                                                                                                                                   </div>
-                                                                                                                                                                                    <!-- <div class="form-row">
+  <div class="form-row">
+                                                                                                                                                                        <label for="group_num">개인/그룹</label>
+                                                                                                                                                                      <select id="group_num" v-model="newEvent.group_num">
+                                                                                                                                                                      <option value="0" default>개인 일정</option>
+                                                                                                                                                                      <option v-for="group in groups" :value="group.schedulegroup_num">{{ group.schedulegroup_title }}</option>
+                                                                                                                                                                      </select>
+                                                                                                                                                                      </div>
+                                                                                                                                                                                      <!-- <div class="form-row">
                   <label for="notification">알림 설정</label>
                   <select id="notification" v-model="newEvent.alert">
                                                                                                                                                                  <option value="0">알림 없음</option>
@@ -83,88 +82,88 @@
 
 
 
-     <div class="form-row" v-if="newEvent.start == newEvent.end">
-     <label for="isLoop">일정 반복 여부</label>
-      <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" />반복 안 함
-       <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
-         </div>
+       <div class="form-row" v-if="newEvent.start == newEvent.end">
+       <label for="isLoop">일정 반복 여부</label>
+        <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" />반복 안 함
+         <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
+           </div>
 
-         <div class="form-row" v-if="newEvent.isLoop === '2'">
-        <label for="day">반복 요일</label>
-             <select id="day" v-model="newEvent.day">
-              <option value="1">월요일</option>
-               <option value="2">화요일</option>
-               <option value="3">수요일</option>
-                <option value="4">목요일</option>
-                                                                                                                                                      <option value="5">금요일</option>
-       <option value="6">토요일</option>
-         <option value="0">일요일</option>
-      </select>
-                                                                                                                                   </div>
+           <div class="form-row" v-if="newEvent.isLoop === '2'">
+          <label for="day">반복 요일</label>
+               <select id="day" v-model="newEvent.day">
+                <option value="1">월요일</option>
+                 <option value="2">화요일</option>
+                 <option value="3">수요일</option>
+                  <option value="4">목요일</option>
+                                                                                                                                                        <option value="5">금요일</option>
+         <option value="6">토요일</option>
+           <option value="0">일요일</option>
+        </select>
+                                                                                                                                     </div>
 
-<div class="form-row form-buttons">
+  <div class="form-row form-buttons">
 
-   <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
+     <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
 
-   <button v-else class="calendar_btn" @click="updateEvent">수정</button>
+     <button v-else class="calendar_btn" @click="updateEvent">수정</button>
 
-     <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
+       <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
 
-     </div>
+       </div>
 
-     </div>
+       </div>
 
-    </div>
+      </div>
 
-                                                                                                                                                   </div>
+                                                                                                                                                     </div>
 
 
-               <!-- 일정 공유 -->
-              <div v-if="shareEvent" class="share-event-form">
-                    <div class="form-content">
-                      <div class="shareform-row">
-                        <h5 style="text-align: center;">일정 공유</h5>
-                      </div>
-                      <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-                        <div style="display: flex; align-items: center;">
-
-                          <button class="share-btn" @click="copyUrl"><img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width:50px" />url복사</button>
+                 <!-- 일정 공유 -->
+                <div v-if="shareEvent" class="share-event-form">
+                      <div class="form-content">
+                        <div class="shareform-row">
+                          <h5 style="text-align: center;">일정 공유</h5>
                         </div>
-                        <div style="display: flex; align-items: center;">
+                        <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
+                          <div style="display: flex; align-items: center;">
 
-                          <button class="share-btn" @click="shareKakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="shareKakao" style="margin-right: 10px; width: 50px;" />카카오톡 공유</button>
+                            <button class="share-btn" @click="copyUrl"><img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width:50px" />url복사</button>
+                          </div>
+                          <div style="display: flex; align-items: center;">
+
+                            <button class="share-btn" @click="shareKakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="shareKakao" style="margin-right: 10px; width: 50px;" />카카오톡 공유</button>
+                          </div>
                         </div>
-                      </div>
-                      <div style="display: flex; justify-content: center; margin-top: 10px;">
-                        <button class="share-btn" @click="cancel">아니오</button>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                          <button class="share-btn" @click="cancel">아니오</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                      <!-- sns 공유 -->
-              <div v-if="snsEvent" class="share-event-form">
-                    <div class="form-content">
-                      <div class="shareform-row">
-                        <h5 style="text-align: center;">sns 연동</h5>
-                      </div>
-                      <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-                        <div style="display: flex; align-items: center;">
+                        <!-- sns 공유 -->
+                <div v-if="snsEvent" class="share-event-form">
+                      <div class="form-content">
+                        <div class="shareform-row">
+                          <h5 style="text-align: center;">sns 연동</h5>
+                        </div>
+                        <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
+                          <div style="display: flex; align-items: center;">
 
-                          <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')" style="margin-right: 10px; width:50px" />naver</button>
-                        </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
+                            <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')" style="margin-right: 10px; width:50px" />naver</button>
+                          </div>
+                          </div>
+                          <div style="display: flex; align-items: center;">
 
-                          <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao" style="margin-right: 10px; width: 50px;" />카카오톡</button>
+                            <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao" style="margin-right: 10px; width: 50px;" />카카오톡</button>
+                          </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 10px;">
+                          <button class="share-btn" @click="cancel2">아니오</button>
                         </div>
                       </div>
-                      <div style="display: flex; justify-content: center; margin-top: 10px;">
-                        <button class="share-btn" @click="cancel2">아니오</button>
-                      </div>
-                    </div>
                 
 
-                 <router-view/>
+                   <router-view/>
 </template>
 
 <script>
@@ -179,110 +178,142 @@ import axios from 'axios';
 export default {
 
   mounted() {
-   
-},
 
-components: {
-FullCalendar
-},
-name: 'calendar',
-data() {
-return {
+  },
 
-access_token:'',
-isNewEvent: true,
-showEventForm: false,
-shareEvent: false,
-snsEvent: false,
-group_num: 0,
-list: [],
-newEvent: {
-id: 0,
-title: '',
-start: '',
-end: '',
-startTime: '00:00:00',
-endTime: '00:00:00',
-info: '',
-alert: '00:00',
-isLoop: 1,
-day: null,
-},
+  components: {
+    FullCalendar
+  },
+  name: 'calendar',
+  data() {
+    return {
 
-calendarOptions: {
-plugins: [dayGridPlugin, interactionPlugin],
-headerToolbar: {
-left: '',
-center: 'title',
-right: 'today prev,next',
-},
-initialView: 'dayGridMonth',
-dateClick: this.handleDateClick,
-eventClick: this.handleEventClick,
-locale: 'ko',
-events: [], // 이벤트 데이터를 추가할 배열
-eventSources: [{
-events: this.getFilteredEvents,
-color: '',
-textColor: 'white',
-startEditable: true,
-durationEditable: true,
-}],
-eventResize: this.handleEventResize
-}
-}
-},
+      access_token: '',
+      isNewEvent: true,
+      showEventForm: false,
+      shareEvent: false,
+      snsEvent: false,
+      group_num: 0,
+      list: [],
+      items: [],
+      groups: [],
+      newEvent: {
+        id: 0,
+        title: '',
+        start: '',
+        end: '',
+        startTime: '00:00:00',
+        endTime: '00:00:00',
+        info: '',
+        alert: '00:00',
+        isLoop: 1,
+        day: null,
+      },
 
-// 페이지 시작- 실행되는 함수
-//로그인 한 사람의 일정 보여주기
-created() {
+      calendarOptions: {
+        plugins: [dayGridPlugin, interactionPlugin],
+        headerToolbar: {
+          left: '',
+          center: 'title',
+          right: 'today prev,next',
+        },
+        initialView: 'dayGridMonth',
+        dateClick: this.handleDateClick,
+        eventClick: this.handleEventClick,
+        locale: 'ko',
+        events: [], // 이벤트 데이터를 추가할 배열
+        eventSources: [{
+          events: this.getFilteredEvents,
+          color: '',
+          textColor: 'white',
+          startEditable: true,
+          durationEditable: true,
+        }],
+        eventResize: this.handleEventResize
+      }
+    }
+  },
+
+  // 페이지 시작- 실행되는 함수
+  //로그인 한 사람의 일정 보여주기
+  created() {
 
 
-let token = sessionStorage.getItem('token')
-this.email = sessionStorage.getItem('loginId')
-this.group_num = sessionStorage.getItem('group_num')
-console.log(this.email + " 로그인 ");
-const self = this;
-self.$axios.get("http://localhost:8181/schedules/email/" + self.email, { headers: { 'token': token } })
-.then(function (res) {
-if (res.status === 200) {
-const reslist = res.data.list;
-reslist.forEach(function (item) {
-if (item.isLoop === 2) { // 반복 설정된 일정
-self.calendarOptions.events.push({
-schedule_num: item.schedule_num,
-group_num: item.group_num,
-title: generateTitle(item),
-start: item.start,
-end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
-color: '#7AC6FF',
-display: 'block',
-daysOfWeek: item.day,
-});
-} else { // 반복 설정되지 않은 일정
-self.calendarOptions.events.push({
-schedule_num: item.schedule_num,
-group_num: item.group_num,
-title: generateTitle(item),
-start: item.start, // start에 날짜와 시간을 함께 표시
-end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
-color: '#7AC6FF',
-display: 'block',
-});
-}
-});
-function generateTitle(item) {
-let title = item.title;
-if (item.startTime || item.endTime) { // startTime 또는 endTime 중 하나라도 존재할 경우
-title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : ''); // endTime 앞에 공백 추가
-}
-return title;
-}
-} else {
-alert("에러코드: " + res.status);
-}
-})
-},
+    const self = this;
+    let token = sessionStorage.getItem('token')
+    this.email = sessionStorage.getItem('loginId')
+    console.log(this.email + " 로그인 ");
+
+    self.groupColors = {
+      1: '#3F48CC',
+      2: '#FFFD55',
+      3: '#8D2196',
+      4: '#ED87BD',
+      5: '#A1FB8E',
+      6: '#7E84F7',
+    };
+
+    self.$axios
+      .get("http://localhost:8181/groupparty/email/" + self.email, {
+        headers: { token: token },
+      })
+      .then(function (res) {
+        if (res.status == 200) {
+          const grouplist = res.data.list;
+          self.items = grouplist;
+          console.log(self.items)
+          self.groups = grouplist.map((item) => item.schedulegroup_num);
+          console.log(self.groups)
+          // console.log(self.items);
+          // self.colors = grouplist.map((item) => item.schedulegroup_num.schedulegroup_color);
+        } else {
+          alert("에러코드: " + res.status);
+        }
+      });
+
+
+    self.$axios.get("http://localhost:8181/schedules/email/" + self.email, { headers: { 'token': token } })
+      .then(function (res) {
+        if (res.status === 200) {
+          const reslist = res.data.list;
+          reslist.forEach(function (item) {
+            // const groupColor = self.groupColors[items.schedulegroup_color];
+            if (item.isLoop === 2) { // 반복 설정된 일정
+              self.calendarOptions.events.push({
+                schedule_num: item.schedule_num,
+                group_num: item.group_num,
+                title: generateTitle(item),
+                start: item.start,
+                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                color: 'blue',
+                display: 'block',
+                daysOfWeek: item.day,
+              });
+            } else { // 반복 설정되지 않은 일정
+              self.calendarOptions.events.push({
+                schedule_num: item.schedule_num,
+                group_num: item.group_num,
+                title: generateTitle(item),
+                start: item.start, // start에 날짜와 시간을 함께 표시
+                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                color: 'blue',
+                display: 'block',
+              });
+            }
+          });
+          function generateTitle(item) {
+            let title = item.title;
+            if (item.startTime || item.endTime) { // startTime 또는 endTime 중 하나라도 존재할 경우
+              title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : ''); // endTime 앞에 공백 추가
+            }
+            return title;
+          }
+        } else {
+          alert("에러코드: " + res.status);
+        }
+      })
+
+  },
 
 methods: {
 naver(){
