@@ -171,7 +171,6 @@ export default {
                         self.flag = res.data.flag
 
                         if (self.flag) {
-                            alert('flag 불러옴' + self.flag)
                             self.$axios.delete('http://localhost:8181/subscribeboard/' + self.subscribe_num)
                                 .then(function (res) {
                                     if (res.status == 200) {
