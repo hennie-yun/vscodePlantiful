@@ -22,7 +22,10 @@
                   <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
                 </div>
               </div>
-               <div>
+              <button @click="kakaoLogout"> 카카오 로그아웃
+              </button>
+
+              <div>
                 <a href="/join" class="text-black-50 fw-bold">Sign Up</a>
 
               </div>
@@ -49,16 +52,10 @@ export default {
   methods: {
   
     kakaoLogin() {
-      const redirect_uri = 'http://localhost:8182/kakaojoin';
+      const redirect_uri = 'http://localhost:8081/kakaojoin';
       const clientId = 'd54083f94196531e75d7de474142e52e';
       const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
-      location.href = Auth_url;
-    },
-    kakaoLogout() {
-      const redirect_uri = 'http://localhost:8182/login';
-      const clientId = 'd54083f94196531e75d7de474142e52e';
-      const Auth_url = `"https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirect_uri}`;
-      location.href = Auth_url;
+      window.location.href = Auth_url;
     },
     login() {
       const self = this;
