@@ -3,7 +3,7 @@
     {{ email }} 로그인 성공 <br />
     <button @click="kakaoLogout"> 카카오 로그아웃</button><br />
     <button @click="kakaoout"> 카카오 탈퇴</button>
-    <!-- <router-view></router-view> -->
+    <router-view></router-view>
   </div>
 </template>
   

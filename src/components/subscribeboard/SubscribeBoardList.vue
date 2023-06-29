@@ -1,87 +1,140 @@
-<template lang="">
-        <div class="container text-center">
-       
-            <div class="grid text-center">
-                <h1> 구독 공유 시작하기 </h1>
-            </div>
-            <div class="row"> 
-                <div class="col" v-on:click="search('all')">전체보기</div>
-                <div class="col" v-on:click="search('넷플릭스')">넷플릭스</div>
-                <div class="col" v-on:click="search('왓챠')">왓챠</div>
-                <div class="col" v-on:click="search('티빙')">티빙</div>
-                <div class="col" v-on:click="search('웨이브')">웨이브</div>
-                <div class="col-2" v-on:click="search('디즈니플러스')">디즈니플러스</div>
-                <div class="col-2" v-on:click="search('아마존프라임비디오')">프라임 비디오</div>
-            </div>
-        </div>  
-        <div class="container text-right">
-            <button>
-                <router-link to="/SubscribeBoardAdd">
-                    <button class="btn">글 등록</button>
-                </router-link>
-            </button>
-            <button>
-                <router-link to="/SubscribeBoardMyList">
-                    <button class="btn">내 구독 목록</button>
-                </router-link>
-            </button>
+<template>
+    <div class="container text-center">
+
+        <div class="grid text-center">
+            <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
         </div>
-        <div class="">
-            <div class="row">
-                <div class="col">
-                    글 번호
-                </div>
-                <div class="col">
-                    사이트
-                </div>
-                <div class="col">
-                    이름
-                </div>
-                
-                <div class="col">
-                    작성자
-                </div>
-                <div class="col">
-                    모집 마감일
-                </div>
-                <div class="col">
-                    모집 현황
-                </div>
-                <div class="col">
-                    진행 여부
-                </div>
+        <div class="row">
+            <div class="col" v-on:click="search('all')">전체보기</div>
+            <div class="col" v-on:click="search('넷플릭스')"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914"/></div>
+            <div class="col" v-on:click="search('왓챠')"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B"/></div>
+            <div class="col" v-on:click="search('티빙')"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100"/></div>
+            <div class="col" v-on:click="search('웨이브')"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></div>
+            <div class="col-2" v-on:click="search('디즈니플러스')"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white"/></div>
+            <div class="col-2" v-on:click="search('아마존프라임비디오')"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></div>
+        </div>
+    </div>
+    <div class="container text-right">
+        <router-link to="/SubscribeBoardAdd">
+            <button class="btn custom-button" style="background-color: #7AC6FF;">글 등록</button>
+        </router-link>
+        <router-link to="/SubscribeBoardMyList">
+            <button class="btn custom-button" style="background-color: #7AC6FF;">내 구독 목록</button>
+        </router-link>
+    </div>
+    <div class="bodylist" >
+        <div class="row">
+            <div class="col">
+                글 번호
             </div>
-            
-            
-                <div class="row" v-for="order in list" :key="order.subscribe_num" v-on:click="detail(order.subscribe_num)">
-                    <div class="col">
-                        {{order.subscribe_num}}
-                    </div>
-                    <div class="col">
-                        {{order.site}}
-                    </div>
-                    <div class="col">
-                        {{order.title}}
-                    </div>
-                    <div class="col">
-                        {{order.email.email}}
-                    </div>
-                    <div class="col">
-                        {{order.recruit_endperiod}}
-                    </div>
-                    
-                    <div class="col">
-                        {{order.recruitpeople}} / {{order.total_people}} 
-                    </div>
-                    <div class="col">
-                        <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
-                        <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
-                        <p class="care-text end" v-if="order.start_check==2">종료</p>
-                    </div>
-                    
+            <div class="col">
+                사이트
+            </div>
+            <div class="col">
+                이름
+            </div>
+
+            <div class="col">
+                작성자
+            </div>
+            <div class="col">
+                모집 마감일
+            </div>
+            <div class="col">
+                모집 현황
+            </div>
+            <div class="col">
+                진행 여부
             </div>
         </div>
-            
+
+
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
+
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
+            </div>
+        </div>
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row inglist" v-if="order.start_check === 1" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
+
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
+            </div>
+
+        </div>
+        <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row endlist" v-if="order.start_check === 2" v-on:click="detail(order.subscribe_num)">
+                <div class="col">
+                    {{ order.subscribe_num }}
+                </div>
+                <div class="col">
+                    {{ order.site }}
+                </div>
+                <div class="col">
+                    {{ order.title }}
+                </div>
+                <div class="col">
+                    {{ order.email.email }}
+                </div>
+                <div class="col">
+                    {{ order.recruit_endperiod }}
+                </div>
+
+                <div class="col">
+                    {{ order.recruitpeople }} / {{ order.total_people }}
+                </div>
+                <div class="col">
+                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 import dayjs from 'dayjs';
@@ -111,7 +164,6 @@ export default {
         const self = this;
         let loginId = sessionStorage.getItem('loginId')
         self.$axios.get('http://localhost:8181/subscribeboard') //비동기 요청
-
             .then(function (res) {
                 if (res.status == 200) {
                     self.list = res.data.list
@@ -134,7 +186,16 @@ export default {
         search(site) {
             const self = this;
             if (site == 'all') {
-                self.list = self.searchedList;
+                self.$axios.get('http://localhost:8181/subscribeboard') //비동기 요청
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            self.list = res.data.list
+                            self.checkmember();
+                        } else {
+                            alert('에러코드:' + res.status)
+                        }
+                    })
+                // self.list = self.searchedList;
             } else {
                 self.$axios.get('http://localhost:8181/subscribeboard/site/' + site)
                     .then(function (res) {
@@ -254,7 +315,7 @@ export default {
 
 </script>
  
-<style>
+<style lang="css">
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -264,14 +325,37 @@ export default {
     margin-top: 60px;
 }
 
-.beforelist {
-    /* background-color: aliceblue; */
+.custom-button {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    margin-right:10px;
+}
+/* .btn:hover{
+    background-color: aliceblue;
+} */
+.sbtitle {
+    margin: 30px;
 }
 
-.inglist {}
+.beforelist {
+    /* background-color: aliceblue; */
+    padding-top: 10px;
+    border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+}
+
+.inglist {
+    padding-top: 10px;
+    border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+}
 
 .endlist {
-    background-color: lightgray;
+    background-color: rgb(237, 237, 237);
+    padding-top: 10px;
+    border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+}
+
+.bodylist{
+    margin-bottom: 100px;
 }
 </style>
 

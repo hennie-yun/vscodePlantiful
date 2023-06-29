@@ -83,6 +83,7 @@ export default {
             .then(function(res){
                 if(res.status == 200){
                     alert(res.data.dto)
+                        location.href = "/calendar"
                 } else {
                     alert('그룹생성실패'+res.status)
                 }
