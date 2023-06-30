@@ -449,7 +449,8 @@ if (self.newEvent.end == 0) {
 self.newEvent.end = self.newEvent.start;
 };
 
-formData.append('email', sessionStorage.getItem('loginId'));
+      formData.append('email', sessionStorage.getItem('loginId'));
+      formData.append('group_num', self.newEvent.group_num);
 formData.append('title', self.newEvent.title);
 formData.append('start', self.newEvent.start);
 formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
@@ -516,7 +517,13 @@ cancel2(){
 
   this.snsEvent = false;
   this.showEventForm = false;
+      window.location.reload();
 },
+
+    xbtn() {
+      this.showEventForm = false;
+      this.shareEvent = false;
+    },
 
 //일정 클릭 상세보기
 handleEventClick(arg) {
