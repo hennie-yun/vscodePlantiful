@@ -97,10 +97,10 @@ export default {
                     if (res.status == 200) {
                         if (res.data.paydto != null) {
                             self.paidamount = self.paydto.paidamount;
-                            
                             let form = new FormData();
-                            formdata.append('paidamount', self.divisionResult)
-                            self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
+                            form.append('paidamount', self.divisionResult)
+                            form.append('email', self.email)
+                            self.$axios.post('http://localhost:8181/payment/withdraw/' + this.email, form)
                              .then(function (res) { 
                                 if(res.status ==200){
                                     alert(res.data.message)
