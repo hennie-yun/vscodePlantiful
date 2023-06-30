@@ -1,72 +1,99 @@
 <template>
-  <div class="container calendar_con" style="width: 70%; padding: 2%; height: 100vh;">
+      <div>
+        <div class="" style="display: flex; height: 100vh; ">
+          <div class="sidebar" style="width: 20%; padding: 2%; border: none; background-color: ivory;">
+            <div style="height: 50%;">
+              <h3>그룹 정보</h3>
+              <!-- 그룹 정보 내용 -->
 
-      <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+            </div>
+            <div>
+              <h3>그룹 리스트</h3>
+              <ul class="group_list">
+                <li v-for="group in groups" :key="group.schedulegroup_num" style="display: flex; justify-content: center;">
+                  <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
+                    style="margin-right: 20px;" @change="hideEvent(group.schedulegroup_num)" />
+                  <label :for="group.schedulegroup_num"><button @click="">{{ group.schedulegroup_title }}</button></label>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="calendar-con" style="width: 75%; padding: 2%;">
+            <FullCalendar ref="fullCalendar" :options="calendarOptions" />
 
-      <div v-if="showEventForm" class="head-event-form">
+
+
+            <!--  일정 추가/수정/삭제 코드 -->
+          </div>
+        </div>
+        <div v-if="showEventForm" class="head-event-form">
 
           <div class="event-form">
-           <div class="form-row form-buttons">
+            <div class="form-row form-buttons">
 
-            <button class="calendar_btn" @click="cancel">X</button>
-               </div>
+              <button class="calendar_btn" @click="xbtn">X</button>
+            </div>
 
-                                                                                                                                                  <div class="form-row">
-                                                  <label for="title">제목</label>
-                                                  <div class="input-wrapper">
-                                                    <input type="text" id="title" v-model="newEvent.title" :class="{ 'error': !newEvent.title }" />
-                                                    <!-- <div v-if="!newEvent.title" class="error-message">제목을 입력하시오.</div> -->
-                                                  </div>
-                                                </div>
+            <div class="form-row">
+              <label for="title">제목</label>
+              <div class="input-wrapper">
+                <input type="text" id="title" v-model="newEvent.title" :class="{ 'error': !newEvent.title }" />
+                <!-- <div v-if="!newEvent.title" class="error-message">제목을 입력하시오.</div> -->
+              </div>
+            </div>
 
 
 
-<div class="form-row">
+            <div class="form-row">
 
-<label for="start">시작 날짜</label>
+              <label for="start">시작 날짜</label>
 
-<input type="date" id="start" v-model="newEvent.start" />
+              <input type="date" id="start" v-model="newEvent.start" />
 
-</div>
+            </div>
+            <div class="form-row">
 
-<div class="form-row">
+              <label for="end">종료 날짜</label>
+              <input type="date" id="end" v-model="newEvent.end" />
 
-<label for="end">종료 날짜</label>
-   <input type="date" id="end" v-model="newEvent.end" />
+            </div>
 
-</div>
+            <div class="form-row">
 
-<div class="form-row">
+              <label for="startTime">시작 시간</label>
 
-<label for="startTime">시작 시간</label>
+              <input type="time" id="startTime" v-model="newEvent.startTime" />
 
-<input type="time" id="startTime" v-model="newEvent.startTime" />
+            </div>
+            <div class="form-row">
 
-</div>
+              <label for="endTime">종료 시간</label>
 
-<div class="form-row">
+              <input type="time" id="endTime" v-model="newEvent.endTime" />
 
-<label for="endTime">종료 시간</label>
+            </div>
 
-<input type="time" id="endTime" v-model="newEvent.endTime" />
+            <div class="form-row">
 
-</div>
+              <label for="info">일정 내용</label>
 
-<div class="form-row">
+              <textarea id="info" v-model="newEvent.info"></textarea>
 
-<label for="info">일정 내용</label>
+            </div>
 
-<textarea id="info" v-model="newEvent.info"></textarea>
 
-</div>
-  <div class="form-row">
-                                                                                                                                                                        <label for="group_num">개인/그룹</label>
-                                                                                                                                                                      <select id="group_num" v-model="newEvent.group_num">
-                                                                                                                                                                      <option value="0" default>개인 일정</option>
-                                                                                                                                                                      <option v-for="group in groups" :value="group.schedulegroup_num">{{ group.schedulegroup_title }}</option>
-                                                                                                                                                                      </select>
-                                                                                                                                                                      </div>
-                                                                                                                                                                                      <!-- <div class="form-row">
+            <div class="form-row">
+              <label for="group_num">개인/그룹</label>
+              <select id="group_num" v-model="newEvent.group_num">
+                <option value="0" default>개인 일정</option>
+                <option v-for="group in groups" :value="group.schedulegroup_num" :key="group.schedulegroup_num">
+                  {{ group.schedulegroup_title }}
+                </option>
+              </select>
+            </div>
+
+
+            <!-- <div class="form-row">
                   <label for="notification">알림 설정</label>
                   <select id="notification" v-model="newEvent.alert">
                                                                                                                                                                  <option value="0">알림 없음</option>
@@ -82,88 +109,90 @@
 
 
 
-       <div class="form-row" v-if="newEvent.start == newEvent.end">
-       <label for="isLoop">일정 반복 여부</label>
-        <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" />반복 안 함
-         <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
-           </div>
+            <div class="form-row" v-if="newEvent.start == newEvent.end">
+              <label for="isLoop">일정 반복 여부</label>
+              <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" />반복 안 함
+              <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" />반복 설정
+            </div>
 
-           <div class="form-row" v-if="newEvent.isLoop === '2'">
-          <label for="day">반복 요일</label>
-               <select id="day" v-model="newEvent.day">
+            <div class="form-row" v-if="newEvent.isLoop === '2'">
+              <label for="day">반복 요일</label>
+              <select id="day" v-model="newEvent.day">
                 <option value="1">월요일</option>
-                 <option value="2">화요일</option>
-                 <option value="3">수요일</option>
-                  <option value="4">목요일</option>
-                                                                                                                                                        <option value="5">금요일</option>
-         <option value="6">토요일</option>
-           <option value="0">일요일</option>
-        </select>
-                                                                                                                                     </div>
+                <option value="2">화요일</option>
+                <option value="3">수요일</option>
+                <option value="4">목요일</option>
+                <option value="5">금요일</option>
+                <option value="6">토요일</option>
+                <option value="0">일요일</option>
+              </select>
+            </div>
 
-  <div class="form-row form-buttons">
+            <div class="form-row form-buttons">
 
-     <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
+              <button v-if="isNewEvent" class="calendar_btn" @click="addEvent">일정 추가</button>
 
-     <button v-else class="calendar_btn" @click="updateEvent">수정</button>
+              <button v-else class="calendar_btn" @click="updateEvent">수정</button>
 
-       <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
+              <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
 
-       </div>
+            </div>
 
-       </div>
-
+          </div>
+        </div>
       </div>
 
-                                                                                                                                                     </div>
+
+      <!-- 일정 공유 -->
+      <div v-if="shareEvent" class="share-event-form">
+        <div class="form-content">
+          <div class="shareform-row">
+            <h5 style="text-align: center;">일정 공유</h5>
+          </div>
+          <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
+            <div style="display: flex; align-items: center;">
+
+              <button class="share-btn" @click="copyUrl"><img :src="require('@/assets/image/url.png')"
+                  style="margin-right: 10px; width:50px" />url복사</button>
+            </div>
+            <div style="display: flex; align-items: center;">
+
+              <button class="share-btn" @click="shareKakao"><img :src="require('@/assets/image/kakaotalk.png')"
+                  @click="shareKakao" style="margin-right: 10px; width: 50px;" />카카오톡 공유</button>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <button class="share-btn" @click="cancel">아니오</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- sns 공유 -->
+      <div v-if="snsEvent" class="share-event-form">
+        <div class="form-content">
+          <div class="shareform-row">
+            <h5 style="text-align: center;">sns 연동</h5>
+          </div>
+          <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
+            <div style="display: flex; align-items: center;">
+
+              <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')"
+                  style="margin-right: 10px; width:50px" />naver</button>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center;">
+
+            <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao"
+                style="margin-right: 10px; width: 50px;" />카카오톡</button>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+          <button class="share-btn" @click="cancel2">아니오</button>
+        </div>
+      </div>
 
 
-                 <!-- 일정 공유 -->
-                <div v-if="shareEvent" class="share-event-form">
-                      <div class="form-content">
-                        <div class="shareform-row">
-                          <h5 style="text-align: center;">일정 공유</h5>
-                        </div>
-                        <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-                          <div style="display: flex; align-items: center;">
-
-                            <button class="share-btn" @click="copyUrl"><img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width:50px" />url복사</button>
-                          </div>
-                          <div style="display: flex; align-items: center;">
-
-                            <button class="share-btn" @click="shareKakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="shareKakao" style="margin-right: 10px; width: 50px;" />카카오톡 공유</button>
-                          </div>
-                        </div>
-                        <div style="display: flex; justify-content: center; margin-top: 10px;">
-                          <button class="share-btn" @click="cancel">아니오</button>
-                        </div>
-                      </div>
-                    </div>
-
-                        <!-- sns 공유 -->
-                <div v-if="snsEvent" class="share-event-form">
-                      <div class="form-content">
-                        <div class="shareform-row">
-                          <h5 style="text-align: center;">sns 연동</h5>
-                        </div>
-                        <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-                          <div style="display: flex; align-items: center;">
-
-                            <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')" style="margin-right: 10px; width:50px" />naver</button>
-                          </div>
-                          </div>
-                          <div style="display: flex; align-items: center;">
-
-                            <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao" style="margin-right: 10px; width: 50px;" />카카오톡</button>
-                          </div>
-                        </div>
-                        <div style="display: flex; justify-content: center; margin-top: 10px;">
-                          <button class="share-btn" @click="cancel2">아니오</button>
-                        </div>
-                      </div>
-                
-
-                   <router-view/>
+    <router-view />
 </template>
 
 <script>
@@ -175,7 +204,7 @@ import axios from 'axios';
 
 
 export default {
-  
+
   mounted() {
 
   },
@@ -236,12 +265,9 @@ export default {
   // 페이지 시작- 실행되는 함수
   //로그인 한 사람의 일정 보여주기
   created() {
-
-
     const self = this;
-    let token = sessionStorage.getItem('token')
-    this.email = sessionStorage.getItem('loginId')
-    console.log(this.email + " 로그인 ");
+    let token = sessionStorage.getItem('token');
+    this.email = sessionStorage.getItem('loginId');
 
     self.groupColors = {
       1: '#3F48CC',
@@ -261,57 +287,66 @@ export default {
           const grouplist = res.data.list;
           self.items = grouplist;
           console.log(self.items)
+          // self.groups = grouplist.map((item) => ({
+          //   group_num: item.schedulegroup_num,
+          //   group_color: item.schedulegroup_color,
+          //   group_title: item.schedulegroup_title
+          // }));
           self.groups = grouplist.map((item) => item.schedulegroup_num);
-          console.log(self.groups)
-          // console.log(self.items);
-          // self.colors = grouplist.map((item) => item.schedulegroup_num.schedulegroup_color);
+          console.log(self.groups);
+          self.colors = self.groups.map((group) => self.groupColors[group.group_color] || 'blue');
+
+          self.$axios
+            .get("http://localhost:8181/schedules/email/" + self.email, {
+              headers: { token: token },
+            })
+            .then(function (res) {
+              if (res.status === 200) {
+                const reslist = res.data.list;
+                reslist.forEach(function (item) {
+                  const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || 'blue';
+                  const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
+                  if (item.isLoop === 2) {
+                    self.calendarOptions.events.push({
+                      schedule_num: item.schedule_num,
+                      group_num: item.group_num,
+                      title: generateTitle(item),
+                      start: item.start,
+                      end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                      color: (item.group_num && item.group_num.group_num === item.schedulegroup_num) ? groupColor : '#7AC6FF',
+                      display: 'block',
+                      daysOfWeek: item.day,
+                      textColor: textColor
+                    });
+                  } else {
+                    self.calendarOptions.events.push({
+                      schedule_num: item.schedule_num,
+                      group_num: item.group_num,
+                      title: generateTitle(item),
+                      start: item.start,
+                      end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
+                      color: (item.group_num && item.group_num.group_num === item.schedulegroup_num) ? groupColor : '#7AC6FF',
+                      display: 'block',
+                      textColor: textColor
+                    });
+                  }
+                });
+
+                function generateTitle(item) {
+                  let title = item.title;
+                  if (item.startTime || item.endTime) {
+                    title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : '');
+                  }
+                  return title;
+                }
+              } else {
+                alert("에러코드: " + res.status);
+              }
+            });
         } else {
           alert("에러코드: " + res.status);
         }
       });
-
-
-    self.$axios.get("http://localhost:8181/schedules/email/" + self.email, { headers: { 'token': token } })
-      .then(function (res) {
-        if (res.status === 200) {
-          const reslist = res.data.list;
-          reslist.forEach(function (item) {
-            // const groupColor = self.groupColors[items.schedulegroup_color];
-            if (item.isLoop === 2) { // 반복 설정된 일정
-              self.calendarOptions.events.push({
-                schedule_num: item.schedule_num,
-                group_num: item.group_num,
-                title: generateTitle(item),
-                start: item.start,
-                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
-                color: 'blue',
-                display: 'block',
-                daysOfWeek: item.day,
-              });
-            } else { // 반복 설정되지 않은 일정
-              self.calendarOptions.events.push({
-                schedule_num: item.schedule_num,
-                group_num: item.group_num,
-                title: generateTitle(item),
-                start: item.start, // start에 날짜와 시간을 함께 표시
-                end: dayjs(item.end).add(1, 'day').format('YYYY-MM-DD'),
-                color: 'blue',
-                display: 'block',
-              });
-            }
-          });
-          function generateTitle(item) {
-            let title = item.title;
-            if (item.startTime || item.endTime) { // startTime 또는 endTime 중 하나라도 존재할 경우
-              title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : ''); // endTime 앞에 공백 추가
-            }
-            return title;
-          }
-        } else {
-          alert("에러코드: " + res.status);
-        }
-      })
-
   },
 
 methods: {
@@ -589,12 +624,7 @@ alert("에러코드:" + res.status);
 --fc-border-color: black;
 --fc-daygrid-event-dot-width: 5px;
 }
-@font-face {
-font-family: 'Pretendard-Regular';
-src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-font-weight: 400;
-font-style: normal;
-}
+
 .fc-direction-ltr{
 height: 95vh;
 
