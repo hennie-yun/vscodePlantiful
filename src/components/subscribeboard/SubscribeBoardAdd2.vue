@@ -39,7 +39,7 @@
             
             <div class="col ">
                 <label for="floatingInputValue" class="form-label">모집 마감일</label>
-                <input type="date" class="form-control" v-model="recruit_endperiod" required>
+                <input type="date" class="form-control" v-model="recruit_endperiod" required :min="minDate">
             </div>
         </div>
 
@@ -64,7 +64,7 @@
         <div class="row align-items-center">
             <div class="col">
                 <label for="floatingInputValue" class="form-label">구독 시작일</label>
-                <input type="date" class="form-control" v-model="subscribe_startdate" required>
+                <input type="date" class="form-control" v-model="subscribe_startdate" required :min="minStartDate">
             </div>
             <div class="col">
             매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.
@@ -96,6 +96,14 @@
 import dayjs from 'dayjs'
 export default {
     name: 'SubscribeBoardAdd',
+    computed: {
+        minDate() {
+            return dayjs().add(2, 'day').format('YYYY-MM-DD')
+        },
+        minStartDate() {
+            return dayjs(this.recruit_endperiod).add(1, 'day').format('YYYY-MM-DD');
+        },
+    },
     component() {
         dayjs
     },
@@ -119,6 +127,10 @@ export default {
         }
     },
     watch: {
+        subscribe_startdate(value) {
+            this.formValidated = !!value;
+            this.checkStartDate();
+        },
         site(value) {
             this.formValidated = !!value;
         },
@@ -143,6 +155,7 @@ export default {
 
     },
     methods: {
+
         checkcash() {
             const self = this;
             self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
@@ -261,7 +274,6 @@ export default {
                 formdata.append('register_date', dayjs(self.register_date))
                 formdata.append('recruit_endperiod', dayjs(self.recruit_endperiod))
                 formdata.append('payment_date', dayjs(self.subscribe_startdate))
-                formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
                 formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
                 formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
 
