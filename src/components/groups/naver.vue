@@ -1,120 +1,57 @@
-<!-- <template>
-  <div>
-
-    <button @click="authorize">Authorize with Naver</button>
-  </div>
-</template> 
-
-<script>
-import axios from 'axios';
-import { Alert } from 'bootstrap';
-
-export default {
-  data(){
-    return{
-
-    }
-  },
-  created:function(){ 
- this.authorize()
-
-  },
- 
-  methods: {
- 
-  authorize(){
-    let clientId = "IiiFJKBOyzL3qvfXasPq"
-    let redirectURI = "http://localhost:8181/api/naver/callback"
-
-    const self = this
-    self.$axios.get("http://localhost:8181/api/naver/go")
-    .then(function(res){
-      if(res.status == 200){
-        alert(res.data.state)
-        let state = res.data.state
-        let apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code";
-            apiURL += "&client_id=" + clientId;
-            apiURL += "&redirect_uri=" + redirectURI;
-            apiURL += "&state=" + state;
-        
-           window.location.href=apiURL
-           this.calendar
-      } else {
-        alert(res.status)
-      
-      }
-    })
-  },
-  calendar(){
-    $axios.get('http://localhost:8181/api/naver/callback')
-    .then(function(res){
-      if(res.status == 200){
-        alert(res.data)
-        $axios.get('http://localhost:8181/api/naver/calendar')
-        .then(function(res){
-          if(res.status == 200){
-            alert(res.data)
-          }
-        })
-      }
-    })
-  }
-
-  }
-}   
-    
-
-</script>
-
-<style lang="">
-    
-</style> -->
 <template>
   <div>
-    <button @click="login">Login</button>
+    
+    <button v-on:click="token">네이버 연동하기</button>
   </div>
 </template>
 
 <script>
+
+
+
 export default {
+  name: 'naver',
+ 
+
+  data(){
+    return {
+     
+    }
+  },
   mounted() {
-    const clientId = 'IiiFJKBOyzL3qvfXasPq';
-    const callbackUrl = 'http://localhost:8081/calendar';
-
-    // Load Naver login script
-    const script = document.createElement('script');
-    script.src = 'https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js';
-    script.charset = 'utf-8';
-    document.head.appendChild(script);
-
-    // Initialize Naver login
-    script.onload = () => {
-      const naverIdLogin = new window.naverIdLogin(clientId, callbackUrl);
-      this.naverIdLogin = naverIdLogin;
-    };
-  
+    
+    
+    
   },
   methods: {
-    login() {
-      // Print access token value
-      console.log(this.naverIdLogin.oauthParams.access_token)
-      const access_token = this.naverIdLogin.oauthParams.access_token;
-      // Retrieve Naver user profile
+    token(){
+      var link = document.location.href.split("?")[1]
+      const code = link.split("=")[1].split("&")[0]
+      const state = link.split("&")[1].split("&")[0].split("=")[1]
+    
+      console.log(code)
+      console.log(state)
       let formData = new FormData()
-      formData.append('access_token', access_token)
-      
-      this.$axios.get('http://localhost:8181/api/naver/calendar', {headers:{'access_token':access_token}})
+      formData.append("code", code)
+      formData.append("state", state)
+     
+      this.$axios.get('http://localhost:8181/api/naver/callback', formData)
       .then(function(res){
-        if(res.status == 200){
-          alert('complete')
-          console.log(res.data)
-        } else {
-          alert(res.data)
-        }
+        alert(res.data)
       })
-      
+
+    }  
+    }
   
-  }}
+  
 
 };
 </script>
+<style scoped>
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 00;
+    font-style: normal;
+}
+</style>

@@ -4,15 +4,20 @@
             <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
                 <!-- <button class="" style="vertical-align: center;">ㅁㄴㅇ</button> -->
             </div>
-            <v-container class="rounded-xl" id="messages" ref="box">
+            <v-container class="rounded-xl overflow-x-hidden overflow-y-auto" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
-                    <div class="msg-box" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
+                    <div class="msg-box rounded-b-lg" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
                         <div class="img-info-box elevation-1" style="width:100%;" @click="goRoom(item.num)">
                             <div class="img-box">
                                 <img :src="'http://localhost:8181/chat/' + item.lastSender.email"
                                 @error="replaceProfile" style="width:84px; height: 84px;"/>
                             </div>
                             <div class="info-box text-left">
+                                <p class="last-msg" style="">
+                                    {{ item.subscribeNum.email.nickname }} 님의 
+                                    {{ item.subscribeNum.site }} 구독 채팅방
+                                </p>
+
                                 <p class="last-msg">{{ item.lastSender.nickname }}</p>
                                 <p class="last-msg" style="font-size: 24px;">{{ item.lastMsg }}</p>
                             </div>
@@ -49,6 +54,7 @@ export default {
         let list = this.roomList
         self.$axios.get("http://localhost:8181/chat/roomlist", {params : {email : this.loginId}})
         .then((ret) => {
+            console.log(ret)
             for(let obj of ret.data.list) {
                 console.log(obj)
                 list.push(obj)

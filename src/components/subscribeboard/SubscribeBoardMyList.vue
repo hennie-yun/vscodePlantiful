@@ -8,11 +8,11 @@
             {{order.subscribe_num.site}}
         </div> -->
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-4 g-4">
             <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)" >
                 <div class="col mylistbody">
                     <!-- 팀원 -->
-                    <div class="card h-100" >
+                    <div class="card h-100 ingcardlist" v-if="order.start_check == 0 || order.start_check == 1" >
                         <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
                         <div class="card-body">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
@@ -26,19 +26,19 @@
                         </div>
                     </div>
 
-                    <!-- <div class="card h-100" v-if="order.subscribe_num.email.email == order.email.email" >
+                    <div class="card h-100 endcardlist" v-if="order.start_check == 2" >
                         <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
                         <div class="card-body">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
                             <p class="card-text"> {{order.email.email}} (모집자)</p>
-                            <p class="card-text"> 지급될 총 포인트 {{order.subscribe_num.total_point}}</p>
+                            <p class="card-text"> 남은 포인트 {{order.point_basket}}</p>
                             <p class="card-text"> 종료일 {{subenddate}}</p>
                             
                             <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
                             <p class="care-text end" v-if="order.start_check==2">종료</p>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </div>
