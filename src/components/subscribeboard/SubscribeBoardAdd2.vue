@@ -67,9 +67,6 @@
                 <input type="date" class="form-control" v-model="subscribe_startdate" required :min="minStartDate">
             </div>
             <div class="col">
-            매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.
-            </div>
-            <div>
                 <label for="subscriptionPeriod">구독 기간</label>
                 <select id="subscriptionPeriod" v-model="subscriptionPeriod">
                     <option value="1" selected>1개월</option>
@@ -86,6 +83,10 @@
                 <input type="date" class="form-control" v-model="subscribe_enddate" required>
             </div> -->
         </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="agree" v-model="agree">
+            <label class="form-check-label" for="inlineCheckbox1">모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.</label>
+        </div>
         <div class="row">
             <button v-on:click="checkcash">글 등록하기 </button>
         </div>
@@ -98,7 +99,8 @@ export default {
     name: 'SubscribeBoardAdd',
     computed: {
         minDate() {
-            return dayjs().add(2, 'day').format('YYYY-MM-DD')
+            // return dayjs().add(2, 'day').format('YYYY-MM-DD')
+            return dayjs().subtract(2, 'day').format('YYYY-MM-DD')
         },
         minStartDate() {
             return dayjs(this.recruit_endperiod).add(1, 'day').format('YYYY-MM-DD');
@@ -152,6 +154,9 @@ export default {
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },
+        agree(value) {
+            this.formValidated = !!value;
+        },
 
     },
     methods: {
@@ -172,11 +177,11 @@ export default {
                                         if (dto != null) {
                                             //돈 있음
                                             self.fflag = true;
-                                            alert("true : " + self.fflag)
+                                            // alert("true : " + self.fflag)
                                             self.add()
                                         } else {
                                             self.fflag = false;
-                                            alert("false : " + self.fflag)
+                                            // alert("false : " + self.fflag)
                                         }
                                     } else {
                                         alert(res.data.message)

@@ -9,8 +9,8 @@
     </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
-        <input v-model="email" type="text" placeholder="email"  style="flex: 1; margin-right: 5px;" :disabled="isVisible">
-        <button @click="sendEmail" style="font-size : 13px; width: 80px; height:40px;">메일 체크</button>
+        <input v-model="email" type="text" placeholder="email"  style="flex: 1; margin-right: 5px;" :disabled="Visible">
+        <button @click="loginsendEmail"  style="font-size : 13px; width: 80px; height:40px;" v-show="loginmailcheck">메일 체크</button>
       </div>
 
       <div class="form-element">
@@ -64,9 +64,11 @@ export default {
       echeck: '',
       img: '',
       isVisible: false,
+      Visible: false,
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
-      submitText: "가입"
+      submitText: "가입",
+      loginmailcheck : true
     }
   },
   methods: {
@@ -81,14 +83,17 @@ export default {
     showSignup() {
       this.activeForm = "signup";
       this.submitText = "가입";
+      location.href ="/";
     },
     showSignin() {
       this.activeForm = "signin";
-      this.submitText = "회원가입";
+      this.submitText = "로그인";
+      this.loginmailcheck = false;
     },
     showReset() {
       this.activeForm = "reset";
-      this.submitText = "비밀번호 변경";
+      this.submitText = "임시 비밀번호 전송";
+      this.loginmailcheck = false;
     },
     handleButtonClick() {
       if (this.activeForm === 'signup') {
@@ -96,10 +101,29 @@ export default {
       } else if (this.activeForm === 'signin') {
         this.login();
       } else if (this.activeForm === 'reset') {
-        this.reset();
+        this.findpwdsendEmail();
       }
     },
-    sendEmail() {
+    findpwdsendEmail(){
+      const self = this;
+      const form = new FormData();
+      form.append('email', self.email);
+      self.$axios.post('http://localhost:8181/members/emailpwdcheck', form)
+        .then(function (res) {
+          if (res.data.exist) {
+            alert(res.data.exist)
+          } else if (res.status == 200) {
+            alert('이메일이 발송되었습니다');
+            alert ( '전달 드린 임시비밀번호로 로그인 하세요')
+            const key = res.data.key;
+            alert(key);
+            self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+          } else {
+            alert('잘못된 이메일입니다');
+          }
+        })
+    },
+    loginsendEmail() {
       const self = this;
       if (this.email == '') {
         alert('이메일을 입력해주세요')
@@ -129,8 +153,9 @@ export default {
       const self = this;
       if (self.echeck === self.emailKey) {
         alert('확인 완료');
-        self.mailVisible = false;
-        self.button = true;
+        self.Visible = true;
+        self.isVisible = false;
+        self.loginmailcheck = false;
       } else {
         alert('인증번호가 일치하지 않습니다.');
       }
@@ -156,7 +181,8 @@ export default {
           if (res.status === 200) {
             let dto = res.data.dto
             console.log(dto)
-            location.href = '/'
+            self.showSignin();
+            
           } else {
             alert('에러코드 :' + res.status)
           }
@@ -289,10 +315,10 @@ export default {
    opacity: 0;
  }
 
- /* .form.reset .form-elements>div:nth-child(3) {
+ .form.reset .form-elements>div:nth-child(2) {
    height: 0px;
    opacity: 0;
- } */
+ }
 
  .form-elements input:focus {
    outline: none !important;

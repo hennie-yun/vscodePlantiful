@@ -6,12 +6,22 @@
         </div>
         <div class="row">
             <div class="col" v-on:click="search('all')">전체보기</div>
-            <div class="col" v-on:click="search('넷플릭스')"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914"/></div>
-            <div class="col" v-on:click="search('왓챠')"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B"/></div>
-            <div class="col" v-on:click="search('티빙')"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100"/></div>
-            <div class="col" v-on:click="search('웨이브')"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></div>
-            <div class="col-2" v-on:click="search('디즈니플러스')"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white"/></div>
-            <div class="col-2" v-on:click="search('아마존프라임비디오')"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></div>
+            <div class="col" v-on:click="search('넷플릭스')"><img
+                    src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" />
+            </div>
+            <div class="col" v-on:click="search('왓챠')"><img
+                    src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" />
+            </div>
+            <div class="col" v-on:click="search('티빙')"><img
+                    src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" /></div>
+            <div class="col" v-on:click="search('웨이브')"><img
+                    src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white" /></div>
+            <div class="col-2" v-on:click="search('디즈니플러스')"><img
+                    src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" />
+            </div>
+            <div class="col-2" v-on:click="search('아마존프라임비디오')"><img
+                    src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" />
+            </div>
         </div>
     </div>
     <div class="container text-right">
@@ -22,7 +32,7 @@
             <button class="btn custom-button" style="background-color: #7AC6FF;">내 구독 목록</button>
         </router-link>
     </div>
-    <div class="bodylist" >
+    <div class="bodylist">
         <div class="row">
             <div class="col">
                 글 번호
@@ -150,6 +160,12 @@ export default {
             flag: 0,
             partylist: [],
             email: sessionStorage.getItem('loginId'),
+            subscribe_enddate: null,
+            recruit_endperiod: null,
+            recruitpeople: 0,
+            total_people: 0,
+            subscribe_num: 0,
+            point_basket: 0,
         }
     },
 
@@ -172,8 +188,6 @@ export default {
                     alert('에러코드:' + res.status)
                 }
             })
-
-
 
     },
     methods: {
@@ -221,7 +235,11 @@ export default {
                             order.recruitpeople = self.countRecruitPeople(res.data.list);
                             const item = res.data.list[0]; // 첫 번째 항목 선택
                             order.start_check = item.start_check; // start_check 값 확인
-                            console.log(order.start_check); // start_check 값 출력
+                            // console.log(order.start_check); // start_check 값 출력
+                            self.partylist.forEach(function (item) {
+                                self.point_basket = item.point_basket
+                            });
+
                         } else {
                             alert('에러코드:' + res.status);
                         }
@@ -235,62 +253,114 @@ export default {
 
             Promise.all(promises)
                 .then(function () {
-                    console.log('모든 비동기 요청 완료');
+                    // console.log('모든 비동기 요청 완료');
+
+
+
                     self.list.forEach(function (order) {
-                        console.log(self.list);
+                        // console.log(self.list);
                         const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
+                        self.recruit_endperiod = recruitEndPeriodFormatted;
                         order.recruit_endperiod = recruitEndPeriodFormatted;
                         const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
-                        order.subscribe_enddate = subEnddateFormatted;
-                        if (order.recruitpeople === order.total_people && self.currentDate > order.recruit_endperiod) {
+                        self.subscribe_enddate = subEnddateFormatted;
+                        self.recruitpeople = order.recruitpeople
+                        self.total_people = order.total_people
+                        self.total_point = order.total_point
+
+                        if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod) {
                             // 인원수 같음 & 모집일 지남
                             order.flag = 1;
-                        } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
+
+                        } else if (order.recruitpeople !== order.total_people && self.currentDate > self.recruit_endperiod) {
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
+                            //한구독의 전체금액 
+                            // point basket & cash 관리 
+                            // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
+                            if (self.point_basket != 0) {
+                                const price = order.total_point / self.total_people
+                                console.log(price)
+                                const form = new FormData();
+                                form.append('price', price)
+                                form.append('email', self.email)
+                                console.log(self.email)
+                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                    .then(function (res) {
+                                        if (res.status == 200) {
+                                            console.log('모집 종료로 금액 반환 되었음')
+                                            self.$axios
+                                                .patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                                .then(function (res) {
+                                                    if (res.status === 200) {
+                                                        console.log('취소돼서 0으로 만들고 돌아감');
+                                                    }
+                                                })
+                                                .catch(function (error) {
+                                                    // 에러 처리
+                                                    console.error('에러 발생:', error);
+                                                });
+                                        } else {
+                                            alert('오류')
+                                        }
+                                    });
+                            } else {
+                                console.log('이미 실행됨');
+                            }
+
+                        } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
+                            // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
+                            if (self.point_basket != 0) {
+
+                                const self = this;
+                                const price = order.subscribe_num.total_point;
+                                console.log(price);
+                                const email = order.subscribe_num.email.email(모집자);
+                                console.log(email);
+                                const form = new FormData();
+                                form.append('email', email);
+                                form.append('price', price);
+                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                    .then(function (res) {
+                                        if (res.status == 200) {
+                                            alert('구독 끝 - 모집자에게 돈 돌아감 ')
+                                            self.$axios
+                                                .patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                                .then(function (res) {
+                                                    if (res.status === 200) {
+                                                        console.log('구독 종료일 지나서 0으로 만들고 돌아감');
+                                                    } else {
+                                                        alert(res.status + 'money 오류')
+                                                    }
+                                                })
+                                                .catch(function (error) {
+                                                    // 에러 처리
+                                                    console.error('에러 발생:', error);
+                                                });
+                                        } else {
+                                            console.log('실패 ; ')
+                                        }
+                                    })
+                                    .catch(function (error) {
+                                        alert('에러코드:' + error.response.status);
+                                    });
+                            } else {
+                                console.log('이미 실행됨');
+                            }
                         } else {
                             order.flag = 0;
                         }
-                        self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag
-                            , {email : order.email})
+                        self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
                                 // alert(res.data);
-                                console.log(order.start_check);
+                                console.log(order.subscribe_num + ':' + order.start_check);
                             })
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
                             });
                     });
 
-                    // point basket & cash 관리 
-                    if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
-                        // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
-                        if (order.point_basket != 0) {
-                            self.$axios
-                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
-                                .then(function (res) {
-                                    if (res.status === 200) {
-                                        alert('구독 종료일 지나서 0으로 만들고 돌아감');
-                                    }
-                                });
-                        } else {
-                            alert('이미 실행됨');
-                        }
-                    }
-                    else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
-                        // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-                        if (order.point_basket != 0) {
-                            self.$axios
-                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
-                                .then(function (res) {
-                                    if (res.status === 200) {
-                                        alert('취소돼서 0으로 만들고 돌아감');
-                                    }
-                                });
-                        } else {
-                            alert('이미 실행됨');
-                        }
-                    }
+
                 })
                 // .then(function () {
                 //     console.log('모든 비동기 요청 완료');
@@ -315,7 +385,17 @@ export default {
 
 </script>
  
-<style lang="css">
+<style scoped>
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+* {
+    font-family: 'Pretendard-Regular';
+    /* font-weight: 900; */
+}
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -328,8 +408,9 @@ export default {
 .custom-button {
     margin-top: 20px;
     margin-bottom: 30px;
-    margin-right:10px;
+    margin-right: 10px;
 }
+
 /* .btn:hover{
     background-color: aliceblue;
 } */
@@ -346,6 +427,7 @@ export default {
 .inglist {
     padding-top: 10px;
     border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+    background-color: #7ac5ff85;
 }
 
 .endlist {
@@ -354,7 +436,7 @@ export default {
     border-bottom: 1px solid rgba(82, 82, 82, 0.224);
 }
 
-.bodylist{
+.bodylist {
     margin-bottom: 100px;
 }
 </style>
