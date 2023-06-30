@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="" style="width:65%">
         <div>
             <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
                 <v-icon icon="mdi-keyboard-backspace" /> 
@@ -11,12 +11,12 @@
             <v-card-text>
                 <v-container>
                     <div class="pt-5" v-for="(item, idx) in recvList" v-bind:key="idx">
-                        <div class="v-col-4 rounded-lg elevation-1" max-width="400" 
+                        <div class="v-col-7 rounded-lg elevation-1 p-2" 
                             :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
                             <v-card-text>
                                 <v-row @click="remove(item, idx, $event)">
                                     <v-col cols="2" style="padding:0;">
-                                        <div class="pl-6 pt-3" 
+                                        <div class="pl-3 pt-3" 
                                             style="color : #737373; font-size: 16px;" >
                                             <div>
                                                 <div class="rounded-circle" style="background-color: white; width:44px; height: 44px;">
@@ -26,7 +26,7 @@
                                             </div>
                                         </div>
                                     </v-col>
-                                    <v-col align-self="center" cols="4">
+                                    <v-col align-self="center" cols="auto">
                                         {{ item.member.nickname }}
                                     </v-col>
                                     <v-col align-self="end">
@@ -37,7 +37,7 @@
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col class="py-3" >
+                                    <v-col class="py-1" >
                                         <div class="text-left pl-6 fs-4" > {{ item.message }}
                                         </div>
                                     </v-col>
@@ -185,7 +185,8 @@ export default {
 </script>
 <style>
     .ml-auto {  
-        background-color: #7AC6FF;
+        background-color: #7AC6FF
+;
     }
 
     .mr-auto {
@@ -193,7 +194,6 @@ export default {
     }
 
     #messages {
-    
         width: 100%; 
         height: 450px; 
         padding: 10px;

@@ -69,6 +69,21 @@
                             {{  order.subscribe_num.subscribe_enddate }}
                         </div>
                 </div>
+                <div class="row">
+                    <div class="col subboardtitle">
+                        총 금액
+                    </div>
+                        <div class="col subboardcontent">
+                            {{ order.subscribe_num.total_point }}
+                        </div>
+                    
+                    <div class="col subboardtitle">
+                        인당 금액
+                    </div>
+                        <div class="col subboardcontent">
+                            {{  order.subscribe_num.total_point/order.subscribe_num.total_people }}  
+                        </div>
+                </div>
             </div>
             
 
@@ -91,12 +106,15 @@
                 <div class="col">
                     남은 포인트
                 </div>
-                <div class="col" v-if="order.email.email === loginId">
+                <div class="col">
+                    {{ order.point_basket }}
+                </div>
+                <!-- <div class="col" v-if="order.email.email === loginId">
                     {{ order.point_basket }}
                 </div>
                 <div class="col" v-if="order.email.email !== loginId">
                     비공개 
-                </div>
+                </div> -->
             </div>
         </div>       
     </div>
@@ -121,26 +139,45 @@ export default {
         addSchedule() {
             const self = this;
             let form = new FormData();
-            form.append('email', sessionStorage.getItem('loginId'));
-            form.append('title', this.list[0].subscribe_num.site + '구독 일정');
-            form.append('start', this.list[0].subscribe_num.subscribe_startdate);
-            form.append('end', this.list[0].subscribe_num.subscribe_enddate);
-            form.append('info', this.list[0].subscribe_num.title);
-            form.append('day', null);
-            self.$axios.post("http://localhost:8181/schedules", form)
-                .then(response => {
-                    // 저장된 이벤트 변수에 저장
-                    const savedEvent = response.data.dto;
-                    self.calendarOptions.events.push({
-                        title: savedEvent.title,
-                        start: savedEvent.start,
-                        end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
-                        daysOfWeek: savedEvent.day,
-                        display: 'block',
+            const createEvent = (title, start, info, end) => {
+                const form = new FormData();
+                form.append('email', sessionStorage.getItem('loginId'));
+                form.append('title', title);
+                form.append('start', start);
+                form.append('end', end);
+                form.append('info', info);
+                form.append('day', null);
+
+                self.$axios.post("http://localhost:8181/schedules", form)
+                    .then(response => {
+                        const savedEvent = response.data.dto;
+                        self.calendarOptions.events.push({
+                            title: savedEvent.title,
+                            start: savedEvent.start,
+                            end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+                            daysOfWeek: savedEvent.day,
+                            display: 'block',
+                        });
+                        alert('일정이 추가되었습니다.');
                     });
-                    alert('일정이 추가되었습니다.')
-                })
-        },
+            };
+
+            createEvent(
+                this.list[0].subscribe_num.site + '구독 시작일',
+                this.list[0].subscribe_num.subscribe_startdate,
+                '구독글 제목: ' + this.list[0].subscribe_num.title,
+                this.list[0].subscribe_num.subscribe_startdate
+            );
+
+            createEvent(
+                this.list[0].subscribe_num.site + '구독 종료일',
+                this.list[0].subscribe_num.subscribe_enddate,
+                '구독글 제목: ' + this.list[0].subscribe_num.title,
+                this.list[0].subscribe_num.subscribe_enddate
+            );
+        }
+
+
     },
     created: function () {
         this.loginId = sessionStorage.getItem('loginId')
