@@ -173,8 +173,6 @@ export default {
                 }
             })
 
-
-
     },
     methods: {
         detail(subscribe_num) {
@@ -245,9 +243,26 @@ export default {
                         if (order.recruitpeople === order.total_people && self.currentDate > order.recruit_endperiod) {
                             // 인원수 같음 & 모집일 지남
                             order.flag = 1;
+
                         } else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
+                            const price = order.subscribe_num.total_point/order.subscribe_num.total_people
+                            console.price(price)
+                            const form = new FormData(); 
+                            form.append('price',price)
+                            form.append('email',self.email)
+                            console.log(self.email)
+                            self.$axios.post('http://localhost:8181/payment' +  self.email, form)
+                            .then(function (res) { 
+                                if (res.status ==200){
+                                    alert('모집 종료로 금액 반환 되었음')
+                                } else {
+                                    alert ('오류')
+                                }
+                            });
+                       
+                            //한구독의 전체금액 
                         } else {
                             order.flag = 0;
                         }
@@ -266,6 +281,23 @@ export default {
                     if (order.recruitpeople == order.total_people && self.currentDate > order.subscribe_enddate) {
                         // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
                         if (order.point_basket != 0) {
+                            const self = this ;
+                            const price = order.subscribe_num.total_point ;
+                            console.log(price);
+                            const email = order.subscribe_num.email.email (모집자) ;
+                            console.log(email);
+                            const form = new FormData();
+                            form.append('email', email);
+                            form.append('price', price);
+                            self.$axios.post('http://localhost:8181/payment' +  email, form)
+                            .then (function(res){
+                                if(res.status ==200) {
+                                 alert ('구독 끝 - 모집자에게 돈 돌아감 ')
+                                } else {
+                                    alert ('실패 ; ')
+                                }
+                            })
+
                             self.$axios
                                 .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                 .then(function (res) {
@@ -280,7 +312,7 @@ export default {
                     else if (order.recruitpeople !== order.total_people && self.currentDate > order.recruit_endperiod) {
                         // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
                         if (order.point_basket != 0) {
-                            self.$axios
+                         self.$axios
                                 .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                 .then(function (res) {
                                     if (res.status === 200) {
