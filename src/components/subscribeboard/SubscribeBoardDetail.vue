@@ -126,10 +126,10 @@ export default {
         },
         addparty() {
             const self = this;
-
+            let formdata = new FormData();
             this.checkcash();
             if(self.fflag == true){
-                let formdata = new FormData();
+                
                 formdata.append('subscribe_num', self.subscribe_num)
                 formdata.append('email', sessionStorage.getItem('loginId'))
                 formdata.append('point_basket', self.divisionResult)
