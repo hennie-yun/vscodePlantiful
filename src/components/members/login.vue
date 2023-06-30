@@ -1,6 +1,6 @@
 <template>
   <div class="form" :class="activeForm">
-    <h3> plan + tiful </h3>
+    <h3> [ plan + tiful ] </h3>
     <br />
     <div class="form-header">
       <div class="show-signup" @click="showSignup">회원가입</div>
@@ -9,12 +9,13 @@
     </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
-        <input v-model="email" type="text" placeholder="email"  style="flex: 1; margin-right: 5px;" :disabled="Visible">
-        <button @click="loginsendEmail"  style="font-size : 13px; width: 80px; height:40px;" v-show="loginmailcheck">메일 체크</button>
+        <input v-model="email" type="text" placeholder="email" style="flex: 1; margin-right: 5px;" :disabled="Visible">
+        <button @click="joinsendEmail" style="font-size : 13px; width: 80px; height:40px;" v-show="loginmailcheck">메일
+          인증</button>
       </div>
 
       <div class="form-element">
-        <input v-model="pwd" type="password" placeholder="Password">
+        <input v-model="pwd" type="password" placeholder="비밀번호">
       </div>
 
       <div v-if="activeForm == 'signup'" class="form-element">
@@ -27,7 +28,7 @@
 
       <div style="margin-top : 10px;">
         <label v-if="activeForm === 'signup'" class="input-file-wrapper">
-          <div class="upload-button-text" style="text-align: left;">{{ uploadButtonText }}</div>
+          <div class="upload-button-text" style="text-align: left; color : grey;">{{ uploadButtonText }}</div>
           <input type="file" id="img-input-file" class="form-element" style="display :none;" @change="handleFileUpload" />
         </label>
       </div>
@@ -38,20 +39,19 @@
       </div>
 
       <div class="form-element">
-        <button id="submit-btn" @click="handleButtonClick">{{ submitText }}</button>
+        <button id="submit-btn" v-show="AllFieldsFilled" @click="handleButtonClick">{{ submitText }}</button>
+        <p v-show="!AllFieldsFilled" style="margin-top :10px;">이메일 인증 후 가입이 가능합니다</p>
       </div>
       <br />
       <div>
         <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
       </div>
-     
+
     </div>
   </div>
 </template>
  
 <script>
-
-
 export default {
   name: 'login',
   data() {
@@ -65,37 +65,35 @@ export default {
       img: '',
       isVisible: false,
       Visible: false,
+      loginmailcheck: true,
+      AllFieldsFilled: false,
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
-      submitText: "가입",
-      loginmailcheck : true
+      submitText: "가입"
     }
   },
+
   methods: {
-    autoHyphen(target) {
-      target.value = target.value
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-    },
-    handleFileUpload() {
-      this.uploadButtonText = '업로드 완료';
-    },
-    showSignup() {
+    //버튼 이름 바꿔주는메서드들 
+    showSignup() { //회원가입 페이지 
       this.activeForm = "signup";
       this.submitText = "가입";
-      location.href ="/";
+      location.href = "/";
     },
-    showSignin() {
+    showSignin() { //로그인 페이지 
       this.activeForm = "signin";
       this.submitText = "로그인";
-      this.loginmailcheck = false;
+      this.loginmailcheck = false; //이메일인증 버튼 없애고 
+      this.AllFieldsFilled = true; //로그인 버튼 보이게 하고 
     },
-    showReset() {
+    showReset() { //임시비밀번호 전송 
       this.activeForm = "reset";
       this.submitText = "임시 비밀번호 전송";
-      this.loginmailcheck = false;
+      this.AllFieldsFilled = true; //임시비밀번호 전송 버튼 보이게 하고 
+      this.loginmailcheck = false; //이메일인증 버튼 없애고 
     },
     handleButtonClick() {
+      //같은 버튼 클릭 -> 다른 메서드 진행 
       if (this.activeForm === 'signup') {
         this.join();
       } else if (this.activeForm === 'signin') {
@@ -104,26 +102,8 @@ export default {
         this.findpwdsendEmail();
       }
     },
-    findpwdsendEmail(){
-      const self = this;
-      const form = new FormData();
-      form.append('email', self.email);
-      self.$axios.post('http://localhost:8181/members/emailpwdcheck', form)
-        .then(function (res) {
-          if (res.data.exist) {
-            alert(res.data.exist)
-          } else if (res.status == 200) {
-            alert('이메일이 발송되었습니다');
-            alert ( '전달 드린 임시비밀번호로 로그인 하세요')
-            const key = res.data.key;
-            alert(key);
-            self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
-          } else {
-            alert('잘못된 이메일입니다');
-          }
-        })
-    },
-    loginsendEmail() {
+    //회원가입을 위한 이메일 전송 메서드 
+    joinsendEmail() {
       const self = this;
       if (this.email == '') {
         alert('이메일을 입력해주세요')
@@ -135,69 +115,94 @@ export default {
             if (res.data.exist) {
               alert(res.data.exist)
             } else if (res.status == 200) {
-              alert('이메일이 발송되었습니다');
-              self.isVisible = true;
-              const key = res.data.key;
-              alert(key);
-              self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+              if (res.data.message) {
+                alert(res.data.message)
+              } else {
+                alert('이메일이 발송되었습니다');
+                self.isVisible = true;
+                const key = res.data.key;
+                alert(key);
+                self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+              }
             } else {
-              alert('잘못된 이메일입니다');
+              alert('오류');
             }
           })
       }
     },
+    //인증번호 체크하는거 
     updateEmailCheck(event) {
       this.echeck = event.target.value;
     },
+    //이메일 인증 완료 되면 
     emailcheck() {
       const self = this;
       if (self.echeck === self.emailKey) {
         alert('확인 완료');
-        self.Visible = true;
-        self.isVisible = false;
-        self.loginmailcheck = false;
+        self.Visible = true; //입력한 이메일 수정 못하게 막고 
+        self.isVisible = false; //인증번호 입력하는 칸도 없애고 
+        self.loginmailcheck = false; //메일 전송 버튼도 없애고 
+        self.AllFieldsFilled = true; // 이제서야 가입 버튼 보이게 하기
       } else {
         alert('인증번호가 일치하지 않습니다.');
       }
     },
+    //회원가입 하는 메서드들  
+
+    autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
+      target.value = target.value
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+    },
+
+    //사진 완료 시 업로드 완료 되었다 표시해 줌 
+    handleFileUpload() {
+      this.uploadButtonText = '프로필 사진 업로드 완료';
+    },
+
+    //이메일 인증이 끝난 뒤 이제 진짜 가입 진행 
     join() {
       const self = this;
       const form = new FormData();
-      if (this.phone.replace(/[^0-9]/g, '').length !== 11) {
+
+      //전화번호 11자리로 고정 
+      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
         alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
-        alert(this.phone.replace(/[^0-9]/g, '').length)
         return;
       } else {
-        form.append('phone', this.phone.replace(/[^0-9]/g, ''));
-      } form.append('email', self.email);
-      form.append('pwd', self.pwd);
+        form.append('phone', self.phone.replace(/[^0-9]/g, ''));
+      }
+      form.append('email', self.email);
+
+      // 비밀번호 정규식 추가
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      if (!passwordRegex.test(self.pwd)) {
+        alert('비밀번호는 대문자 1개, 특수문자 1개, 8자리 이상으로 구성되어야 합니다.');
+        return;
+      } else {
+        form.append('pwd', self.pwd);
+      }
       form.append('nickname', self.nickname);
       if (document.getElementById('img-input-file').value !== '') {
-        const file = document.getElementById('img-input-file').files[0]
-        form.append('f', file)
+        const file = document.getElementById('img-input-file').files[0];
+        form.append('f', file);
       }
       self.$axios.post('http://localhost:8181/members', form, { headers: { "Content-Type": "multipart/form-data" } })
         .then(function (res) {
           if (res.status === 200) {
-            let dto = res.data.dto
-            console.log(dto)
+            let dto = res.data.dto;
+            console.log(dto);
             self.showSignin();
-            
           } else {
-            alert('에러코드 :' + res.status)
+            alert('에러코드 :' + res.status);
           }
         })
         .catch(function (error) {
-          alert('에러 :' + error)
-        })
+          alert('에러 :' + error);
+        });
     },
 
-    kakaoLogin() {
-      const redirect_uri = 'http://localhost:8182/kakaojoin';
-      const clientId = 'd54083f94196531e75d7de474142e52e';
-      const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
-      window.location.href = Auth_url;
-    },
+    //로그인하는 메서드 시작 
     login() {
       const self = this;
       const form = new FormData();
@@ -220,12 +225,47 @@ export default {
         });
     },
 
+    //임시비밀번호 전송하는 메서드 
+    findpwdsendEmail() {
+
+      if (this.email == '') {
+        alert('이메일을 입력해주세요')
+      } else {
+        const self = this;
+        const form = new FormData();
+        form.append('email', self.email);
+        self.$axios.post('http://localhost:8181/members/emailpwdcheck', form)
+          .then(function (res) {
+            if (res.data.exist) {
+              alert(res.data.exist)
+            } else if (res.status == 200) {
+              alert('이메일이 발송되었습니다');
+              alert('전달 드린 임시비밀번호로 로그인 하세요')
+              const key = res.data.key;
+              alert(key);
+              self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+            } else {
+              alert('잘못된 이메일입니다');
+            }
+          })
+        }
+      },
+
+      //카카오톡 로그인 하기  
+      kakaoLogin() {
+        const redirect_uri = 'http://localhost:8182/kakaojoin';
+        const clientId = 'd54083f94196531e75d7de474142e52e';
+        const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
+        window.location.href = Auth_url;
+      }
+    }
   }
-}
 </script>
 
-
-<style scoped> .form {
+<style scoped> 
+.form {
+   font-family: 'Pretendard-Regular';
+   font-weight: 600;
    position: absolute;
    top: 30%;
    left: 50%;
