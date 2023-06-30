@@ -174,9 +174,8 @@ import dayjs from 'dayjs'
 import axios from 'axios';
 
 
-
 export default {
-
+  
   mounted() {
 
   },
@@ -187,7 +186,7 @@ export default {
   name: 'calendar',
   data() {
     return {
-
+      code: '',
       access_token: '',
       isNewEvent: true,
       showEventForm: false,
@@ -319,12 +318,21 @@ methods: {
 naver(){
 
   const clientId = "IiiFJKBOyzL3qvfXasPq"
-  const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
+  const redirectURI = encodeURIComponent("http://localhost:8182/naver");
   
   const state = this.generateRandomState()
-  const naverAuthURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectURI}&state=${state}`;
+  const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
 
-  window.location.href = naverAuthURL;
+
+ window.location.href = naverAuthURL
+ 
+ 
+  // this.$axios.get(naverAuthURL)
+  // .then(function(res){
+  //   console.log(res.data)
+  // })
+
+
 },
 generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
