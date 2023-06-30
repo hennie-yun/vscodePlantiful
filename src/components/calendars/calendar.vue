@@ -516,6 +516,7 @@ cancel2(){
 
   this.snsEvent = false;
   this.showEventForm = false;
+      window.location.reload();
 },
 
 //일정 클릭 상세보기
