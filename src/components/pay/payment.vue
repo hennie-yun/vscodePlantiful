@@ -123,7 +123,7 @@ export default {
                     form.append('applynum', rsp.apply_num)
                     form.append('email', self.email)
                     console.log(form)
-                    self.$axios.post('http://localhost:8181/payment', form)
+                    self.$axios.post('http://localhost:8181/payment/' +self.email, form)
                         .then(function (res) {
                             if (res == 200) {
                                 console.log(res)
