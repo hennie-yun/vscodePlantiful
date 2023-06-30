@@ -43,7 +43,7 @@
     <!-- 참여하기 버튼 -->
     <div v-if="dto.email && dto.email.email !== loginId">
         <div v-if="this.currentDate <= this.dto.recruit_endperiod">
-            <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
+            <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
         </div>
         <div v-if="this.currentDate > this.dto.recruit_endperiod">
             모집이 종료되었습니다.<div class=""></div>
@@ -96,11 +96,11 @@ export default {
                     console.log(res)
                     if (res.status == 200) {
                         if (res.data.paydto != null) {
-                            self.paidamount = self.paydto.paidamount;
+                            // self.paidamount = self.paydto.paidamount;
                             let form = new FormData();
                             form.append('paidamount', self.divisionResult)
                             form.append('email', self.email)
-                            self.$axios.post('http://localhost:8181/payment/withdraw/' + this.email, form)
+                            self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
                              .then(function (res) { 
                                 if(res.status ==200){
                                     alert(res.data.message)
@@ -108,6 +108,7 @@ export default {
                                     if(dto != null){
                                         //돈 있음
                                         self.fflag = true;
+                                        self.addparty();
                                     }else{
                                         self.fflag = false;
                                     }                        
@@ -127,7 +128,7 @@ export default {
         addparty() {
             const self = this;
             let formdata = new FormData();
-            this.checkcash();
+            // this.checkcash();
             if(self.fflag == true){
                 
                 formdata.append('subscribe_num', self.subscribe_num)
