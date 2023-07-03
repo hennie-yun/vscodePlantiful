@@ -16,6 +16,8 @@ import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
 import navercalendar from '../components/groups/navcalendar.vue'
+import naverlogin from '../components/groups/naverlogin.vue'
+import naveraccess from '../components/groups/naveraccess.vue'
 import payment from '../components/pay/payment.vue'
 import kakaojoin from '../components/members/kakaojoin.vue'
 
@@ -131,6 +133,16 @@ const routes = [
         component: navercalendar
       },
       {
+        path: "/naverlogin",
+        name: "naverlogin",
+        component: naverlogin
+      },
+      {
+        path: "/naveraccess",
+        name: "naveraccess",
+        component: naveraccess
+      },
+      {
         path : '/concertlist',
         name : 'concertlist',
         component : () => import('@/components/concert/concertList.vue')
@@ -140,7 +152,6 @@ const routes = [
         name : 'concertdetail',
         component : () => import('@/components/concert/concertDetail.vue')
       }
-      
     ]
   }
 ]

@@ -1,14 +1,33 @@
 <template lang="">
     <div id="naverIdLogin">
-      d
+     <div>adsds</div>
     </div>
 </template>
 <script>
+import axios from 'axios';
+
 export default {
-    mounted() {
+  name:'navercalendar',
+  data:{
+ 
+    return:{
+   
+    }
+  },    
+  mounted() {
+  
+  },
+  created(){
+  
+  },
+  methods: {
+  fetchData: function(){
+    axios.get('')
+  }
 
     }
-    }
+  }
+    
     </script>
     <style>
 
