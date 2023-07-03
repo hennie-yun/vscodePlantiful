@@ -62,18 +62,21 @@ export default {
         .replace(/[^0-9]/g, '')
         .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
     },
+
     handleFileUpload() {
       this.uploadButtonText = '프로필 사진 업로드 완료';
     },
+
     klogin() { //아이디 저장이 되어 있으면 갈 곳 
       const self = this;
       const loginform = new FormData();
       loginform.append('email', self.form.email)
       loginform.append('pwd', self.form.pwd)
       self.$axios.post('http://localhost:8181/members/login', loginform)
-        .then(function (res) {
-          sessionStorage.setItem('token', res.data.token)
-          sessionStorage.setItem('loginId', res.data.loginId)
+      .then(function (res) { //결과 
+          if (res.status == 200) { 
+              sessionStorage.setItem('token', res.data.token)            
+              sessionStorage.setItem('loginId', res.data.loginId)             
           const addform = new FormData();
           addform.append('email', self.form.email)
           addform.append('token', self.form.kakaotoken)
@@ -81,15 +84,14 @@ export default {
           self.$axios.post('http://localhost:8181/tokensave', addform)
             .then(function (rep) {
               if (rep.status == 200) {
-                alert('토큰세이브')            
+                location.href="/calendar"            
+              } else {
+                alert ('여기서 오류다~ ')
               }
             });
-          if (res.data.flag) {
-            location.href = "/afterlogin"
           }
-        })
-
-    },
+          })
+        },
     getToken() { //토큰 냅다 받아~~ 
       const self = this;
       self.$axios.get('http://localhost:8181/kakaologin/' + self.code)
@@ -125,6 +127,7 @@ export default {
       }
       form.append('email', self.form.email);
       form.append('nickname', self.form.nickname);
+      form.append('pwd', self.form.pwd)
       form.append('id', 1)
       if (document.getElementById('img-input-file').value !== '') {
         const file = document.getElementById('img-input-file').files[0];
@@ -183,6 +186,13 @@ export default {
 
 .form.signup .form-header div.show-signup {
   color: #7AC6FF;
+  
+}
+
+.show-signup{
+  font-family: 'Pretendard-Regular';
+  font-weight: 400;
+  font-size: 40px;
 }
 
 .form .form-elements {
