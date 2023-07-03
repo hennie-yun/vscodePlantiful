@@ -239,6 +239,9 @@ export default {
                             self.partylist.forEach(function (item) {
                                 self.point_basket = item.point_basket
                             });
+                            const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
+                            self.recruit_endperiod = recruitEndPeriodFormatted;
+                            order.recruit_endperiod = recruitEndPeriodFormatted;
 
                         } else {
                             alert('에러코드:' + res.status);
@@ -253,15 +256,12 @@ export default {
 
             Promise.all(promises)
                 .then(function () {
+                    const self = this;
                     // console.log('모든 비동기 요청 완료');
-
-
 
                     self.list.forEach(function (order) {
                         // console.log(self.list);
-                        const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
-                        self.recruit_endperiod = recruitEndPeriodFormatted;
-                        order.recruit_endperiod = recruitEndPeriodFormatted;
+
                         const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
                         self.subscribe_enddate = subEnddateFormatted;
                         self.recruitpeople = order.recruitpeople
@@ -279,6 +279,7 @@ export default {
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
                             if (self.point_basket != 0) {
+
                                 const price = order.total_point / self.total_people
                                 console.log(price)
                                 const form = new FormData();
@@ -289,8 +290,7 @@ export default {
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             console.log('모집 종료로 금액 반환 되었음')
-                                            self.$axios
-                                                .patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                            self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                 .then(function (res) {
                                                     if (res.status === 200) {
                                                         console.log('취소돼서 0으로 만들고 돌아감');
@@ -311,7 +311,7 @@ export default {
                         } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
                             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
                             if (self.point_basket != 0) {
-
+                                
                                 const self = this;
                                 const price = order.subscribe_num.total_point;
                                 console.log(price);
@@ -320,7 +320,7 @@ export default {
                                 const form = new FormData();
                                 form.append('email', email);
                                 form.append('price', price);
-                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                self.$axios.post('http://localhost:8181/payment/' + self.subscribe_num.email.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             alert('구독 끝 - 모집자에게 돈 돌아감 ')
@@ -392,10 +392,12 @@ export default {
     font-weight: 400;
     font-style: normal;
 }
+
 * {
     font-family: 'Pretendard-Regular';
     /* font-weight: 900; */
 }
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
