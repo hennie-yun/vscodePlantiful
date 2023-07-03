@@ -1,7 +1,7 @@
 <template>
-  <div >
+  <div>
     <nav class="navbar navbar-expand-custom navbar-mainbg">
-      <a class="navbar-brand navbar-logo" href="/">plan + tiful</a>
+      <a class="navbar-brand navbar-logo" href="/calendar">plan + tiful</a>
       <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false"
         aria-label="Toggle navigation">
         <i class="fas fa-bars text-white"></i>
@@ -13,6 +13,10 @@
             <div class="right"></div>
           </div>
 
+          <li class="nav-item ">
+            <router-link to="/mypage" class="nav-link">마이페이지</router-link>
+          </li>
+
           <li class="nav-item active">
             <router-link to="/calendar" class="nav-link">캘린더</router-link>
           </li>
@@ -23,44 +27,41 @@
             <router-link to="/chatlist" class="nav-link">채팅</router-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">공모전</a>
+            <router-link to="/" class="nav-link">공모전</router-link>
           </li>
+
 
 
           <div class="nav-item"
             style="display: flex; align-items: center; margin-right: 20px; margin-left: 150px; margin-top: 10px;">
-            
-            <div style="display: flex;">
+            <div style="display: flex;" @click="openMenu($event)" :color="active ? 'primary' : undefined"
+              v-click-outside="{ handler: closeMenu, include }">
               <img :src="require('@/assets/image/checklist.png')"
                 style=" margin-right: 10px; width: 40px; height: 40px;" />
 
+
               <div class="nav-bar-profile" style="margin-left: 5px;">
-                <div>
-                  <img :src="'http://localhost:8181/members/plantiful/' + loginId" 
-                    style="width: 40px; border-radius: 50%; height: 40px;" />
-                </div>
+                <img :src="'http://localhost:8181/members/plantiful/' + loginId" @error="replaceImg" @click="mypage"
+                  style="width: 40px; border-radius: 50%; height: 40px;" />
               </div>
-              <div @click="$emit('logout')">
+
+              <div @click="logout">
                 <img :src="require('@/assets/image/logout.png')"
                   style=" margin-left: 10px; margin-right: 5px;width: 40px; height: 40px;" />
               </div>
             </div>
-            </div>
-          
-
-
+          </div>
         </ul>
       </div>
     </nav>
     <div id="checkList" v-show="active" class="included">
-    <div style="width=100%; height=100%;">
-      <TodoHeader></TodoHeader>
-      <TodoInput v-bind:propsdata="todoItems" v-on:addTodoItem="addOneItem"></TodoInput>
-      <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" 
-        v-on:toggleItem="toggleOneItem"></TodoList>
-      <TodoFooter v-on:clearAll="clearAllItem"></TodoFooter>
+      <div style="width=100%; height=100%;">
+        <TodoHeader></TodoHeader>
+        <TodoInput v-bind:propsdata="todoItems" v-on:addTodoItem="addOneItem"></TodoInput>
+        <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" v-on:toggleItem="toggleOneItem"></TodoList>
+        <TodoFooter v-on:clearAll="clearAllItem"></TodoFooter>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -69,36 +70,102 @@ import TodoHeader from '../todolist/TodoHeader.vue'
 import TodoInput from '../todolist/TodoInput.vue'
 import TodoList from '../todolist/TodoList.vue'
 import TodoFooter from '../todolist/TodoFooter.vue'
+import img from '@/assets/image/profile-user.png';
 
 export default {
-  components  : {
-    'TodoHeader' : TodoHeader,
-    'TodoInput' : TodoInput,
-    'TodoList' : TodoList,
-    'TodoFooter' : TodoFooter,
+  components: {
+    'TodoHeader': TodoHeader,
+    'TodoInput': TodoInput,
+    'TodoList': TodoList,
+    'TodoFooter': TodoFooter,
   },
   data() {
     return {
       loginId: null,
-      textTemp: str,
       active: false,
       arr: [],
-      activeLink: ''
+      activeLink: '',
+      active: false,
+      todoItems: [],
+    
     }
   },
-
   created() {
+    let token = sessionStorage.getItem('token');
     this.loginId = sessionStorage.getItem('loginId');
-    console.log(this.loginId);
+    this.img = 'http://localhost:8181/members/plantiful/' + this.loginId;
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          let getItem = localStorage.getItem(localStorage.key(i))
+          let obj = JSON.parse(getItem)
+          this.todoItems.push(obj)
+        }
+      }
+      this.todoItems = this.todoItems.sort((a, b) => a.index - b.index)
+    }
   },
-
   mounted() {
     this.initializeNavbar();
   },
   methods: {
+    replaceImg(e) {
+      e.target.src = img;
+    },
+    mypage() {
+      location.href = "/mypage"
+    },
+    logout() {
+      console.log("logout")
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('loginId')
+      location.href = '/';
+    },
+    openMenu(value) {
+      if (typeof value === 'boolean') {
+        this.active = value
+      } else {
+        this.active = !this.active
+        let div = document.getElementById("checkList")
+        div.style.top = "0px"
+        div.style.top = 150 + "px"
+      }
+
+    },
+
+    include() {
+      return [document.querySelector('.included')]
+    },
+
+    closeMenu() {
+      this.active = false
+    },
+
+    addOneItem: function (todoItem) {
+      var obj = { completed: false, item: todoItem.msg, index: todoItem.index }
+      localStorage.setItem(todoItem.index, JSON.stringify(obj))
+      this.todoItems.push(obj)
+    },
+
+    removeOneItem: function (todoItem, index) {
+      this.todoItems.splice(index, 1)
+      localStorage.removeItem(todoItem.index)
+    },
+
+    toggleOneItem: function (todoItem, index) {
+      this.todoItems[index].completed = !this.todoItems[index].completed
+      localStorage.removeItem(todoItem.item)
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem))
+    },
+
+    clearAllItem: function () {
+      localStorage.clear()
+      this.todoItems = []
+    },
+
     initializeNavbar() {
       var tabsNewAnim = $('#navbarSupportedContent');
-      var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+      // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
       var activeItemNewAnim = tabsNewAnim.find('.active');
       var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
       var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
@@ -126,8 +193,8 @@ export default {
         });
       });
     }
-  }
-}
+  },
+};
 </script>
 
 
@@ -188,13 +255,13 @@ export default {
 
 /* 클릭하면 보이는 것임 */
 #navbarSupportedContent>ul>li.active>a {
-  color: #2E2E33;
+  color: #7AC6FF;
   background-color: transparent;
   transition: all 0.7s;
 }
 
 #navbarSupportedContent a:not(:only-child):after {
-  content: "\f105";
+  content: "";
   position: absolute;
   right: 20px;
   top: 10px;
@@ -287,39 +354,39 @@ export default {
   }
 }
 
-  @import "https://pro.fontawesome.com/releases/v5.10.0/css/all.css";
-  @import 'https://fonts.googleapis.com/css2?family=Itim&display=swap';
+@import "https://pro.fontawesome.com/releases/v5.10.0/css/all.css";
+@import 'https://fonts.googleapis.com/css2?family=Itim&display=swap';
 
-  #checkList {
-    font-family: 'Pretendard-Regular';
-    font-weight: 600;
-    border: 1px solid #B3ADAD;
-    width: 470px;
-    height: 450px;
-    left : 68%;
-    /* top : 10%; */
-    overflow-x: hidden;
-    overflow-y: auto;
-    text-align: center;
-    background-color: white;
-    white-space: pre;
-    position: absolute;
-    opacity: 1;
-    z-index: 999;
-  }
+#checkList {
+  font-family: 'Pretendard-Regular';
+  font-weight: 600;
+  border: 1px solid #B3ADAD;
+  width: 470px;
+  height: 450px;
+  left: 68%;
+  /* top : 10%; */
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: center;
+  background-color: white;
+  white-space: pre;
+  position: absolute;
+  opacity: 1;
+  z-index: 999;
+}
 
-  input {
-    border-style: groove;
-    width: 200px;
-  }
+input {
+  border-style: groove;
+  width: 200px;
+}
 
-  button {
-    border-style: groove;
-  }
+button {
+  border-style: groove;
+}
 
-  .shadow {
-    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
-  }
+.shadow {
+  box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
+}
 
 @media (max-width: 991px) {
   #navbarSupportedContent ul li a {

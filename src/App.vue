@@ -1,5 +1,5 @@
 <template>
-  <NavBar @logout="logout" v-if="loginId != null" />
+  <NavBar @logout="logout" @mypage="mypage" v-if="loginId != null" />
   <RouterView />
 </template> 
 
@@ -12,7 +12,8 @@ export default {
   components: { NavBar },
   data() {
     return {
-      loginId: null
+      loginId: null,
+   
     }
   },
   created() {
@@ -25,6 +26,10 @@ export default {
       sessionStorage.removeItem('token')
       sessionStorage.removeItem('loginId')
       location.href = '/';
+    },
+    mypage(){
+      location.href = '/mypage';
+    
     }   
   }
 }
