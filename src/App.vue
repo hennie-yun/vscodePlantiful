@@ -1,5 +1,5 @@
 <template>
-  <NavBar @logout="logout" @mypage="mypage" v-if="loginId != null" />
+  <NavBar  v-if="loginId != null" />
   <RouterView />
 </template> 
 
@@ -21,16 +21,7 @@ export default {
     console.log(this.loginId);
   },
   methods: {
-    logout() {
-      console.log("logout")
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('loginId')
-      location.href = '/';
-    },
-    mypage(){
-      location.href = '/mypage';
-    
-    }   
+  
   }
 }
 
