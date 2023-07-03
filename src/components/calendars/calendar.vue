@@ -127,14 +127,8 @@
             <option value="0" default>개인 일정</option>
             <option v-for="group in groups" :value="group.schedulegroup_num" :key="groupschedulegroup_num">
               {{ group.schedulegroup_title }} </option>
-          </select> </div>
-
-        <Div>
-
-          <input type="color">
-        </Div>
-
-
+          </select>
+         </div>
 
         <!-- <div class="form-row">
                   <label for="notification">알림 설정</label>
@@ -977,7 +971,7 @@ alert("에러코드:" + res.status);
 
 </script>
 
-<style>
+<style scoped>
 body {
   font-family: 'Pretendard-Regular', sans-serif;
 }
@@ -1097,9 +1091,6 @@ body {
   border-radius: 10px;
 }
 
-.fc-event {
-  cursor: pointer;
-}
 
 .fc-daygrid-day-number {
   text-decoration: none;
@@ -1167,7 +1158,6 @@ white-space: normal;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 360px;
-  /* 원하는 너비로 조정하세요 */
   height: 200px;
   padding: 20px;
   border: 1px solid #ccc;
@@ -1201,11 +1191,19 @@ white-space: normal;
   margin-left: 10px;
 }
 
+</style>
+<style>
 .fc .fc-button-primary {
   background-color: #7AC6FF;
   border-color: #16212c61;
   color: var(--fc-button-text-color);
-}</style>
+}
+
+.fc-event {
+  cursor: pointer;
+}
+
+</style>
 
 
 
