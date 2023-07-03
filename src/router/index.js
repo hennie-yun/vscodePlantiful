@@ -128,6 +128,16 @@ const routes = [
         path:'/navercalendar',
         name: 'navercalendar',
         component: navercalendar
+      },
+      {
+        path : '/concertlist',
+        name : 'concertlist',
+        component : () => import('@/components/concert/concertList.vue')
+      },
+      {
+        path : '/concertdetail',
+        name : 'concertdetail',
+        component : () => import('@/components/concert/concertDetail.vue')
       }
       
     ]
