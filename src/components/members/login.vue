@@ -1,6 +1,6 @@
 <template>
   <div class="form" :class="activeForm">
-    <h3> [ plan + tiful ] </h3>
+    <p style="font-family:'TheJamsil5Bold'; text-align:center; font-weight: 500; font-size : 35px;">  plan + tiful </p>
     <br />
     <div class="form-header">
       <div class="show-signup" @click="showSignup">회원가입</div>
@@ -213,12 +213,12 @@ export default {
           if (res.status == 200) {
             if (res.data.flag) {
               sessionStorage.setItem('token', res.data.token)
+              alert (res.data.loginId)
               sessionStorage.setItem('loginId', res.data.loginId)
               location.href = "/calendar"
             } else {
               alert('로그인 실패')
             }
-
           } else {
             alert('걍 에러')
           }
@@ -227,7 +227,6 @@ export default {
 
     //임시비밀번호 전송하는 메서드 
     findpwdsendEmail() {
-
       if (this.email == '') {
         alert('이메일을 입력해주세요')
       } else {
@@ -265,7 +264,7 @@ export default {
 <style scoped> 
 .form {
    font-family: 'Pretendard-Regular';
-   font-weight: 600;
+   font-weight: 400;
    position: absolute;
    top: 30%;
    left: 50%;

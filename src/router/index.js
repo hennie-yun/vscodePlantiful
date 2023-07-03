@@ -54,6 +54,7 @@ const routes = [
         path: "",
         component: HomeView,
       },
+      
       {
         path: '/calendar',
         name: 'calendar',
