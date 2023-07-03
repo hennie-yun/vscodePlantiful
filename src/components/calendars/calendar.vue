@@ -3,6 +3,7 @@
     <div class="" style="display: flex; height: 100vh;">
       <div class="sidebar" style="width: 20%; padding: 2%; border: none; background-color: ivory;">
         <div class="group_info" style="height: 50%;">
+          <router-link to="/group">그룹 만들기</router-link>
           <h3>그룹 정보</h3>
           <div style="padding-top: 5%;" v-if="selectedGroup">
             <div>
@@ -873,32 +874,36 @@ cancel2(){
     },
 
 //일정 클릭 상세보기
-handleEventClick(arg) {
-this.showEventForm = true;
-this.isNewEvent = false;
-const event = arg.event;
-const schedule_num = event.extendedProps.schedule_num;
-this.schedule_num = schedule_num; // 이벤트의 schedule_num 값 가져오기
-const self = this;
-self.$axios.get("http://localhost:8181/schedules/" + schedule_num)
-.then(response => {
-const scheduleData = response.data.dto;
-// 조회된 데이터를 폼에 보여주기
-self.newEvent = {
-title: scheduleData.title,
-start: scheduleData.start,
-end: scheduleData.end,
-startTime: scheduleData.startTime,
-endTime: scheduleData.endTime,
-info: scheduleData.info,
-isLoop: scheduleData.info,
-day: scheduleData.day
-};
-})
-.catch(error => {
-console.error(error);
-});
-},
+    handleEventClick(arg) {
+      this.showEventForm = true;
+      this.isNewEvent = false;
+      const event = arg.event;
+      const schedule_num = event.extendedProps.schedule_num;
+      this.schedule_num = schedule_num;
+      const self = this;
+      self.$axios.get("http://localhost:8181/schedules/schedule_num/" + schedule_num)
+        .then(response => {
+          const scheduleData = response.data.dto;
+          console.log(scheduleData);
+          // 조회된 데이터를 폼에 보여주기
+          self.newEvent = {
+            title: scheduleData.title,
+            start: scheduleData.start,
+            end: scheduleData.end,
+            startTime: scheduleData.startTime,
+            endTime: scheduleData.endTime,
+            info: scheduleData.info || '',
+            isLoop: scheduleData.isLoop,
+            day: scheduleData.day,
+            group_num: scheduleData.group_num
+          };
+
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
 
 //수정
 updateEvent() {
