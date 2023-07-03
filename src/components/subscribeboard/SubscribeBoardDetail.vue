@@ -83,6 +83,9 @@ export default {
             },
             fflag: false,
             checkjoined: false,
+            flag: false,
+            refundprice: 0,
+            refundemail: null,
         }
     },
     mounted() {
@@ -125,7 +128,7 @@ export default {
                 self.checkjoined = false;
             }
 
-        }, 
+        },
         handleCheckJoined() {
             const self = this;
             alert('checkjoined: ' + this.checkjoined);
@@ -195,17 +198,36 @@ export default {
         deleteBoard() {
 
             const self = this;
+            // 파티에 몇명 있는지 검색 (1명이면 삭제 가능)
             self.$axios.get('http://localhost:8181/subscribeparty/party/' + self.subscribe_num)
                 .then(function (res) {
                     if (res.status == 200) {
                         self.flag = res.data.flag
-
+                        let partylist = res.data.list
+                        //환불 금액 & 환불받을 사람
+                        self.refundprice = partylist[0].subscribe_num.total_point / partylist[0].subscribe_num.total_people
+                        self.refundemail = partylist[0].email.email
+                        alert(self.refundprice)
+                        alert(self.refundemail)
                         if (self.flag) {
+                            // 파티에 1명이면 삭제 진행
                             self.$axios.delete('http://localhost:8181/subscribeboard/' + self.subscribe_num)
                                 .then(function (res) {
                                     if (res.status == 200) {
                                         alert('글이 삭제되었습니다.')
-                                        location.href = "/SubscribeBoardList"
+                                        //돈 환불 진행
+                                        console.log(self.refundprice);
+                                        console.log(self.refundemail);
+                                        const delform = new FormData();
+                                        delform.append('email', self.refundemail);
+                                        delform.append('price', self.refundprice);
+                                        self.$axios.post('http://localhost:8181/payment/' + self.refundemail, delform)
+                                            .then(function (res) {
+                                                if (res.status == 200) {
+                                                    alert('구독 삭제, 작성자에게 환불됨 ')
+                                                    location.href = "/SubscribeBoardList"
+                                                }
+                                            })
                                     }
                                 })
                         } else {

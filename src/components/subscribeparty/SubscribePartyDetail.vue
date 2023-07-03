@@ -29,9 +29,9 @@
                     <div class="col subboardtitle">
                         진행 상황
                     </div>
-                        <div class="recruit col" v-if="order.start_check==0">모집 중</div>
-                        <div class="ing col" v-if="order.start_check==1">진행 중</div>
-                        <div class="end col" v-if="order.start_check==2">종료</div>
+                    <div class="recruit subboardcontent col" v-if="order.start_check==0">모집 중</div>
+                    <div class="ing subboardcontent col" v-if="order.start_check==1">진행 중</div>
+                    <div class="end subboardcontent col" v-if="order.start_check==2">종료</div>
                     <div class="col subboardtitle">
                         구독 사이트
                     </div>
@@ -138,14 +138,13 @@ export default {
     methods: {
         addSchedule() {
             const self = this;
-            let form = new FormData();
-            const createEvent = (title, start, info, end) => {
+            const createEvent = (title, start, end) => {
                 const form = new FormData();
                 form.append('email', sessionStorage.getItem('loginId'));
                 form.append('title', title);
                 form.append('start', start);
                 form.append('end', end);
-                form.append('info', info);
+                form.append('info', '구독글 제목: ' + this.list[0].subscribe_num.title);
                 form.append('day', null);
 
                 self.$axios.post("http://localhost:8181/schedules", form)
@@ -165,14 +164,12 @@ export default {
             createEvent(
                 this.list[0].subscribe_num.site + '구독 시작일',
                 this.list[0].subscribe_num.subscribe_startdate,
-                '구독글 제목: ' + this.list[0].subscribe_num.title,
                 this.list[0].subscribe_num.subscribe_startdate
             );
 
             createEvent(
                 this.list[0].subscribe_num.site + '구독 종료일',
                 this.list[0].subscribe_num.subscribe_enddate,
-                '구독글 제목: ' + this.list[0].subscribe_num.title,
                 this.list[0].subscribe_num.subscribe_enddate
             );
         }
