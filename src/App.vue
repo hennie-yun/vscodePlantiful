@@ -1,6 +1,6 @@
 <template>
   <NavBar @logout="logout" v-if="loginId != null" />
-  <RouterView />
+  <RouterView/>
 </template> 
 
 
