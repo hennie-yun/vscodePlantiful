@@ -4,8 +4,10 @@
         <div class="grid text-center">
             <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
         </div>
-        <div class="row">
-            <div class="col" v-on:click="search('all')">전체보기</div>
+        <div class="row alllistsite">
+            <div class="col" v-on:click="search('all')"><img
+                    src="https://img.shields.io/badge/전체보기-black?style=for-the-badge&logo=headlessui&logoColor=white" />
+            </div>
             <div class="col" v-on:click="search('넷플릭스')"><img
                     src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" />
             </div>
@@ -24,16 +26,16 @@
             </div>
         </div>
     </div>
-    <div class="container text-right">
+    <div class="text-right">
         <router-link to="/SubscribeBoardAdd">
-            <button class="btn custom-button" style="background-color: #7AC6FF;">글 등록</button>
+            <button class="btn custom-button" style="background-color: #7AC6FF; color:white;">글 등록</button>
         </router-link>
         <router-link to="/SubscribeBoardMyList">
-            <button class="btn custom-button" style="background-color: #7AC6FF;">내 구독 목록</button>
+            <button class="btn custom-button" style="background-color: #7AC6FF; color: white;">내 구독 목록</button>
         </router-link>
     </div>
     <div class="bodylist">
-        <div class="row">
+        <div class="row listtitle">
             <div class="col">
                 글 번호
             </div>
@@ -311,7 +313,7 @@ export default {
                         } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
                             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
                             if (self.point_basket != 0) {
-                                
+
                                 const self = this;
                                 const price = order.subscribe_num.total_point;
                                 console.log(price);
@@ -395,17 +397,16 @@ export default {
 
 * {
     font-family: 'Pretendard-Regular';
-    /* font-weight: 900; */
 }
 
-#app {
+/* #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-}
+} */
 
 .custom-button {
     margin-top: 20px;
@@ -429,7 +430,10 @@ export default {
 .inglist {
     padding-top: 10px;
     border-bottom: 1px solid rgba(82, 82, 82, 0.224);
-    background-color: #7ac5ff85;
+    border: 1px dashed black;
+    /* background: linear-gradient(#7ac5ff71 50%, rgb(255, 255, 255) 50%);
+    background-size: 100% 10px; */
+    
 }
 
 .endlist {
@@ -440,6 +444,29 @@ export default {
 
 .bodylist {
     margin-bottom: 100px;
+}
+
+.alllistsite {
+    padding: 5px;
+    /* margin: -158px; */
+}
+
+.listtitle {
+    /* background-color: aliceblue; */
+    border-bottom: 1px solid;
+    padding: 10px;
+    background-color: rgb(122, 198, 255);
+    color: white;
+    font-weight: 300;
+}
+
+.sbtitle{
+    font-weight: 600;
+    color: #7ac5ff;
+}
+
+.container {
+    padding-left: 30px;
 }
 </style>
 

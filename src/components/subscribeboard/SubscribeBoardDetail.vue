@@ -220,12 +220,16 @@ export default {
                                         console.log(self.refundemail);
                                         const delform = new FormData();
                                         delform.append('email', self.refundemail);
-                                        delform.append('price', self.refundprice);
+                                        alert(self.refundemail);
+                                        delform.append('paidamount', self.refundprice);
+                                        alert(self.refundprice);
                                         self.$axios.post('http://localhost:8181/payment/' + self.refundemail, delform)
                                             .then(function (res) {
                                                 if (res.status == 200) {
                                                     alert('구독 삭제, 작성자에게 환불됨 ')
                                                     location.href = "/SubscribeBoardList"
+                                                }else{
+                                                    alert('구독 삭제 오류')
                                                 }
                                             })
                                     }
