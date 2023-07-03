@@ -174,6 +174,7 @@ export default {
                                 .then(function (res) {
                                     if (res.status == 200) {
                                         let dto = res.data
+                                        alert(res.data.message)
                                         if (dto != null) {
                                             //돈 있음
                                             self.fflag = true;
@@ -201,42 +202,6 @@ export default {
                 alert('구독 시작일은 모집 마감일 이후여야 합니다.');
             }
         },
-
-        // checkcash() {
-        //     const self = this;
-        //     self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-        //         .then(function (res) {
-        //             console.log(res)
-        //             if (res.status == 200) {
-        //                 if (res.data.paydto != null) {
-        //                     self.paidamount = self.paydto.paidamount;
-
-        //                     let form = new FormData();
-        //                     formdata.append('paidamount', self.divisionResult)
-        //                     self.$axios.post('http://localhost:8181/payment/withdraw/' + email, form)
-        //                         .then(function (res) {
-        //                             if (res.status == 200) {
-        //                                 alert(res.data.message)
-        //                                 let dto = res.data.dto
-        //                                 if (dto != null) {
-        //                                     //돈 있음
-        //                                     self.fflag = true;
-        //                                 } else {
-        //                                     self.fflag = false;
-        //                                 }
-        //                             } else {
-        //                                 alert(res.data.message)
-        //                             }
-        //                         })
-        //                 } else {
-        //                     alert(res.data.message);
-        //                 }
-        //             } else if (res.status == 500) {
-        //                 alert('현금없음');
-        //             }
-        //         })
-
-        // },
         calculateEndDate(startDate) {
             const period = parseInt(this.subscriptionPeriod);
             const endDate = startDate.add(period, 'month').subtract(1, 'day');
@@ -249,7 +214,7 @@ export default {
         add() {
             this.formValidated = true;
 
-            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate) {
+            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate || !this.agree) {
                 alert('필수 항목을 전부 입력해주세요.')
                 return;
             }
@@ -296,7 +261,7 @@ export default {
 
             } else {
                 alert('캐시가 부족합니다.')
-                // location.href="/payment"
+                location.href="/payment"
             }
         }
     }

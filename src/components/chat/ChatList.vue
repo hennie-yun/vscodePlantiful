@@ -2,9 +2,8 @@
     <v-app>
         <div class="elevation-12 h-100 text-center" style="width: 65%; margin: 0 auto;">
             <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
-                <!-- <button class="" style="vertical-align: center;">ㅁㄴㅇ</button> -->
             </div>
-            <v-container class="rounded-xl overflow-x-hidden overflow-y-auto" id="messages" ref="box">
+            <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
                     <div class="msg-box rounded-b-lg" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
                         <div class="img-info-box elevation-1" style="width:100%;" @click="goRoom(item.num)">
@@ -54,9 +53,7 @@ export default {
         let list = this.roomList
         self.$axios.get("http://localhost:8181/chat/roomlist", {params : {email : this.loginId}})
         .then((ret) => {
-            console.log(ret)
             for(let obj of ret.data.list) {
-                console.log(obj)
                 list.push(obj)
             }
         }).catch((error) => {
@@ -65,7 +62,13 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
+
+    #messages {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
     .msg-box {
         display : flex;
         margin-left: 24px;
@@ -73,6 +76,7 @@ export default {
         margin-top : 32px;
         height: 88px;
         justify-content: space-between;
+        
         .img-info-box {
             display: flex;
             .img-box {
@@ -94,21 +98,23 @@ export default {
                 position: relative;
                 margin-right : 12px;
                 }
+
                 .info-box {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-around ;
                 width : 50vw;
-                .site-name{
-                    font-size : 16px;
-                    font-weight: 700;
+                    .site-name{
+                        font-size : 16px;
+                        font-weight: 700;
+                    }
+
+                    .last-msg{
+                        font-size :14px;
+                        margin: 0;
+                        color : #737373;
+                    }
                 }
-                .last-msg{
-                    font-size :14px;
-                    margin: 0;
-                    color : #737373;
-                }
-            }
         }
 
         p {
