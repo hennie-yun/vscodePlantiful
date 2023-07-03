@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div >
     <nav class="navbar navbar-expand-custom navbar-mainbg">
       <a class="navbar-brand navbar-logo" href="/">plan + tiful</a>
       <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -26,24 +26,27 @@
             <a class="nav-link" href="">공모전</a>
           </li>
 
+
           <div class="nav-item"
             style="display: flex; align-items: center; margin-right: 20px; margin-left: 150px; margin-top: 10px;">
-            
             <div style="display: flex;">
-              <img :src="require('@/assets/image/checklist.png')"
-                style=" margin-right: 10px; width: 40px; height: 40px;" />
-
+              <img :src="require('@/assets/image/checklist.png')" style=" margin-right: 10px; width: 40px; height: 40px;" />
+              
               <div class="nav-bar-profile" style="margin-left: 5px;">
-                <img :src="'http://localhost:8181/members/plantiful/' + loginId"
-                  style="width: 40px; border-radius: 50%; height: 40px;" />
+                <div>
+                  <img :src="'http://localhost:8181/members/plantiful/' + loginId" 
+                    style="width: 40px; border-radius: 50%; height: 40px;" />
+                </div>
               </div>
-
               <div @click="$emit('logout')">
                 <img :src="require('@/assets/image/logout.png')"
                   style=" margin-left: 10px; margin-right: 5px;width: 40px; height: 40px;" />
               </div>
             </div>
-          </div>
+            </div>
+          
+
+
         </ul>
       </div>
     </nav>
@@ -59,22 +62,33 @@ export default {
 
   data() {
     return {
-      loginId: null,
+      loginId: '',
       textTemp: str,
       active: false,
       arr: [],
-      activeLink: ''
+      activeLink: '',
     }
   },
+
   created() {
-    this.loginId = sessionStorage.getItem('loginId');
+    this.loginId = sessionStorage.getItem('loginId')
     console.log(this.loginId);
   },
 
+  mounted() {
+    this.initializeNavbar();
+  },
   methods: {
+
+    logout() {
+      sessionStorage.removeItem('token')
+      sessionStorage.removeItem('loginId')
+      location.href = '/';
+    },
+
     initializeNavbar() {
       var tabsNewAnim = $('#navbarSupportedContent');
-      // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+      var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
       var activeItemNewAnim = tabsNewAnim.find('.active');
       var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
       var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
@@ -102,8 +116,8 @@ export default {
         });
       });
     }
-  },
-};
+  }
+}
 </script>
 
 
@@ -170,7 +184,7 @@ export default {
 }
 
 #navbarSupportedContent a:not(:only-child):after {
-  content: "";
+  content: "\f105";
   position: absolute;
   right: 20px;
   top: 10px;
