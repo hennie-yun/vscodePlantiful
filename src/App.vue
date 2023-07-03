@@ -10,6 +10,7 @@
       <router-link to="/chatlist">채팅</router-link>|
       <button v-on:click="logout">로그아웃</button> |
       <router-link to="/payment">결제</router-link>|
+  
       <v-btn @click="openMenu($event)" :color="active ? 'primary' : undefined"
         icon="mdi-format-list-checks" v-click-outside="{handler:closeMenu, include}">
         </v-btn>

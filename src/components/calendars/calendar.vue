@@ -350,25 +350,56 @@ export default {
   },
 
 methods: {
+// 카카오 스케줄 일정 연동
+kakao(){
+this.$axios.get("http://localhost:8181/login/getKakaoAuthUrl")
+.then(function(res){
+  console.log(res.data)
+  //let apiURL= encodeURIComponent(res.data)
+  //window.location.href= apiURL
+})
+
+},
+// 네이버 스케줄 일정 연동
 naver(){
 
-  const clientId = "IiiFJKBOyzL3qvfXasPq"
-  const redirectURI = encodeURIComponent("http://localhost:8182/naver");
+  this.$axios.get("http://localhost:8181/api/naver/oauth")
+  .then(function(res){
+    console.log("oauth성공!!")
+   // location.href=encodeURIComponent(res.data)
+  })
   
-  const state = this.generateRandomState()
-  const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
+ // window.location.href = "http://localhost:8181/api/naver/oauth"
+   const clientId = "IiiFJKBOyzL3qvfXasPq"
+   const redirectURI = encodeURIComponent("http://localhost:8181/api/naver/callback");
+  
+   const state = this.generateRandomState()
+   const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
+
+  window.location.href = naverAuthURL
 
 
- window.location.href = naverAuthURL
- 
+  this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
+  .then(function(res){
+    console.log(res.data)
+  })
  
   // this.$axios.get(naverAuthURL)
   // .then(function(res){
   //   console.log(res.data)
   // })
 
+  // this.$axios.get("http://localhost:8181/api/naver/oauth")
+  // .then(function(res){
+  //   console.log(res.data)
+    
+  //   let url = encodeURIComponent(res.data)
+  //   console.log(url)
+  //   //location.href = res.data
+  // })
 
 },
+
 generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let state = "";
@@ -463,32 +494,34 @@ formData.append('day', self.newEvent.day);
 // 데이터 전송
 self.$axios.post("http://localhost:8181/schedules", formData)
 .then(response => {
-// 저장된 이벤트 변수에 저장
-const savedEvent = response.data.dto;
-self.kakaoShareTitle = savedEvent.title;
-self.kakaoShareDescription = savedEvent.start;
-self.kakaoShareTime = savedEvent.startTime;
-// 캘린더에 저장된 이벤트 추가
-self.calendarOptions.events.push({
-title: savedEvent.title,
-start: savedEvent.start,
-end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
-daysOfWeek: savedEvent.day,
-display: 'block', // 시간 표시 설정
-// startEditable: true, // 시작 시간 편집 가능 설정
-// durationEditable: true, // 종료 시간 편집 가능 설정
-});
+  
+  // 저장된 이벤트 변수에 저장
+  const savedEvent = response.data.dto;
+  self.kakaoShareTitle = savedEvent.title;
+  self.kakaoShareDescription = savedEvent.start;
+  self.kakaoShareTime = savedEvent.startTime;
+  // 캘린더에 저장된 이벤트 추가
+  self.calendarOptions.events.push({
+    title: savedEvent.title,
+    start: savedEvent.start,
+    end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+    daysOfWeek: savedEvent.day,
+    display: 'block', // 시간 표시 설정
+    // startEditable: true, // 시작 시간 편집 가능 설정
+    // durationEditable: true, // 종료 시간 편집 가능 설정
+  });
 
-// 입력된 값들 초기화
-self.newEvent = {
-title: '',
-start: '',
-end: '',
-startTime: '',
-endTime: '',
-// alert: '',
-info: '',
-isLoop: 1,
+  
+  // 입력된 값들 초기화
+  self.newEvent = {
+    title: '',
+    start: '',
+    end: '',
+    startTime: '',
+    endTime: '',
+    // alert: '',
+    info: '',
+    isLoop: 1,
 day: null
 };
 self.$refs.fullCalendar.getApi().refetchEvents();
@@ -496,6 +529,13 @@ self.$refs.fullCalendar.getApi().refetchEvents();
 // self.$router.go(0);
 self.showEventForm = false;
 self.shareEvent = true;
+
+// 네이버에 데이터 전송
+this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+  .then(function(res){
+   alert(res.data)
+  })
+
 })
 
 .catch(error => {
