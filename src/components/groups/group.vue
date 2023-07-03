@@ -107,7 +107,7 @@ export default {
 },
 }
 </script>
-<style>
+<style scoped>
 span {
     background-color: #bbb;
     border-radius: 50%;

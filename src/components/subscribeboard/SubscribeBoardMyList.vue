@@ -26,9 +26,9 @@
                         </div>
                     </div>
 
-                    <div class="card h-100 endcardlist" v-if="order.start_check == 2" >
+                    <div class="card h-100 " v-if="order.start_check == 2" >
                         <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
-                        <div class="card-body">
+                        <div class="card-body endcardlist">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
                             <p class="card-text"> {{order.email.email}} (모집자)</p>
                             <p class="card-text"> 남은 포인트 {{order.point_basket}}</p>
@@ -118,6 +118,9 @@ export default {
 <style>
 .mylistbody {
     padding-top: 20%;
-    margin-left: 18%;
+    margin-left: 10%;
+}
+.endcardlist{
+    background-color: gainsboro;
 }
 </style>
