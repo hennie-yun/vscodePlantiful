@@ -131,19 +131,26 @@ const routes = [
         name: 'navercalendar',
         component: navercalendar
       },
-      
-          {
-            path: "/naverlogin",
-            name: "naverlogin",
-            component: naverlogin
-          },
-          {
-            path: "/naveraccess",
-            name: "naveraccess",
-            component: naveraccess
-          }
-        
-      
+      {
+        path: "/naverlogin",
+        name: "naverlogin",
+        component: naverlogin
+      },
+      {
+        path: "/naveraccess",
+        name: "naveraccess",
+        component: naveraccess
+      },
+      {
+        path : '/concertlist',
+        name : 'concertlist',
+        component : () => import('@/components/concert/concertList.vue')
+      },
+      {
+        path : '/concertdetail',
+        name : 'concertdetail',
+        component : () => import('@/components/concert/concertDetail.vue')
+      }
     ]
   }
 ]

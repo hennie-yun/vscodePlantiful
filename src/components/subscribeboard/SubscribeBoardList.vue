@@ -4,8 +4,10 @@
         <div class="grid text-center">
             <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
         </div>
-        <div class="row">
-            <div class="col" v-on:click="search('all')">전체보기</div>
+        <div class="row alllistsite">
+            <div class="col" v-on:click="search('all')"><img
+                    src="https://img.shields.io/badge/전체보기-black?style=for-the-badge&logo=headlessui&logoColor=white" />
+            </div>
             <div class="col" v-on:click="search('넷플릭스')"><img
                     src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" />
             </div>
@@ -24,16 +26,16 @@
             </div>
         </div>
     </div>
-    <div class="container text-right">
+    <div class="text-right">
         <router-link to="/SubscribeBoardAdd">
-            <button class="btn custom-button" style="background-color: #7AC6FF;">글 등록</button>
+            <button class="btn custom-button" style="background-color: #7AC6FF; color:white;">글 등록</button>
         </router-link>
         <router-link to="/SubscribeBoardMyList">
-            <button class="btn custom-button" style="background-color: #7AC6FF;">내 구독 목록</button>
+            <button class="btn custom-button" style="background-color: #7AC6FF; color: white;">내 구독 목록</button>
         </router-link>
     </div>
     <div class="bodylist">
-        <div class="row">
+        <div class="row listtitle">
             <div class="col">
                 글 번호
             </div>
@@ -239,6 +241,9 @@ export default {
                             self.partylist.forEach(function (item) {
                                 self.point_basket = item.point_basket
                             });
+                            const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
+                            self.recruit_endperiod = recruitEndPeriodFormatted;
+                            order.recruit_endperiod = recruitEndPeriodFormatted;
 
                         } else {
                             alert('에러코드:' + res.status);
@@ -253,15 +258,12 @@ export default {
 
             Promise.all(promises)
                 .then(function () {
+                    const self = this;
                     // console.log('모든 비동기 요청 완료');
-
-
 
                     self.list.forEach(function (order) {
                         // console.log(self.list);
-                        const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
-                        self.recruit_endperiod = recruitEndPeriodFormatted;
-                        order.recruit_endperiod = recruitEndPeriodFormatted;
+
                         const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
                         self.subscribe_enddate = subEnddateFormatted;
                         self.recruitpeople = order.recruitpeople
@@ -279,6 +281,7 @@ export default {
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
                             if (self.point_basket != 0) {
+
                                 const price = order.total_point / self.total_people
                                 console.log(price)
                                 const form = new FormData();
@@ -289,8 +292,7 @@ export default {
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             console.log('모집 종료로 금액 반환 되었음')
-                                            self.$axios
-                                                .patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                            self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                 .then(function (res) {
                                                     if (res.status === 200) {
                                                         console.log('취소돼서 0으로 만들고 돌아감');
@@ -320,7 +322,7 @@ export default {
                                 const form = new FormData();
                                 form.append('email', email);
                                 form.append('price', price);
-                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                self.$axios.post('http://localhost:8181/payment/' + self.subscribe_num.email.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             alert('구독 끝 - 모집자에게 돈 돌아감 ')
@@ -392,18 +394,19 @@ export default {
     font-weight: 400;
     font-style: normal;
 }
+
 * {
     font-family: 'Pretendard-Regular';
-    /* font-weight: 900; */
 }
-#app {
+
+/* #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-}
+} */
 
 .custom-button {
     margin-top: 20px;
@@ -427,7 +430,10 @@ export default {
 .inglist {
     padding-top: 10px;
     border-bottom: 1px solid rgba(82, 82, 82, 0.224);
-    background-color: #7ac5ff85;
+    border: 1px dashed black;
+    /* background: linear-gradient(#7ac5ff71 50%, rgb(255, 255, 255) 50%);
+    background-size: 100% 10px; */
+    
 }
 
 .endlist {
@@ -438,6 +444,29 @@ export default {
 
 .bodylist {
     margin-bottom: 100px;
+}
+
+.alllistsite {
+    padding: 5px;
+    /* margin: -158px; */
+}
+
+.listtitle {
+    /* background-color: aliceblue; */
+    border-bottom: 1px solid;
+    padding: 10px;
+    background-color: rgb(122, 198, 255);
+    color: white;
+    font-weight: 300;
+}
+
+.sbtitle{
+    font-weight: 600;
+    color: #7ac5ff;
+}
+
+.container {
+    padding-left: 30px;
 }
 </style>
 
