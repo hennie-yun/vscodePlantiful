@@ -29,7 +29,9 @@
           <div class="nav-item"
             style="display: flex; align-items: center; margin-right: 20px; margin-left: 150px; margin-top: 10px;">
             
-            <div style="display: flex;">
+            <div style="display: flex;" @click="openMenu($event)" 
+                :color="active ? 'primary' : undefined"
+                v-click-outside="{handler:closeMenu, include}">
               <img :src="require('@/assets/image/checklist.png')"
                 style=" margin-right: 10px; width: 40px; height: 40px;" />
 
@@ -47,31 +49,99 @@
         </ul>
       </div>
     </nav>
+    <div id="checkList" v-show="active" class="included">
+    <div style="width=100%; height=100%;">
+      <TodoHeader></TodoHeader>
+      <TodoInput v-bind:propsdata="todoItems" v-on:addTodoItem="addOneItem"></TodoInput>
+      <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" 
+        v-on:toggleItem="toggleOneItem"></TodoList>
+      <TodoFooter v-on:clearAll="clearAllItem"></TodoFooter>
+    </div>
+  </div>
   </div>
 </template>
 
-
-
 <script>
-let str = '';
+import TodoHeader from '../todolist/TodoHeader.vue'
+import TodoInput from '../todolist/TodoInput.vue'
+import TodoList from '../todolist/TodoList.vue'
+import TodoFooter from '../todolist/TodoFooter.vue'
 
 export default {
-
+  components  : {
+    'TodoHeader' : TodoHeader,
+    'TodoInput' : TodoInput,
+    'TodoList' : TodoList,
+    'TodoFooter' : TodoFooter,
+  },
   data() {
     return {
       loginId: null,
-      textTemp: str,
       active: false,
       arr: [],
-      activeLink: ''
+      activeLink: '',
+      active : false,
+      todoItems : []
     }
   },
   created() {
     this.loginId = sessionStorage.getItem('loginId');
-    console.log(this.loginId);
+    if(localStorage.length > 0) {
+      for(var i=0; i<localStorage.length; i++) {
+          if(localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+              let getItem = localStorage.getItem(localStorage.key(i))
+              let obj = JSON.parse(getItem)
+              this.todoItems.push(obj)
+          }
+      }
+
+      this.todoItems = this.todoItems.sort((a,b) => a.index - b.index)
+    }
   },
 
   methods: {
+    openMenu(value) {
+      if(typeof value === 'boolean') {
+        this.active = value
+      } else {
+        this.active = !this.active
+        let div = document.getElementById("checkList")
+        div.style.top = "0px"
+        div.style.top = 150 + "px"
+      } 
+
+    },
+
+    include () {
+      return [document.querySelector('.included')]
+    },
+
+    closeMenu() {
+      this.active = false
+    },
+    
+    addOneItem : function(todoItem) {
+      var obj = {completed : false, item : todoItem.msg, index : todoItem.index} 
+      localStorage.setItem(todoItem.index, JSON.stringify(obj))
+      this.todoItems.push(obj)
+    },
+
+    removeOneItem : function(todoItem, index) {
+      this.todoItems.splice(index, 1)
+      localStorage.removeItem(todoItem.index)
+    },
+
+    toggleOneItem : function(todoItem, index) {
+      this.todoItems[index].completed = !this.todoItems[index].completed
+      localStorage.removeItem(todoItem.item)
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem))
+    },
+
+    clearAllItem : function() {
+      localStorage.clear()
+      this.todoItems = []
+    },
+
     initializeNavbar() {
       var tabsNewAnim = $('#navbarSupportedContent');
       // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
@@ -262,6 +332,40 @@ export default {
     flex-basis: auto;
   }
 }
+
+  @import "https://pro.fontawesome.com/releases/v5.10.0/css/all.css";
+  @import 'https://fonts.googleapis.com/css2?family=Itim&display=swap';
+
+  #checkList {
+    font-family: 'Pretendard-Regular';
+    font-weight: 600;
+    border: 1px solid #B3ADAD;
+    width: 470px;
+    height: 450px;
+    left : 68%;
+    /* top : 10%; */
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: center;
+    background-color: white;
+    white-space: pre;
+    position: absolute;
+    opacity: 1;
+    z-index: 999;
+  }
+
+  input {
+    border-style: groove;
+    width: 200px;
+  }
+
+  button {
+    border-style: groove;
+  }
+
+  .shadow {
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.03);
+  }
 
 @media (max-width: 991px) {
   #navbarSupportedContent ul li a {
