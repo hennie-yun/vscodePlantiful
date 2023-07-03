@@ -25,12 +25,7 @@ export default {
       sessionStorage.removeItem('token')
       sessionStorage.removeItem('loginId')
       location.href = '/';
-    },
-    // replaceImg(e) {
-    //   console.log(e)
-    //   e.target.src = img;
-    // },
-
+    }   
   }
 }
 

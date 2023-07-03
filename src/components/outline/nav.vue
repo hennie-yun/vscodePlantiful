@@ -32,12 +32,10 @@
               <img :src="require('@/assets/image/checklist.png')"
                 style=" margin-right: 10px; width: 40px; height: 40px;" />
 
-
               <div class="nav-bar-profile" style="margin-left: 5px;">
-                <img :src="'http://localhost:8181/members/plantiful/' + loginId"
-                 @error="$emit('replaceImg')"
-                  style="width: 40px; border-radius: 50%; height: 40px;" />
+                <img :src="'http://localhost:8181/members/plantiful/' + loginId" style="width: 40px; border-radius: 50%; height: 40px;" />
               </div>
+
 
               <div style="display: flex;" @click="$emit('logout')">
                 <img :src="require('@/assets/image/logout.png')"
@@ -64,50 +62,48 @@ export default {
       textTemp: str,
       active: false,
       arr: [],
-      activeLink: ''
-      // defaultImageSrc: '@/assets/image/profile.png'
-
+      activeLink: '',
+      
     }
   },
 
   created() {
-    this.loginId = sessionStorage.getItem('loginId')
-    console.log(this.loginId);
+  this.loginId = sessionStorage.getItem('loginId');
+  console.log(this.loginId);
   },
 
-  methods: {
-   
-    initializeNavbar() {
-      var tabsNewAnim = $('#navbarSupportedContent');
-      // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
-      var activeItemNewAnim = tabsNewAnim.find('.active');
-      var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
-      var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
-      var itemPosNewAnimTop = activeItemNewAnim.position();
-      var itemPosNewAnimLeft = activeItemNewAnim.position();
+methods: {
+  initializeNavbar() {
+    var tabsNewAnim = $('#navbarSupportedContent');
+    // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+    var activeItemNewAnim = tabsNewAnim.find('.active');
+    var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+    var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+    var itemPosNewAnimTop = activeItemNewAnim.position();
+    var itemPosNewAnimLeft = activeItemNewAnim.position();
+    $(".hori-selector").css({
+      "top": itemPosNewAnimTop.top + "px",
+      "left": itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+    });
+
+    $("#navbarSupportedContent").on("click", "li", function (e) {
+      $('#navbarSupportedContent ul li').removeClass("active");
+      $(this).addClass('active');
+      var activeWidthNewAnimHeight = $(this).innerHeight();
+      var activeWidthNewAnimWidth = $(this).innerWidth();
+      var itemPosNewAnimTop = $(this).position();
+      var itemPosNewAnimLeft = $(this).position();
       $(".hori-selector").css({
         "top": itemPosNewAnimTop.top + "px",
         "left": itemPosNewAnimLeft.left + "px",
         "height": activeWidthNewAnimHeight + "px",
         "width": activeWidthNewAnimWidth + "px"
       });
-
-      $("#navbarSupportedContent").on("click", "li", function (e) {
-        $('#navbarSupportedContent ul li').removeClass("active");
-        $(this).addClass('active');
-        var activeWidthNewAnimHeight = $(this).innerHeight();
-        var activeWidthNewAnimWidth = $(this).innerWidth();
-        var itemPosNewAnimTop = $(this).position();
-        var itemPosNewAnimLeft = $(this).position();
-        $(".hori-selector").css({
-          "top": itemPosNewAnimTop.top + "px",
-          "left": itemPosNewAnimLeft.left + "px",
-          "height": activeWidthNewAnimHeight + "px",
-          "width": activeWidthNewAnimWidth + "px"
-        });
-      });
-    }
-  },
+    });
+  }
+},
 };
 </script>
 
