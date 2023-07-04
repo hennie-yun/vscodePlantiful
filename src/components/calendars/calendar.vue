@@ -1,25 +1,24 @@
 <template>
   <div>
     <div class="" style="display: flex; height: 100vh;">
-      <div class="sidebar" style="width: 20%; padding: 2%; border: none; background-color: ivory;">
-        <div class="group_info" style="height: 50%;">
+      <div class="sidebar">
+        <!-- 오늘 할 일 -->
+        <div class="sidebar-today">
+          <h4>오늘 할 일</h4>
+          <ul class="sidebar-list">
+            <li v-for="schedule in todayschedules" :key="schedule" style="display:flex; justify-content: space-evenly;">
+              <Div style="display:flex">
+                <span>{{ schedule.startTime }}</span><span style="width:150px"> {{ schedule.title }}</span>
+              </Div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-groupinfo">
           <router-link to="/group">그룹 만들기</router-link>
-          <h3>그룹 정보</h3>
-          <div style="padding-top: 5%;" v-if="selectedGroup">
-            <div>
-              <h5>그룹 이름: {{ selectedGroup.schedulegroup_num.schedulegroup_title }}</h5>
-            </div>
-            <div style="padding-top: 5%;">
-              <h6>참가자 ▽</h6>
-              <div>
-                <ul>
-                  <li v-for="email in selectedGroupEmails" :key="email">
-                    {{ email }}
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div style="padding-top: 40%; display: flex; justify-content: space-evenly;">
+          <div>
+            <h4>그룹 정보</h4>
+            <div style="display: flex; justify-content: space-evenly;" v-if="selectedGroup">
               <button class="invite_btn" @click="toggleInviteForm">초대하기</button>
               <button class="delparty_btn" style="border: solid 1px darkgray; margin-right: 15%"
                 v-if="selectedGroupEmails.length === 1" @click="delParty">그룹삭제</button>
@@ -27,14 +26,29 @@
                 @click="outParty">나가기</button>
             </div>
           </div>
+          <div style="padding-top: 5%;" v-if="selectedGroup">
+            <div>
+              <h5 style="font-size:1.15rem">그룹 이름: {{ selectedGroup.schedulegroup_num.schedulegroup_title }}</h5>
+            </div>
+            <div style="padding-top: 5%;">
+              <h6>참가자 ▽</h6>
+              <div>
+                <ul class="sidebar-list">
+                  <li v-for="email in selectedGroupEmails" :key="email">
+                    {{ email }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="group_list" style="height:50%">
+        <div class="sidebar-grouplist">
           <div>
-            <h3>그룹 리스트</h3>
+            <h4>그룹 리스트</h4>
           </div>
           <div>
-            <ul>
+            <ul class="sidebar-list">
               <li v-for="group in groups" :key="group.schedulegroup_num" style="display: flex; justify-content: center;">
                 <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
                   style="margin-right: 20px;" @change="toggleGroupSchedule(group)" />
@@ -49,10 +63,13 @@
           </div>
         </div>
       </div>
-      <div class="calendar-con" style="width: 75%; padding: 2%; padding-left: 5%;">
+      <div class="calendar-con">
         <FullCalendar ref="fullCalendar" :options="calendarOptions" />
       </div>
     </div>
+
+
+
     <!-- 초대 폼 -->
     <transition name="slide">
       <div v-if="showInviteForm" class="invite-form">
@@ -124,12 +141,14 @@
 
         </div>
 
-        <div class="form-row"> <label for="group_num">개인/그룹</label> <select id="group_num" v-model="newEvent.group_num">
-            <option value="0" default>개인 일정</option>
+        <div class="form-row">
+          <label for="group_num">개인/그룹</label>
+          <select id="group_num" v-model="newEvent.group_num">
+            <option value="0">개인 일정</option>
             <option v-for="group in groups" :value="group.schedulegroup_num" :key="groupschedulegroup_num">
               {{ group.schedulegroup_title }} </option>
           </select>
-         </div>
+        </div>
 
         <!-- <div class="form-row">
                   <label for="notification">알림 설정</label>
@@ -187,17 +206,19 @@
       <div class="shareform-row">
         <h5 style="text-align: center;">일정 공유</h5>
       </div>
-      <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-        <div style="display: flex; align-items: center;">
+      <div class="shareform">
 
-          <button class="share-btn" @click="copyUrl"><img :src="require('@/assets/image/url.png')"
-              style="margin-right: 10px; width:50px" />url복사</button>
+        <div class="share-btn-div">
+          <button class="share-btn" @click="copyUrl">
+            <img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width:45px" />url복사</button>
         </div>
-        <div style="display: flex; align-items: center;">
 
-          <button class="share-btn" @click="shareKakao"><img :src="require('@/assets/image/kakaotalk.png')"
-              @click="shareKakao" style="margin-right: 10px; width: 50px;" />카카오톡 공유</button>
+        <div class="share-btn-div">
+          <button class="share-btn" @click="shareKakao">
+            <img :src="require('@/assets/image/kakaotalk.png')" @click="shareKakao"
+              style="width: 45px;border-radius: 29px;" />카카오톡 공유</button>
         </div>
+
       </div>
       <div style="display: flex; justify-content: center; margin-top: 10px;">
         <button class="share-btn" @click="cancel">아니오</button>
@@ -226,10 +247,10 @@
     <div style="display: flex; justify-content: center; margin-top: 10px;">
       <button class="share-btn" @click="cancel2">아니오</button>
     </div>
-</div>
+  </div>
 
 
-<router-view />
+  <router-view />
 </template>
 
 <script>
@@ -251,8 +272,8 @@ export default {
   },
   name: 'calendar',
   data() {
-    return {
-     code: '',
+   return {
+      code: '',
       access_token: '',
       isNewEvent: true,
       showEventForm: false,
@@ -260,13 +281,18 @@ export default {
       snsEvent: false,
       group_num: 0,
       groupTitle: '',
+      reslist: [],
       list: [],
       items: [],
       groups: [],
       checkedGroups: [],
       selectedGroup: null,
       selectedGroupEmails: [],
+      selectedGroupSchedules: [],
+      startSchedules: [],
+      todayschedules: [],
       members: [],
+      partylist: [],
       showInviteForm: false,
       inviteEmail: '',
       invitelist: [],
@@ -291,6 +317,8 @@ export default {
           center: 'title',
           right: 'today prev,next',
         },
+        editable: true,
+        dayMaxEvents: true,
         initialView: 'dayGridMonth',
         dateClick: this.handleDateClick,
         eventClick: this.handleEventClick,
@@ -303,7 +331,8 @@ export default {
           startEditable: true,
           durationEditable: true,
         }],
-        eventResize: this.handleEventResize
+        eventResize: this.handleEventResize,
+        eventDrop: this.handleEventDrop
       }
     }
   },
@@ -350,8 +379,8 @@ export default {
             })
             .then(function (res) {
               if (res.status === 200) {
-                const reslist = res.data.list;
-                reslist.forEach(function (item) {
+                self.reslist = res.data.list;
+                self.reslist.forEach(function (item) {
                   const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || 'blue';
                   const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
                   const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
@@ -386,10 +415,18 @@ export default {
                 function generateTitle(item) {
                   let title = item.title;
                   if (item.startTime || item.endTime) {
-                    title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : '');
+                    const startTime = item.startTime !== null && item.startTime !== 'null' ? item.startTime : '';
+                    const endTime = item.endTime !== null && item.endTime !== 'null' ? item.endTime : '';
+                    if (startTime !== '' && endTime !== '') {
+                      title += ' ' + startTime + ' ~ ' + endTime;
+                    } else if (startTime !== '' || endTime !== '') {
+                      title += ' ' + startTime + endTime;
+                    }
                   }
-                  return title !== null ? title : '';
+                  return title;
                 }
+
+
 
               } else {
                 alert("에러코드: " + res.status);
@@ -446,10 +483,18 @@ export default {
               function generateTitle(item) {
                 let title = item.title;
                 if (item.startTime || item.endTime) {
-                  title += ' ' + (item.startTime ? item.startTime : '') + ' ~' + (item.endTime ? ' ' + item.endTime : '');
+                  const startTime = item.startTime !== null && item.startTime !== 'null' ? item.startTime : '';
+                  const endTime = item.endTime !== null && item.endTime !== 'null' ? item.endTime : '';
+                  if (startTime !== '' && endTime !== '') {
+                    title += ' ' + startTime + ' ~ ' + endTime;
+                  } else if (startTime !== '' || endTime !== '') {
+                    title += ' ' + startTime + endTime;
+                  }
                 }
                 return title;
               }
+
+
             })
             .catch(error => {
               console.error(error);
@@ -460,34 +505,36 @@ export default {
 
       });
 
-    self.$axios.get("http://localhost:8181/invite")
-      .then(response => {
-        this.inviteall = response.data.list;
-        console.log(this.inviteall)
+    self.$axios.get("http://localhost:8181/groupparty")
+      .then(function (res) {
+        if (res.status == 200) {
+          self.partylist = res.data.list;
+          console.log(self.partylist)
+        }
       })
 
     //초대받은 사람의 자동 초대 가입 
     self.$axios.get("http://localhost:8181/invite/email/" + self.email, { headers: { token: token } })
       .then(response => {
-        const invitelist = response.data.list;
-
-        console.log(invitelist);
-        invitelist.forEach(item => {
+        console.log(self.email)
+        self.invitelist = response.data.list;
+        self.invitelist.forEach(item => {
           const invitenum = item.invitenum;
           console.log(invitenum);
         });
-        if (invitelist.length > 0) {
+        if (self.invitelist.length > 0) {
           const formData = new FormData();
-          invitelist.forEach(item => {
+          self.invitelist.forEach(item => {
             console.log(self.items)
-            const groupnum = item.groupnum.schedulegroup_num;
-            console.log(groupnum)
+            const schedulegroupnum = item.groupnum.schedulegroup_num;
             // 중복 여부 확인을 위한 변수
             let isDuplicate = false;
-
+            console.log(isDuplicate)
             // self.items 배열의 schedulegroup_num.schedulegroup_num 값과 비교하여 중복 여부 확인
             self.items.forEach(item => {
-              if (item.schedulegroup_num.schedulegroup_num === groupnum) {
+              console.log(item.schedulegroup_num.schedulegroup_num)
+              if (item.schedulegroup_num.schedulegroup_num === schedulegroupnum) {
+
                 isDuplicate = true;
                 console.log(isDuplicate)
                 return; // 중복이면 더 이상 진행하지 않고 종료
@@ -495,7 +542,7 @@ export default {
             });
 
             if (!isDuplicate) {
-              formData.append('schedulegroup_num', groupnum);
+              formData.append('schedulegroup_num', schedulegroupnum);
               formData.append('member_email', self.email);
             }
           });
@@ -504,7 +551,7 @@ export default {
             self.$axios.post("http://localhost:8181/groupparty", formData)
               .then(response => {
                 const invitemember = response.data.dto;
-                console.log(invitemember.schedulegroup_num);
+                console.log(invitemember);
               })
               .catch(error => {
                 console.error(error);
@@ -512,7 +559,7 @@ export default {
 
           }
         }
-        invitelist.forEach(item => {
+        self.invitelist.forEach(item => {
           const invitenum = item.invitenum;
           console.log(invitenum);
           self.$axios.delete("http://localhost:8181/invite/invite_num/" + invitenum)
@@ -527,6 +574,27 @@ export default {
         })
 
       });
+    // const startDate = new Date().toISOString().split('T')[0];
+    // const currentDate = new Date(); // 현재 날짜와 시간
+    // const startDate = currentDate.toLocaleDateString('ko-KR'); // 로컬 시간대를 기준으로 날짜를 문자열로 변환
+    const currentDate = new Date(); // 현재 날짜와 시간
+    const year = currentDate.getFullYear(); // 년도
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요), 두 자리로 패딩
+    const day = String(currentDate.getDate()).padStart(2, '0'); // 일, 두 자리로 패딩
+
+    const startDate = `${year}-${month}-${day}`; // "YYYY-MM-DD" 형태로 조합된 문자열
+    console.log(startDate)
+    self.$axios.get("http://localhost:8181/schedules/startdate/" + startDate)
+      .then(function (res) {
+        console.log(startDate)
+        if (res.status == 200) {
+          const startSchedules = res.data.list;
+          console.log(startSchedules)
+          const email = sessionStorage.getItem('loginId');
+          self.todayschedules = startSchedules.filter(schedule => schedule.email.email === email);
+        }
+      })
+
 
   },
 
@@ -537,7 +605,7 @@ export default {
 
 
     //그룹 초대
-    inviteToGroup(schedulegroup_num) {
+   inviteToGroup(schedulegroup_num) {
       const groupnum = schedulegroup_num.schedulegroup_num;
       const email = this.newEvent.email;
 
@@ -550,23 +618,53 @@ export default {
         .then(response => {
           this.inviteall = response.data.list;
           console.log(this.inviteall);
-
+          console.log(this.partylist)
           // 중복 여부 확인
           const isEmailDuplicate = this.inviteall.some(item => item.email.email === email);
           const isGroupnumDuplicate = this.inviteall.some(item => item.groupnum.schedulegroup_num === groupnum);
+          const isPartyemailDuplicate = this.partylist.some(item => item.member_email.email === email);
+          const isPartygroupnumDuplicate = this.partylist.some(item => item.schedulegroup_num.schedulegroup_num === groupnum);
 
           if (isEmailDuplicate && isGroupnumDuplicate) {
-            alert("이미 초대된 email 입니다."); // 중복인 경우 알림 표시
+            alert("이미 초대된 email 입니다. invite"); // 초대 테이블 중복인 경우 알림 표시
             this.showInviteForm = false;
             return;
+          } if (isPartyemailDuplicate && isPartygroupnumDuplicate) {
+            // isPartyemailDuplicate와 isPartygroupnumDuplicate 모두 참인 경우 실행되는 코드
+            console.log("이미 가입?");
+
+            // partylist 배열을 순회하면서 조건에 해당하는 항목을 찾기
+            for (let i = 0; i < this.partylist.length; i++) {
+              const item = this.partylist[i];
+
+              if (item.member_email.email === email && item.schedulegroup_num.schedulegroup_num === groupnum) {
+                // 조건에 해당하는 항목을 찾았을 때 추가 작업 수행
+                console.log("Matching item found:", item);
+                // 추가 작업 수행
+                // ...
+              }
+            }
+          } if (isEmailDuplicate == true) {
+            alert("다른 그룹의 가입을 대기 중입니다.")
+            return;
           }
+          // else if (isPartyemailDuplicate && isPartygroupnumDuplicate) {
+          //   console.log(isPartyemailDuplicate)
+          //   alert("이미 초대된 email 입니다. gruopparty"); // 그룹 파티 중복인 경우 알림 표시
+          //   this.showInviteForm = false;
+          //   return;
+          // }
 
           // 중복이 아닌 경우 POST 요청으로 전송
           this.$axios.post("http://localhost:8181/invite", formData)
             .then(response => {
-              const invitemember = response.data.dto;
-              this.showInviteForm = false;
-              alert("초대 메세지 전송 완료")
+              const inviteflag = response.data.flag;
+              if (inviteflag == false) {
+                alert("유효하지 않은 회원입니다.")
+              } else {
+                this.showInviteForm = false;
+                alert("초대 메세지 전송 완료")
+              }
             })
             .catch(error => {
               console.error(error);
@@ -800,99 +898,100 @@ alert("URL이 복사되었습니다.");
 console.error("URL 복사에 실패했습니다.", error);
 });
 },
-//날짝 클릭하면 입력 폼 나옴
-handleDateClick(arg) {
-this.showEventForm = true;
-this.isNewEvent = true,
-this.newEvent = {
-schedule_num: 0,
-title: '',
-start: dayjs(arg.date).format('YYYY-MM-DD'),
-end: dayjs(arg.date).format('YYYY-MM-DD'),
-startTime: '',
-endTime: '',
-info: '',
-isLoop: 1,
-day: null
-};
-},
+    //날짝 클릭하면 입력 폼 나옴
+    handleDateClick(arg) {
+      this.showEventForm = true;
+      this.isNewEvent = true,
+        this.newEvent = {
+          schedule_num: 0,
+          title: '',
+          start: dayjs(arg.date).format('YYYY-MM-DD'),
+          end: dayjs(arg.date).format('YYYY-MM-DD'),
+          startTime: '',
+          endTime: '',
+          info: '',
+          isLoop: 1,
+          day: null
+        };
+    },
 
 
-//일정 추가
-addEvent() {
-const self = this;
-const formData = new FormData();
-if (self.newEvent.end == 0) {
-self.newEvent.end = self.newEvent.start;
-};
+    //일정 추가
+    addEvent() {
+      const self = this;
+      const formData = new FormData();
+      if (self.newEvent.end == 0) {
+        self.newEvent.end = self.newEvent.start;
+      };
 
       formData.append('email', sessionStorage.getItem('loginId'));
       formData.append('group_num', self.newEvent.group_num);
-formData.append('title', self.newEvent.title);
-formData.append('start', self.newEvent.start);
-formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
-formData.append('startTime', self.newEvent.startTime);
-formData.append('endTime', self.newEvent.endTime);
-formData.append('info', self.newEvent.info);
-formData.append('alert', self.newEvent.alert);
-formData.append('isLoop', self.newEvent.isLoop);
-formData.append('day', self.newEvent.day);
+      formData.append('title', self.newEvent.title);
+      formData.append('start', self.newEvent.start);
+      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+      formData.append('startTime', self.newEvent.startTime);
+      formData.append('endTime', self.newEvent.endTime);
+      formData.append('info', self.newEvent.info);
+      formData.append('alert', self.newEvent.alert);
+      formData.append('isLoop', self.newEvent.isLoop);
+      formData.append('day', self.newEvent.day);
 
-// 카카오톡에 데이터 전송
-this.$axios.post("http://localhost:8181/api/kakao/form", formData)
-.then(res => {
-  console.log(res.data)
-})
+      if (self.newEvent.group_num == null) {
+        alert("그룹 선택하세요")
+        return;
+      }
+      // 데이터 전송
+      self.$axios.post("http://localhost:8181/schedules", formData)
+        .then(response => {
 
-
-// 데이터 전송
-self.$axios.post("http://localhost:8181/schedules", formData)
-.then(response => {
-  
-  // 저장된 이벤트 변수에 저장
-  const savedEvent = response.data.dto;
-  self.kakaoShareTitle = savedEvent.title;
-  self.kakaoShareDescription = savedEvent.start;
-  self.kakaoShareTime = savedEvent.startTime;
-  // 캘린더에 저장된 이벤트 추가
-  self.calendarOptions.events.push({
-    title: savedEvent.title,
-    start: savedEvent.start,
-    end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
-    daysOfWeek: savedEvent.day,
-    display: 'block', // 시간 표시 설정
-    // startEditable: true, // 시작 시간 편집 가능 설정
-    // durationEditable: true, // 종료 시간 편집 가능 설정
-  });
-
-  
-  // 입력된 값들 초기화
-  self.newEvent = {
-    title: '',
-    start: '',
-    end: '',
-    startTime: '',
-    endTime: '',
-    // alert: '',
-    info: '',
-    isLoop: 1,
-day: null
-};
-self.$refs.fullCalendar.getApi().refetchEvents();
-
-// self.$router.go(0);
-self.showEventForm = false;
-self.shareEvent = true;
+          // 저장된 이벤트 변수에 저장
+          const savedEvent = response.data.dto;
+          self.kakaoShareTitle = savedEvent.title;
+          self.kakaoShareDescription = savedEvent.start;
+          self.kakaoShareTime = savedEvent.startTime;
+          // 캘린더에 저장된 이벤트 추가
+          self.calendarOptions.events.push({
+            title: savedEvent.title,
+            start: savedEvent.start,
+            end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+            daysOfWeek: savedEvent.day,
+            display: 'block', // 시간 표시 설정
+            // startEditable: true, // 시작 시간 편집 가능 설정
+            // durationEditable: true, // 종료 시간 편집 가능 설정
+          });
 
 
+          // 입력된 값들 초기화
+          self.newEvent = {
+            title: '',
+            start: '',
+            end: '',
+            startTime: '',
+            endTime: '',
+            // alert: '',
+            info: '',
+            isLoop: 1,
+            day: null
+          };
+          self.$refs.fullCalendar.getApi().refetchEvents();
 
-})
+          // self.$router.go(0);
+          self.showEventForm = false;
+          self.shareEvent = true;
 
-.catch(error => {
-console.error(error);
-});
+          // 네이버에 데이터 전송
+          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+            .then(function (res) {
+              alert(res.data)
+            })
 
-},
+        })
+
+        .catch(error => {
+          console.error(error);
+        });
+
+    },
 
 //폼 취소
 cancel() {
@@ -915,9 +1014,10 @@ cancel2(){
       this.shareEvent = false;
     },
 
-//일정 클릭 상세보기
+    //일정 클릭 상세보기
     handleEventClick(arg) {
-      this.showEventForm = true;
+      this.dayMaxEvents = false,
+        this.showEventForm = true;
       this.isNewEvent = false;
       const event = arg.event;
       const schedule_num = event.extendedProps.schedule_num;
@@ -929,6 +1029,7 @@ cancel2(){
           console.log(scheduleData);
           // 조회된 데이터를 폼에 보여주기
           self.newEvent = {
+            schedule_num: schedule_num,
             title: scheduleData.title,
             start: scheduleData.start,
             end: scheduleData.end,
@@ -947,54 +1048,101 @@ cancel2(){
         });
     },
 
-//수정
-updateEvent() {
-const self = this;
-const formData = new FormData();
-if (self.newEvent.end == 0) {
-self.newEvent.end = self.newEvent.start;
-};
-formData.append('schedule_num', self.schedule_num);
-formData.append('title', self.newEvent.title);
-formData.append('start', self.newEvent.start);
-formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
-formData.append('startTime', self.newEvent.startTime);
-formData.append('endTime', self.newEvent.endTime);
-formData.append('info', self.newEvent.info);
-formData.append('alert', self.newEvent.alert);
-if (self.newEvent.isLoop === '2') {
-// 반복하는 일정인 경우
-formData.append('isLoop', '2');
-formData.append('day', self.newEvent.day); // 요일 정보 추가
-} else {
-// 반복하지 않는 일정인 경우
-formData.append('isLoop', '1');
-formData.append('day', null); // 요일 정보 null로 설정
-}
+    //수정
+    updateEvent() {
+      const self = this;
+      const formData = new FormData();
+      if (self.newEvent.end == 0) {
+        self.newEvent.end = self.newEvent.start;
+      };
+      formData.append('schedule_num', self.schedule_num);
+      formData.append('group_num', self.group_num);
+      formData.append('title', self.newEvent.title);
+      formData.append('start', self.newEvent.start);
+      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+      formData.append('startTime', self.newEvent.startTime);
+      formData.append('endTime', self.newEvent.endTime);
+      formData.append('info', self.newEvent.info);
+      formData.append('alert', self.newEvent.alert);
+      if (self.newEvent.isLoop === '2') {
+        // 반복하는 일정인 경우
+        formData.append('isLoop', '2');
+        formData.append('day', self.newEvent.day); // 요일 정보 추가
+      } else {
+        // 반복하지 않는 일정인 경우
+        formData.append('isLoop', '1');
+        formData.append('day', null); // 요일 정보 null로 설정
+      }
 
-// 데이터 전송
-self.$axios.put("http://localhost:8181/schedules", formData)
-.then(function (res) {
-if (res.status == 200) {
-let dto = res.data.dto;
-if (dto != null) {
-self.title = dto.title;
-self.start = dto.start;
-self.end = dto.end;
-self.startTime = dto.startTime;
-self.endTime = dto.endTime;
-self.info = dto.info;
-self.isLoop = dto.isLoop;
-self.day = dto.day;
-}
+      // 데이터 전송
+      self.$axios.put("http://localhost:8181/schedules", formData)
+        .then(function (res) {
+          if (res.status == 200) {
+            let dto = res.data.dto;
+            if (dto != null) {
+              self.group_num = dto.group_num;
+              self.title = dto.title;
+              self.start = dto.start;
+              self.end = dto.end;
+              self.startTime = dto.startTime;
+              self.endTime = dto.endTime;
+              self.info = dto.info;
+              self.isLoop = dto.isLoop;
+              self.day = dto.day;
+            }
 
-self.showEventForm = false; // 폼 닫기
-self.event = null; // 선택한 이벤트 초기화
-location.reload();
+            self.showEventForm = false; // 폼 닫기
+            self.event = null; // 선택한 이벤트 초기화
+            location.reload();
 
-}
-});
-},
+          }
+        });
+    },
+
+    //일정 옮겨서 수정
+    handleEventDrop(info) {
+      const event = info.event;
+      const schedule_num = event._def.extendedProps.schedule_num;
+      const newStart = dayjs(event.start).format('YYYY-MM-DD');
+      const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
+
+      console.log(event.start)
+      let self = this;
+      // 변경된 일정 정보를 서버로 전송
+      self.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
+        .then(function (response) {
+          const newschedule = response.data.dto;
+          // 일정 업데이트 성공
+          location.reload();
+          console.log(newschedule + '일정 업데이트');
+        })
+        .catch(function (error) {
+          // 일정 업데이트 실패
+          console.error(error);
+        });
+    },
+
+    //일정 길이 늘려서 수정
+    handleEventResize(info) {
+      const event = info.event;
+      const schedule_num = event._def.extendedProps.schedule_num;
+      const newStart = dayjs(event.start).format('YYYY-MM-DD');
+      const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
+      console.log(info.event._def.extendedProps.schedule_num)
+      // 변경된 일정 정보를 서버로 전송
+      this.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
+        .then(function (response) {
+          // 일정 업데이트 성공
+          const resize = response.data.dto;
+          console.log(resize + '일정 업데이트');
+          location.reload();
+        })
+        .catch(function (error) {
+          // 일정 업데이트 실패
+          console.error('일정 업데이트 실패', error);
+        });
+    },
+
 //삭제
 deleteEvent() {
 const self = this;
@@ -1019,30 +1167,19 @@ alert("에러코드:" + res.status);
 </script>
 
 <style scoped>
-body {
-  font-family: 'Pretendard-Regular', sans-serif;
-}
-
 :root {
   --fc-border-color: black;
   --fc-daygrid-event-dot-width: 5px;
 }
 
-.fc-direction-ltr {
-  height: 95vh;
-
+.calendar-con {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  font-family: 'Pretendard-Regular';
+  width: 80%;
+  padding: 2% 4% 4% 4%;
+  height: 100vh;
 }
 
-.calendar_con {
-  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
-  border-radius: 45px;
-
-}
-
-.fc .fc-toolbar-title {
-  font-family: 'Pretendard-Regular', sans-serif;
-  font-weight: 600;
-}
 
 .calendar_btn {
   border: 1px solid black;
@@ -1064,12 +1201,12 @@ body {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
+
 .share-event-form {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
-  /* 원하는 폼의 높이로 설정하세요 */
+  height: 250px;
   position: absolute;
   background-color: white;
   border-radius: 10px;
@@ -1081,11 +1218,20 @@ body {
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
+.shareform {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center
+}
+
+.share-btn-div {
+  width: 30%;
+}
+
 .share-btn {
   margin: 0 5px;
   padding: 8px 16px;
-  background-color: #7AC6FF;
-  color: #fff;
+  color: hsl(0, 0%, 0%);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -1130,27 +1276,11 @@ body {
   cursor: pointer;
 }
 
-.fc .fc-daygrid-day.fc-day-today {
-  background-color: #ffffe1;
-}
-
-.fc-event fc-event-start fc-daygrid-event fc-daygrid-block-event fc-h-event {
-  border-radius: 10px;
-}
 
 
-.fc-daygrid-day-number {
-  text-decoration: none;
-  color: black;
-}
-
-.fc-col-header-cell-cushion {
-  text-decoration: none;
-  color: black;
-}
 
 /* /* .fc-event-title.fc-sticky{
-white-space: normal;
+  white-space: normal;
 /* } 이벤트 내용 잘릴 때 */
 
 .error {
@@ -1161,6 +1291,119 @@ white-space: normal;
   display: flex;
   align-items: center;
 }
+
+
+.invite-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 200px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #eefffb;
+  z-index: 100;
+
+}
+
+.sidebar {
+  width: 20%;
+  padding: 2%;
+  border: none;
+  background-color: ivory;
+  text-align: center;
+  font-family: 'Pretendard-Regular';
+  height: 100vh;
+}
+
+.sidebar-today {
+  padding-top: 10%;
+  height: 35%;
+}
+
+.sidebar-groupinfo {
+  padding-top: 10%;
+  height: 33%;
+}
+
+.sidebar-grouplist {
+  padding-top: 10%;
+  height: 30%;
+}
+
+.sidebar-list {
+  list-style-type: none;
+  overflow: scroll;
+  height: 80%;
+}
+
+.sidebar-list::-webkit-scrollbar {
+  display: none;
+}
+
+.invite_btn {
+  border: solid 1px darkgray;
+  margin-left: 15%;
+  border-radius: 5px;
+
+}
+
+.delparty_btn {
+  border: solid 1px darkgray;
+  margin-right: 15%;
+  border-radius: 5px;
+}
+
+.grouplist_btn {
+  margin-left: 10px;
+}
+</style>
+
+
+<style>
+.fc .fc-button-primary {
+  background-color: #7AC6FF;
+  border-color: #16212c61;
+  color: var(--fc-button-text-color);
+}
+
+.fc-event {
+  cursor: pointer;
+}
+
+.fc-icon {
+  line-height: 0.7;
+}
+
+.fc-col-header-cell-cushion {
+  text-decoration: none;
+  color: black;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: #ffffe1;
+}
+
+.fc-event fc-event-start fc-daygrid-event fc-daygrid-block-event fc-h-event {
+  border-radius: 10px;
+}
+
+.fc-daygrid-day-number {
+  text-decoration: none;
+  color: black;
+}
+
+.fc .fc-toolbar-title {
+  font-family: 'Pretendard-Regular', sans-serif;
+  font-weight: 600;
+}
+
+.fc-direction-ltr {
+  height: 107%;
+
+}
+
 
 .error-message {
   position: absolute;
@@ -1199,58 +1442,35 @@ white-space: normal;
   opacity: 0;
 }
 
-.invite-form {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 360px;
-  height: 200px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  background-color: #eefffb;
+.schedule-item {
+  max-height: 60px;
+  /* 일정 칸의 최대 높이 설정 */
+  overflow: hidden;
+  /* 내용이 넘칠 경우 숨김 처리 */
+  text-overflow: ellipsis;
+  /* 텍스트 생략 부호 '...' 표시 */
+  white-space: nowrap;
+  /* 텍스트 줄바꿈 방지 */
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid #008bb5;
+  height: fit-content;
+  text-overflow: ellipsis;
+}
+
+.fc .fc-popover {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 6px;
+  position: absolute;
   z-index: 100;
-
 }
 
-.group_info {
-  padding-top: 10%;
-}
-
-.group_list {
-  padding-top: 10%;
-}
-
-.invite_btn {
-  border: solid 1px darkgray;
-  margin-left: 15%;
-  border-radius: 5px;
-
-}
-
-.delparty_btn {
-  border: solid 1px darkgray;
-  margin-right: 15%;
-  border-radius: 5px;
-}
-
-.grouplist_btn {
-  margin-left: 10px;
-}
-
-</style>
-<style>
-.fc .fc-button-primary {
-  background-color: #7AC6FF;
-  border-color: #16212c61;
-  color: var(--fc-button-text-color);
-}
-
-.fc-event {
-  cursor: pointer;
-}
-
-</style>
+.fc .fc-scrollgrid-liquid {
+  height: 100%;
+  border-top: 1px solid rgb(0, 139, 181);
+  border-left: 1px solid rgb(0, 139, 181);
+}</style>
 
 
 
