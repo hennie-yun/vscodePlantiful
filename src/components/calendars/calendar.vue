@@ -660,16 +660,53 @@ export default {
     
 // 카카오 스케줄 일정 연동
 kakao(){
-this.$axios.get("http://localhost:8181/login/getKakaoAuthUrl")
+ 
+ /*
+  this.$axios.get("http://localhost:8181/api/kakao/add", schedule_num)
+  .then(function(res){
+    console.log(res.data)
+  })
+  */
+
+
+  let token = sessionStorage.getItem('token');
+this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"token":token}})
 .then(function(res){
-  console.log(res.data)
-  //let apiURL= encodeURIComponent(res.data)
-  //window.location.href= apiURL
+
+  console.log(res.data.kakaotoken)
+  
+
+  
 })
 
+
+
+  /*
+  let formData = new FormData();
+formData.append('email', sessionStorage.getItem('loginId'));
+formData.append('group_num', self.newEvent.group_num);
+formData.append('title', self.newEvent.title);
+formData.append('start', self.newEvent.start);
+formData.append('end', dayjs(self.end).format('YYYY-MM-DD'));
+formData.append('startTime', self.startTime);
+formData.append('endTime', self.endTime);
+formData.append('info', self.info);
+formData.append('alert', self.alert);
+formData.append('isLoop', self.isLoop);
+formData.append('day', self.day);
+*/
+
+
+  //location.href = "/login"
+ // res.data null이면 카카오 로그인하러 가기로 이동 
+
 },
+
 // 네이버 스케줄 일정 연동
 naver(){
+
+
+
 
   this.$axios.get("http://localhost:8181/api/naver/oauth")
   .then(function(res){
@@ -703,11 +740,12 @@ naver(){
     
   //   let url = encodeURIComponent(res.data)
   //   console.log(url)
-  //   //location.href = res.data
+  //  
   // })
 
 },
 
+// state 생성
 generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let state = "";
@@ -799,6 +837,14 @@ formData.append('info', self.newEvent.info);
 formData.append('alert', self.newEvent.alert);
 formData.append('isLoop', self.newEvent.isLoop);
 formData.append('day', self.newEvent.day);
+
+// 카카오톡에 데이터 전송
+this.$axios.post("http://localhost:8181/api/kakao/form", formData)
+.then(res => {
+  console.log(res.data)
+})
+
+
 // 데이터 전송
 self.$axios.post("http://localhost:8181/schedules", formData)
 .then(response => {
@@ -838,11 +884,7 @@ self.$refs.fullCalendar.getApi().refetchEvents();
 self.showEventForm = false;
 self.shareEvent = true;
 
-// 네이버에 데이터 전송
-this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
-  .then(function(res){
-   alert(res.data)
-  })
+
 
 })
 

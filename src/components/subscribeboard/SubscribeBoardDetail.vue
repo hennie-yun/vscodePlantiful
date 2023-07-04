@@ -1,60 +1,110 @@
 <template>
-    <div class="container text-center">
-        <div class="row">
-            <h1>{{ dto.site }}</h1>
+    <div class="body">
+        <div class="container text-center">
+            <div class="gird">
+                <div class="row bigtitle">
+                    <div class="col imgdiv">
+                        <!-- 티빙 -->
+                        <img v-if="dto.site == '티빙'" src="https://buts.co.kr/thema/Buts/colorset/category/1050.jpg" alt="">
+                        <!-- 넷플릭스 -->
+                        <img v-if="dto.site == '넷플릭스'" src="https://buts.co.kr/thema/Buts/colorset/category/1010.jpg"
+                            alt="">
+                        <!-- 웨이브 -->
+                        <img v-if="dto.site == '웨이브'" src="https://buts.co.kr/thema/Buts/colorset/category/1040.jpg" alt="">
+                        <!-- 디즈니플러스 -->
+                        <img v-if="dto.site == '디즈니플러스'" src="https://buts.co.kr/thema/Buts/colorset/category/1080.jpg"
+                            alt="">
+                        <!-- 왓챠 -->
+                        <img v-if="dto.site == '왓챠'" src="https://buts.co.kr/thema/Buts/colorset/category/1020.jpg" alt="">
+                        <!-- 프라임비디오 -->
+                        <img v-if="dto.site == '아마존프라임비디오'" src="https://buts.co.kr/thema/Buts/colorset/category/1070.jpg"
+                            alt="">
+                    </div>
+                    <div class="col sbgroup">
+                        <div class="row sbsmalltitle">
+                            {{ dto.site }}
+                        </div>
+                        <div class="row sbtitle">
+                            {{ dto.title }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row sbsmalltitle2">
+                            모집종료까지
+                        </div>
+
+                        <div class="row sbtitle2">
+                            {{ dif_day }}일
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row leftday">
+                파티 가입하고 <span class="stress">{{left_day/30}}</span>개월동안 <span class="stress">{{ dto.site }}</span>를 <span class="stress">{{ divisionResult }}</span>원에 이용해보세요.
+            </div>
+            <div class="row point">
+                <div class="col">
+                    모여야하는 전체 포인트
+                </div>
+
+                <div class="col">
+                    {{ dto.total_point }} ₩
+                </div>
+            </div>
+            <div class="row point">
+                <div class="col">
+                    인당 지불할 포인트
+                </div>
+
+                <div class="col">
+                    {{ divisionResult }} ₩
+                </div>
+            </div>
+            <div class="row point">
+                <div class="col">
+                    구독 날짜
+                </div>
+
+                <div class="col">
+                    {{ startDate }} ~ {{ endDate }}
+                    
+                </div>
+            </div>
+            
+            <div class="row point">
+                <div class="col">
+                    멤버 모집 현황
+                </div>
+                <div class="col">
+                    {{ count }} (모집된 인원) /{{ dto.total_people }} (총 모집인원)
+                </div>
+
+            </div>
+            
         </div>
-        <div class="row" style="text-align: center;">
-            <div class="col">
-                <h3>{{ dto.title }}</h3>
-                남은 모집 기간
-                {{ dif_day }}
+        <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
+
+        <!-- 참여하기 버튼 -->
+        <div v-if="dto.email && dto.email.email !== loginId" class="btn">
+            <div v-if="this.currentDate <= this.dto.recruit_endperiod">
+                <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
+            </div>
+            <div v-if="this.currentDate > this.dto.recruit_endperiod" >
+                모집이 종료되었습니다.<div class=""></div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col">
-                {{ dto.total_point }}
-            </div>
-            <div class="col">
-                {{ count }}/{{ dto.total_people }}
-            </div>
-            <div class="col">
-                인당 금액
-                {{ divisionResult }}
+        <!-- 삭제하기 버튼 -->
+        <div v-else-if="dto.email && dto.email.email === loginId" class="btn">
+            <div>
+                <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                출금일
-                {{ paymentDate }}
-            </div>
-            <div class="col">
-                구독 시작날짜
-                {{ startDate }}
-            </div>
-            <div class="col">
-                구독 끝 날짜
-                {{ endDate }}
-            </div>
-        </div>
-    </div>
-    <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
-
-    <!-- 참여하기 버튼 -->
-    <div v-if="dto.email && dto.email.email !== loginId">
-        <div v-if="this.currentDate <= this.dto.recruit_endperiod">
-            <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
-        </div>
-        <div v-if="this.currentDate > this.dto.recruit_endperiod">
-            모집이 종료되었습니다.<div class=""></div>
-        </div>
-    </div>
-
-    <!-- 삭제하기 버튼 -->
-    <div v-else-if="dto.email && dto.email.email === loginId">
+<!-- 
         <div>
-            <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
-        </div>
+            <router-link to="/SubscribeBoardList" class="nav-link"><button>목록으로 돌아가기</button> </router-link>
+        </div> -->
     </div>
 </template>
 <script>
@@ -86,6 +136,7 @@ export default {
             flag: false,
             refundprice: 0,
             refundemail: null,
+            left_day: 0,
         }
     },
     mounted() {
@@ -115,7 +166,7 @@ export default {
                             } else {
                                 alert('파티에 추가되었습니다.')
                                 self.checkjoined = true;
-                                alert('add: ' + self.checkjoined)
+                                // alert('add: ' + self.checkjoined)
                             }
                             self.handleCheckJoined();
                         } else {
@@ -131,7 +182,7 @@ export default {
         },
         handleCheckJoined() {
             const self = this;
-            alert('checkjoined: ' + this.checkjoined);
+            // alert('checkjoined: ' + this.checkjoined);
             if (this.checkjoined) {
                 // `checkjoined`가 true일 때 실행되는 코드
                 let form = new FormData();
@@ -207,8 +258,6 @@ export default {
                         //환불 금액 & 환불받을 사람
                         self.refundprice = partylist[0].subscribe_num.total_point / partylist[0].subscribe_num.total_people
                         self.refundemail = partylist[0].email.email
-                        alert(self.refundprice)
-                        alert(self.refundemail)
                         if (self.flag) {
                             // 파티에 1명이면 삭제 진행
                             self.$axios.delete('http://localhost:8181/subscribeboard/' + self.subscribe_num)
@@ -220,15 +269,13 @@ export default {
                                         console.log(self.refundemail);
                                         const delform = new FormData();
                                         delform.append('email', self.refundemail);
-                                        alert(self.refundemail);
                                         delform.append('paidamount', self.refundprice);
-                                        alert(self.refundprice);
                                         self.$axios.post('http://localhost:8181/payment/' + self.refundemail, delform)
                                             .then(function (res) {
                                                 if (res.status == 200) {
                                                     alert('구독 삭제, 작성자에게 환불됨 ')
                                                     location.href = "/SubscribeBoardList"
-                                                }else{
+                                                } else {
                                                     alert('구독 삭제 오류')
                                                 }
                                             })
@@ -279,6 +326,10 @@ export default {
                     self.startDate = dayjs(self.dto.subscribe_startdate).format('YYYY-MM-DD');
                     self.endDate = dayjs(self.dto.subscribe_enddate).format('YYYY-MM-DD');
 
+                    //구독 개월 계산 
+                    const stdate = dayjs(self.startDate)
+                    const eddate = dayjs(self.endDate)
+                    self.left_day = eddate.diff(stdate, 'day');
 
                     //인당 금액
                     // 특정 값 두 개 가져오기
@@ -299,6 +350,109 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style scoped>
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Pretendard-Regular';
+}
+.body {
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.sbsmalltitle2 {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sbtitle2 {
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sbtitle {
+    /* margin: 50px; */
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+
+}
+
+.col.sbgroup {}
+
+.row.sbsmalltitle,
+.row.sbtitle {
+    align-self: flex-end;
+    /* 수직 축 정렬은 아래로 */
+}
+
+
+.bigtitle {
+    position: relative;
+    padding: 15px 0;
+    margin-top: 50px;
+    padding-left: 20px;
+    padding-right: 30px;
+    border-bottom: 5px double #7ac5ff;
+    display: flex;
+    flex-direction: row;
+    margin-left: 30px;
+    margin-right: 30px;
+    align-items: center;
+}
+
+
+.imgdiv {
+    max-width: 130px;
+}
+
+img {
+    max-width: 80px;
+    margin: 10px;
+    border-radius: 12px;
+}
+
+.point {
+    background-color: rgb(246, 246, 246);
+    /* border: 4px dotted #7ac5ff; */
+    border-radius: 15px;
+    padding: 15px;
+    margin: 20px 30px 0px 30px
+        /* margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 2px; */
+    ;
+}
+
+.leftday{
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    /* margin: 0px 50px; */
+    margin: 30px 50px 30px;
+    justify-content: center;
+
+}
+
+.stress{
+    color: red;
+}
+
+.btn{
+    padding: 10px;
+    color: white;
+    margin: 20px;
+}
 </style>
