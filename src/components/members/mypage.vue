@@ -1,44 +1,68 @@
 <template>
-    <div id="mypage">
-        <br/>
-        <div>
-            <div v-if="changeimg">
-                <img :src="changeimg" @click="imgedit" style="max-width: 400px; border-radius: 50%; max-height: 400px;" />
-            </div>
-            <div v-else>
-                <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @error="replaceImg" @click="imgedit"
-                    style="width: 400px; border-radius: 50%; height: 400px;" />
-            </div>
-            <br />
-
-            <div v-show="isVisible">
-                <input type="file" id="img" @change="previewImage" accept="image/*">
-
-                <button @click="editimg">수정</button>
-                <button @click="delimg">삭제</button>
-            </div>
+    <div id="mypage" style="display: flex; align-items: center; flex-direction: column;">
+      <div class="container">
+        <div class="middle">
+          <div>
+            <img
+              :src="'http://localhost:8181/members/plantiful/' + dto.email"
+              @error="replaceImg"
+              @click="imgedit"
+              style="margin-top: -20px; margin-bottom:30px; width: 200px; border-radius: 50%; height: 200px;"
+            />
+          </div>
+  
+          <span class="info">{{ dto.nickname }}</span>
+  
+          <div>
+            <p class="sub_info">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                <!-- SVG path code -->
+              </svg>
+              {{ dto.email }}
+            </p>
+            <p class="sub_info">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                class="bi bi-telephone-fill" viewBox="0 0 16 16">
+                <!-- SVG path code -->
+              </svg>
+              {{ dto.phone }}
+            </p>
+            <p class="sub_info">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-credit-card-fill" viewBox="0 0 16 16">
+                <!-- SVG path code -->
+              </svg>
+              {{ paydto.paidamount }}
+            </p>
+          </div>
         </div>
-
-          <div class="lbox">
-        <p>{{ dto.nickname }}</p>
       </div>
-      <div class="box">
-        <p>{{ dto.phone }}</p>
-      </div>
-      <div class="box">
-        <p>{{ dto.email }}</p>
-      </div>
-      <button v-on:click="out">탈퇴</button>
-   
-
-
- </div>
-</template>
-
+  
+      <section class="container1">
+        <button data-hover="내 정보 수정">
+          <div><img :src="require('@/assets/image/edit-info.png')" class="iconset" /></div>
+        </button>
+      </section>
+      <section class="container1">
+        <button data-hover="내 구독 목록">
+          <div><img :src="require('@/assets/image/press-button.png')" class="iconset" /></div>
+        </button>
+      </section>
+      <section class="container1">
+        <button data-hover="그룹 만들기">
+          <div><img :src="require('@/assets/image/networking.png')" class="iconset" /></div>
+        </button>
+      </section>
+      <section class="container1">
+        <button data-hover="내 포인트">
+          <div><img :src="require('@/assets/image/cash-flow.png')" class="iconset" /></div>
+        </button>
+      </section>
+    </div>
+  </template>
     
 <script>
-import img from '@/assets/image/profile.png';
-
 export default {
     name: 'mypage',
     data() {
@@ -49,11 +73,14 @@ export default {
                 phone: '',
                 email: ''
             },
-            isVisible: false,
-            changeimg: null,
+            paydto: {
+                paidamount: 0
+            },
+
 
         }
     },
+
     created: function () {
         let token = sessionStorage.getItem('token')
         this.email = sessionStorage.getItem('loginId')
@@ -68,7 +95,6 @@ export default {
                         self.pwd = self.dto.pwd
                         self.nickname = self.dto.nickname
                         self.phone = self.dto.phone
-                        self.cash = self.dto.cash
                         if (self.dto.img) {
                             self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
                         }
@@ -78,122 +104,151 @@ export default {
                 } else {
                     alert('에러코드')
                 }
-            })
+            }),
+            self.$axios.get('http://localhost:8181/payment/getcash/' + self.email)
+                .then((res) => {
+                    if (res.status == 200) {
+                        this.paydto = res.data.paydto;
+                        if (this.paydto != null) {
+                            this.paidamount = this.paydto.paidamount;
+                        }
+                    }
+                });
     },
-    methods: {
-        editimg() {
-            const self = this;
-            const fileInput = document.getElementById('img');
-            if (fileInput.files.length > 0) {
-                const form = new FormData();
-                const file = fileInput.files.item(0);
-                form.append('file', file);
-                self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
-                    .then(function (res) {
-                        if (res.status == 200) {
-                            alert(res.data.message);
-                            window.location.reload(true);
-                        }
-                        self.isVisible = false;
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
-            } else {
-                // Handle the case where no file is selected
-                console.error('No file selected.');
-            }
-        },
-        delimg() {
-            const self = this;
-            const form = new FormData()
-            form.append('email', self.email)
-            self.$axios.post('http://localhost:8181/members/delprofile', form)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        alert('이미지가 삭제 되었습니다')
-                        window.location.reload(true);
-                    }
-                });
-            self.isVisible = false;
-        },
-        imgedit() {
-            this.isVisible = true;
-        },
-        previewImage(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.changeimg = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        },
-        logout() {
-            sessionStorage.removeItem('token')
-            sessionStorage.removeItem('loginId')
-            location.href = '/';
-        },
-        out() {
-            const self = this;
-            let token = sessionStorage.getItem('token')
-            console.log(token)
-            self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
-                .then(function (res) {
-                    if (res.status == 200) {
-                        if (res.data.flag) {
-                            alert('탈퇴완료')
-                            self.logout()
-                            location.href = '/'
-                        }
-                    } else {
-                        alert('에러')
-                    }
-                });
-        },
-        replaceImg(e) {
-            e.target.src = img;
-        },
-    }
 }
 </script>
-<style> 
-input[type="file"]::-webkit-file-upload-button {
-     width: 150px;
+
+<style scoped> 
+section.container1 {
+    margin: 10% auto;
+    text-align: center;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+
+  button {
+    background: transparent;
+    outline: none;
+    position: relative;
+    padding: 15px 50px;
+    overflow: hidden;
+  }
+
+  button:before {
+    content: attr(data-hover);
+    position: absolute;
+    top: 1.1em;
+    left: 0;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    font-size: 0.8em;
+    opacity: 0;
+    transform: translate(-100%, 0);
+    transition: all 0.3s ease-in-out;
+  }
+
+  button:hover:before {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  button div {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    font-size: 0.8em;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .iconset {
+    width: 30px;
+    height: 30px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+.sub_info{
+    font-family: 'Pretendard-Regular';
+     font-weight: 400;
+     margin-top: 15px;
+     font-size: 17px; 
+}
+ .info {
+     position: relative;
+     padding-left: 20px;
+     padding-right: 20px;
+     /* border-bottom: 5px double #7ac5ff; */
+     flex-direction: row;
+     align-items: center;
+     font-family:'Pretendard-Regular';
+     font-weight: 600; 
+     font-size:30px;
+     background: linear-gradient(to top, #c0e8f8 40%, transparent 40%);
+ }
+
+ .icon-container {
+     margin-top: 5%;
+ }
+
+ .iconset {
+     width: 30px;
      height: 30px;
-     background: white;
-     border: 1px solid rgb(77, 77, 77);
-     border-radius: 10px;
-     cursor: pointer;
+     display: block;
+     margin-left: auto;
+     margin-right: auto;
  }
 
- input[type="file"]::-webkit-file-upload-button:hover {
-     background: #7AC6FF;
-     color: white;
+ .icon-wrapper {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     margin: 50px 0;
+     /* 수정된 부분 */
  }
- 
-/* .container {
-margin-left :30%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
-.lbox {
-  width: 200px;
-  height: 30px;
-  border: 2px solid #7AC6FF;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+ .container {
+     width: 350px;
+     height: 500px;
+     border: 2px solid #7AC6FF;
+     margin: 50px 20px;
+     /* 수정된 부분 */
+     border-radius: 12px;
+     overflow: hidden;
+     margin-left: 33%;
+     margin-top: 7%;
+ }
 
-.lbox p {
-  margin: 0;
-  padding: 10px;
-} */
+ div.middle {
+     position: relative;
+     text-align: center;
+     top: 70px;
+ }
 
-</style>
+ .link-style {
+     text-decoration: none;
+ }
+
+ .link-style:hover,
+ .link-style:focus {
+     text-decoration: none;
+ }
+
+ .router-link-active .link-text {
+     text-decoration: none;
+ }
+
+ .link-text {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     text-align: center;
+     color: black;
+     font-family: 'Pretendard-Regular';
+     font-weight: 400;
+     margin-top: 5px;
+
+ }</style>  

@@ -4,7 +4,7 @@
         전화번호 : {{ dto.phone }}
         {{ dto.nickname }} 님
         <input type="number" placeholder="금액 입력" v-model="price">
-        <div @click="Paybtn">카카오페이 가상 결제</div>
+        <!-- <div @click="Paybtn">카카오페이 가상 결제</div> -->
         <div @click="KGpay">이니시스 진짜로 결제</div>
 
         <button @click="checkmyinfo">본인인증</button>

@@ -13,7 +13,7 @@
             <div class="right"></div>
           </div>
 
-          <li class="nav-item ">
+          <li class="nav-item">
             <router-link to="/mypage" class="nav-link">마이페이지</router-link>
           </li>
 
@@ -34,10 +34,11 @@
 
           <div class="nav-item"
             style="display: flex; align-items: center; margin-right: 20px; margin-left: 150px; margin-top: 10px;">
-            <div style="display: flex;" @click="openMenu($event)" :color="active ? 'primary' : undefined"
-              v-click-outside="{ handler: closeMenu, include }">
-              <img :src="require('@/assets/image/checklist.png')"
-                style=" margin-right: 10px; width: 40px; height: 40px;" />
+            <div style="display: flex;">
+              <img :src="require('@/assets/image/checklist.png')" style=" margin-right: 10px; width: 40px; height: 40px;"
+                @click="openMenu($event)" :color="active ? 'primary' : undefined"
+                v-click-outside="{ handler: closeMenu, include }" />
+
 
 
               <div class="nav-bar-profile" style="margin-left: 5px;">
@@ -86,8 +87,7 @@ export default {
       arr: [],
       activeLink: '',
       active: false,
-      todoItems: [],
-    
+      todoItems: []
     }
   },
   created() {
@@ -111,9 +111,6 @@ export default {
   methods: {
     replaceImg(e) {
       e.target.src = img;
-    },
-    mypage() {
-      location.href = "/mypage"
     },
     logout() {
       console.log("logout")
@@ -424,5 +421,6 @@ button {
     bottom: -25px;
     left: -25px;
   }
+
 }
 </style>
