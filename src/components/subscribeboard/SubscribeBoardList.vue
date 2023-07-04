@@ -1,4 +1,5 @@
 <template>
+    <div class="body">
     <div class="container text-center">
 
         <div class="grid text-center">
@@ -60,8 +61,11 @@
             </div>
         </div>
 
-
+        
         <div v-for="order in list" :key="order.subscribe_num">
+            <div class="row" v-if="order.subscribe_num === null">
+                글 목록이 비었습니다.
+            </div>
             <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
                 <div class="col">
                     {{ order.subscribe_num }}
@@ -147,6 +151,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 <script>
 import dayjs from 'dayjs';
@@ -408,6 +413,14 @@ export default {
     margin-top: 60px;
 } */
 
+
+.body{
+    margin:7%;
+}
+.col{
+    text-align: center;
+}
+
 .custom-button {
     margin-top: 20px;
     margin-bottom: 30px;
@@ -418,13 +431,19 @@ export default {
     background-color: aliceblue;
 } */
 .sbtitle {
-    margin: 30px;
+    margin: 50px;
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    color: black;
 }
 
 .beforelist {
     /* background-color: aliceblue; */
     padding-top: 10px;
-    border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+    /* border-bottom: 1px solid rgba(82, 82, 82, 0.224); */
+    border: 2px dashed #7ac5ff;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .inglist {
@@ -433,7 +452,8 @@ export default {
     border: 1px dashed black;
     /* background: linear-gradient(#7ac5ff71 50%, rgb(255, 255, 255) 50%);
     background-size: 100% 10px; */
-    
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .endlist {
@@ -450,19 +470,17 @@ export default {
     padding: 5px;
     /* margin: -158px; */
 }
-
+img{
+    border-style: none;
+    margin: 10px;
+}
 .listtitle {
     /* background-color: aliceblue; */
     border-bottom: 1px solid;
     padding: 10px;
-    background-color: rgb(122, 198, 255);
+    background-color: #67bbfb;
     color: white;
     font-weight: 300;
-}
-
-.sbtitle{
-    font-weight: 600;
-    color: #7ac5ff;
 }
 
 .container {

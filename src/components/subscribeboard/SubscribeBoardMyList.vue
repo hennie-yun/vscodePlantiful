@@ -115,7 +115,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 .mylistbody {
     padding-top: 20%;
     margin-left: 10%;

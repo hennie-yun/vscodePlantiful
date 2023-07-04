@@ -145,12 +145,14 @@ const routes = [
       {
         path : '/concertlist',
         name : 'concertlist',
-        component : () => import('@/components/concert/concertList.vue')
+        component : () => import('@/components/concert/concertList.vue'),
+        props: true,
       },
       {
         path : '/concertdetail',
         name : 'concertdetail',
-        component : () => import('@/components/concert/concertDetail.vue')
+        component : () => import('@/components/concert/concertDetail.vue'),
+        props: true,
       }
     ]
   }
