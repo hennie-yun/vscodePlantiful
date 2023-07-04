@@ -161,42 +161,7 @@ export default {
     },
     methods: {
 
-        checkcash() {
-            const self = this;
-            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        if (res.data.paydto != null) {
-                            self.paidamount = self.paydto.paidamount;
-                            let form = new FormData();
-                            form.append('paidamount', self.total_point / self.total_people)
-                            self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
-                                .then(function (res) {
-                                    if (res.status == 200) {
-                                        let dto = res.data
-                                        alert(res.data.message)
-                                        if (dto != null) {
-                                            //돈 있음
-                                            self.fflag = true;
-                                            // alert("true : " + self.fflag)
-                                            self.add()
-                                        } else {
-                                            self.fflag = false;
-                                            // alert("false : " + self.fflag)
-                                        }
-                                    } else {
-                                        alert(res.data.message)
-                                    }
-                                })
-                        } else {
-                            alert(res.data.message);
-                        }
-                    } else if (res.status == 500) {
-                        alert('현금없음');
-                    }
-                })
 
-        },
         checkStartDate() {
             if (dayjs(this.subscribe_startdate).isSameOrBefore(this.recruit_endperiod)) {
                 alert('구독 시작일은 모집 마감일 이후여야 합니다.');
@@ -211,58 +176,100 @@ export default {
             const regex = /^\d{4}-\d{2}-\d{2}$/; // 날짜 형식 (YYYY-MM-DD)
             return regex.test(date);
         },
+        checkcash() {
+            const self = this;
+            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                .then(function (res) {
+                    if (res.status == 200) {
+                        if (res.data.paydto != null) {
+                            let dto = res.data.paydto
+                            if (dto != null) {
+
+                                //돈 있음
+                                // alert("true : " + self.fflag)
+                                self.add();
+                            } else {
+                                // alert("false : " + self.fflag)
+                            }
+                            if (self.fflag == true) {
+                                self.paidamount = self.paydto.paidamount;
+                                let form = new FormData();
+                                form.append('paidamount', self.total_point / self.total_people)
+                                self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+                                    .then(function (res) {
+                                        if (res.status == 200) {
+
+                                            alert(res.data.message)
+
+                                        } else {
+                                            alert(res.data.message)
+                                        }
+                                    })
+                            } else {
+                                alert('등록이 취소되었습니다.')
+                            }
+
+                        } else {
+                            alert(res.data.message);
+                        }
+                    } else if (res.status == 500) {
+                        alert('현금없음');
+                    }
+                })
+
+        },
         add() {
+            const self = this;
             this.formValidated = true;
 
             if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate || !this.agree) {
                 alert('필수 항목을 전부 입력해주세요.')
+                self.fflag = false;
                 return;
             }
 
             if (!this.validateDate(this.recruit_endperiod) || !this.validateDate(this.subscribe_startdate)) {
                 alert('유효한 날짜를 입력해주세요.')
+                self.fflag = false;
                 return;
             }
 
 
             if (!this.validateDate(this.subscribe_startdate)) {
                 alert('유효한 시작 날짜를 입력해주세요.');
+                self.fflag = false;
                 return;
             }
+            self.fflag = true;
 
             const startDate = dayjs(this.subscribe_startdate);
             const subscribe_enddate = this.calculateEndDate(startDate);
-            if (this.fflag == true) {
-                const self = this;
-                let formdata = new FormData();
-                formdata.append('email', sessionStorage.getItem('loginId'))
-                formdata.append('title', self.title)
-                formdata.append('site', self.site)
-                formdata.append('total_point', self.total_point)
-                formdata.append('total_people', self.total_people)
-                formdata.append('register_date', dayjs(self.register_date))
-                formdata.append('recruit_endperiod', dayjs(self.recruit_endperiod))
-                formdata.append('payment_date', dayjs(self.subscribe_startdate))
-                formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
-                formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
+            let formdata = new FormData();
+            formdata.append('email', sessionStorage.getItem('loginId'))
+            formdata.append('title', self.title)
+            formdata.append('site', self.site)
+            formdata.append('total_point', self.total_point)
+            formdata.append('total_people', self.total_people)
+            formdata.append('register_date', dayjs(self.register_date))
+            formdata.append('recruit_endperiod', dayjs(self.recruit_endperiod))
+            formdata.append('payment_date', dayjs(subscribe_enddate))
+            formdata.append('subscribe_startdate', dayjs(self.subscribe_startdate))
+            formdata.append('subscribe_enddate', dayjs(subscribe_enddate));
 
-                self.$axios.post('http://localhost:8181/subscribeboard', formdata)
-                    .then(function (res) {
-                        if (res.status == 200) {
-                            let dto = res.data.dto2;
-                            let subscribe_num = dto.subscribe_num;
-                            let data = new FormData();
-                            data.append('subscribe_num', subscribe_num)
-                            self.$router.push({ name: 'SubscribeBoardDetailR', query: { subscribe_num: subscribe_num } })
-                        } else {
-                            alert('에러코드:' + res.status)
-                        }
-                    })
+            self.$axios.post('http://localhost:8181/subscribeboard', formdata)
+                .then(function (res) {
+                    if (res.status == 200) {
+                        let dto = res.data.dto2;
+                        let subscribe_num = dto.subscribe_num;
+                        let data = new FormData();
+                        data.append('subscribe_num', subscribe_num)
+                        self.$router.push({ name: 'SubscribeBoardDetailR', query: { subscribe_num: subscribe_num } })
+                    } else {
+                        alert('에러코드:' + res.status)
+                    }
+                })
 
-            } else {
-                alert('캐시가 부족합니다.')
-                location.href="/payment"
-            }
+
         }
     }
 }
