@@ -1,45 +1,88 @@
 <template>
-  <div id="mypage" style="display: flex; flex-direction: column; align-items: center;">
-      <br />
-      <br />
-      <div>
+  <div class ="fontchange" id="mypage" style="display: flex;   flex-direction: column; align-items: center;">
+    <div class="container">
+      <div class="out" @click="out" style="float: right;">탈퇴하기
+    </div>
+      <div class="middle">
+        <div>
+         
           <div v-if="changeimg">
-              <img :src="changeimg" @click="imgedit" style="max-width: 300px; border-radius: 50%; max-height: 300px;" />
+            <img :src="changeimg" @click="imgedit"
+              style="margin-top: -40px; margin-bottom:30px; width: 200px; border-radius: 50%; height: 200px;" />
           </div>
           <div v-else>
-              <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @error="replaceImg" @click="imgedit"
-                  style="width: 300px; border-radius: 50%; height: 300px;" />
+            <img :src="'http://localhost:8181/members/plantiful/' + dto.email" @error="replaceImg" @click="imgedit"
+              style="margin-top: -40px; margin-bottom:30px; width: 200px; border-radius: 50%; height: 200px;" />
           </div>
-          <br />
 
+          <span style="position:absolute; margin-top: -50px; margin-left:130px;" @click="imgedit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
+              viewBox="0 0 16 16">
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+            </svg>
+          </span>
+        </div>
+
+
+        <div>
           <div v-show="isVisible" class="button-container">
-              <input type="file" id="img" @change="previewImage" accept="image/*">
 
-              <div class="button-wrapper">
-                  <button @click="editimg">수정</button>
-                  <button @click="delimg">삭제</button>
-                  <button @click="cancelEdit">취소</button>
-              </div>
+            <div class="filebox">
+              <label for="file">파일찾기</label>
+              <input type="file" id="file" @change="previewImage" accept="image/*">
+            </div>
+
+
+
+
+            <div class="button-wrapper">
+              <button @click="editimg">수정</button>
+              <button @click="delimg">삭제</button>
+              <button @click="cancelEdit">취소</button>
+            </div>
           </div>
+        </div>
+
+
+
+        <div>
+          <span class="info"> {{ dto.email }} </span>
+        </div>
+        <br />
+
+        <div class="fullcontainer">
+        <div v-if="dto.id != 1" class="input-container">
+          <label for="pwd">비밀번호</label>
+          <input id="pwd" type="password" v-model="pwd" @click="checkpwd" class="input-field">
+        </div>
+
+        <div class="input-container">
+          <label for="nickname"> 닉네임</label>
+          <input id="nickname" type="text" v-model="nickname" class="input-field">
+        </div>
+
+        <div class="input-container">
+          <label for="phone">전화번호</label>
+          <input id="phone" type="text" v-model="phone" class="input-field">
+        </div>
       </div>
 
 
-    <div>
-      email: <input type="text" v-model="email" readonly><br />
-      pwd: <input type="password" v-model="pwd"><br />
-      new pwd: <input type="password"><br />
-      nickname: <input type="text" v-model="nickname"><br />
-      phone: <input type="text" v-model="phone"><br />
-      <button @click="edit">수정</button>
+<br/>
+      <div class="button-wrapper">
+        <button @click="edit">수정</button></div>
+ </div>
+
+     
     </div>
-
-    <button v-on:click="out">탈퇴</button>
   </div>
-
 </template>
 
 <script>
-import img from '@/assets/image/user (2).png';
+import img from '@/assets/image/account.png';
 
 export default {
   name: 'editinfo',
@@ -50,6 +93,7 @@ export default {
         nickname: '',
         phone: '',
         email: '',
+        id: ''
       },
       isVisible: false,
       changeimg: null,
@@ -71,7 +115,7 @@ export default {
           self.pwd = self.dto.pwd;
           self.nickname = self.dto.nickname;
           self.phone = self.dto.phone;
-          self.cash = self.dto.cash;
+          self.id = self.dto.id;
           if (self.dto.img) {
             self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
           }
@@ -85,67 +129,77 @@ export default {
   },
   methods: {
     cancelEdit() {
-            this.isVisible = false;
-        },
-        editimg() {
-            const self = this;
-            const fileInput = document.getElementById('img');
-            if (fileInput.files.length > 0) {
-                const form = new FormData();
-                const file = fileInput.files.item(0);
-                form.append('file', file);
-                self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
-                    .then(function (res) {
-                        if (res.status == 200) {
-                            alert(res.data.message);
-                            window.location.reload(true);
-                        }
-                        self.isVisible = false;
-                    })
-                    .catch(function (error) {
-                        console.error(error);
-                    });
-            } else {
-                // Handle the case where no file is selected
-                console.error('No file selected.');
+      this.isVisible = false;
+    },
+    editimg() {
+      const self = this;
+      const fileInput = document.getElementById('file');
+      if (fileInput.files.length > 0) {
+        const form = new FormData();
+        const file = fileInput.files.item(0);
+        form.append('file', file);
+        self.$axios.post('http://localhost:8181/members/' + self.email + '/updateImg', form, { headers: { "Content-Type": "multipart/form-data" } })
+          .then(function (res) {
+            if (res.status == 200) {
+              alert(res.data.message);
             }
-        },
-        delimg() {
-            const self = this;
-            const form = new FormData()
-            form.append('email', self.email)
-            self.$axios.post('http://localhost:8181/members/delprofile', form)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        alert('이미지가 삭제 되었습니다')
-                        window.location.reload(true);
-                    }
-                });
             self.isVisible = false;
-        },
-        imgedit() {
-            this.isVisible = true;
-        },
-        previewImage(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.changeimg = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        },
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      } else {
+        // Handle the case where no file is selected
+        console.error('No file selected.');
+      }
+    },
+    delimg() {
+      const self = this;
+      const form = new FormData()
+      form.append('email', self.email)
+      self.$axios.post('http://localhost:8181/members/delprofile', form)
+        .then(function (res) {
+          if (res.status == 200) {
+            alert('이미지가 삭제 되었습니다')
+            window.location.reload(true);
+          }
+        });
+      self.isVisible = false;
+    },
+    imgedit() {
+      this.isVisible = true;
+    },
+    previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.changeimg = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
 
-        replaceImg(e) {
-            e.target.src = img;
-        },
-    
+    replaceImg(e) {
+      e.target.src = img;
+    },
+    checkpwd() {
+      const self = this;
+      const existingPwd = prompt("기존 비밀번호를 입력하세요");
+
+      // 기존 비밀번호 확인
+      if (existingPwd === self.dto.pwd) {
+        self.pwd = ''; // 새 비밀번호를 초기화
+      } else {
+        alert('기존 비밀번호가 일치하지 않습니다.');
+      }
+    },
     edit() {
       const self = this;
       const data = {
         email: self.email,
         pwd: self.pwd,
         nickname: self.nickname,
-        phone: self.phone
+        phone: self.phone,
+        id: self.id
       };
       // json형태로전달할때 JSON.stringify(data) data 를 const로 정의하고 부르면 됌 
       self.$axios.post('http://localhost:8181/members/editinfo/' + self.email, data, JSON.stringify(data))
@@ -166,7 +220,10 @@ export default {
     out() {
       const self = this;
       let token = sessionStorage.getItem('token')
-      console.log(token)
+      alert('정말 탈퇴 하시겠습니까?')
+      if(this.dto.id ==0){
+      const existingPwd = prompt("기존 비밀번호를 입력하세요");
+      if (existingPwd === self.dto.pwd) {
       self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
         .then(function (res) {
           if (res.status == 200) {
@@ -179,33 +236,183 @@ export default {
             alert('에러')
           }
         });
-    },
+      }
+    } else {
+      alert('카카오톡을 이용한 탈퇴를 진행 합니다');
+      self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+        .then(function (res) {
+          if (res.status == 200) {
+            if (res.data.flag) {
+              alert('탈퇴완료')
+              self.logout()
+              location.href = '/'
+            }
+          } else {
+            alert('에러')
+          }
+        });
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+.fontchange{
+  font-family: 'Pretendard-Regular';
+   font-weight: 400;
+}
+.out {
+  float: right;
+  margin-top : 10px;
+  color: gray;
+  cursor: pointer;
+}
+
 .button-container {
-     display: flex;
-     flex-direction: column;
-     align-items: center;
- }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
- .button-wrapper {
-     display: flex;
-     gap: 10px;
- }
- input[type="file"]::-webkit-file-upload-button {
-     width: 150px;
-     height: 30px;
-     background: white;
-     border: 1px solid rgb(77, 77, 77);
-     border-radius: 10px;
-     cursor: pointer;
- }
+.button-wrapper {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
 
- input[type="file"]::-webkit-file-upload-button:hover {
-     background: #7AC6FF;
-     color: white;
- }
+.button-wrapper button {
+  border: none;
+  background-color: transparent;
+  padding: 5px 10px;
+  color: #000;
+  /* font-weight: bold; */
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-wrapper button::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.button-wrapper button:hover::before {
+  visibility: visible;
+  background-color: #7AC6FF;
+  transform: scaleX(1);
+}
+
+.button-wrapper button:hover {
+  color: #7AC6FF;
+}
+
+.info {
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+  flex-direction: row;
+  align-items: center;
+  font-family: 'Pretendard-Regular';
+  font-weight: 600;
+  font-size: 30px;
+  background: linear-gradient(to top, #c0e8f8 40%, transparent 40%);
+}
+
+.container {
+  width: 450px;
+  height: 600px;
+  border: 2px solid #7AC6FF;
+  margin: 50px 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 3%;
+}
+
+div.middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 70px;
+}
+
+
+.filebox label {
+  display: inline-block;
+  padding: 5px 10px;
+  color: black;
+  vertical-align: middle;
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid #696969;
+  cursor: pointer;
+  height: 40px;
+  margin-left: 10px;
+}
+
+.filebox label:hover {
+  background: #7AC6FF;
+  color: white;
+}
+
+.filebox input[type="file"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+}
+
+
+input[type="file"] {
+  width: 150px;
+  height: 30px;
+  background: white;
+  border: 1px solid rgb(77, 77, 77);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+
+
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input-container label {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #7AC6FF;
+  width: 100px;
+  height: 40px;
+}
+
+.input-container input {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #7AC6FF;
+  width: 180px;
+  height: 40px;
+}
+
+
+.fullcontainer{
+  padding-left :15%;
+}
+
+
 </style>

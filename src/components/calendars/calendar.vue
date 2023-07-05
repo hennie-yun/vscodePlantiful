@@ -240,7 +240,7 @@
         </div>
       </div>
       <div style="display: flex; align-items: center;">
-        <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao"
+        <button class="share-btn" id="kakao" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao"
             style="margin-right: 10px; width: 50px;" />카카오톡</button>
       </div>
     </div>
@@ -262,18 +262,16 @@ import axios from 'axios';
 
 
 export default {
-
   mounted() {
-
+  
   },
-
+  
   components: {
     FullCalendar
   },
-  name: 'calendar',
   data() {
-   return {
-      code: '',
+    return {
+      code: this.$route.query.code,
       access_token: '',
       isNewEvent: true,
       showEventForm: false,
@@ -337,9 +335,16 @@ export default {
     }
   },
 
+ 
   // 페이지 시작- 실행되는 함수
   //로그인 한 사람의 일정 보여주기
    created() {
+   
+
+    this.code = this.$route.query.code
+    console.log(this.code)
+    this.getKakaoToken()
+
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
     const self = this;
@@ -593,12 +598,42 @@ export default {
           const email = sessionStorage.getItem('loginId');
           self.todayschedules = startSchedules.filter(schedule => schedule.email.email === email);
         }
-      })
-
+      });
+   
+    
 
   },
 
+
+
+
   methods: {
+
+
+    getKakaoToken(){
+  
+      if(this.code !== undefined){
+      this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+      .then(function(res){
+        console.log(res.data)
+     
+       
+      
+      })
+    }
+    },
+    
+    /*
+    kakaoscheduleadd(access_token){
+      const self = this
+      console.log(self.code)
+      this.$axios.get('http://localhost:8181/api/kakao/add', {headers:{"access_token":access_token}})
+    .then((res)=>{
+      console.log(res.data)
+    })
+    },
+    */
+
      toggleInviteForm() {
       this.showInviteForm = !this.showInviteForm;
     },
@@ -758,26 +793,36 @@ export default {
     
 // 카카오 스케줄 일정 연동
 kakao(){
- 
- /*
-  this.$axios.get("http://localhost:8181/api/kakao/add", schedule_num)
-  .then(function(res){
-    console.log(res.data)
-  })
-  */
+
+  const redirect_uri = 'http://localhost:8182/calendar';
+  const clientId = 'd54083f94196531e75d7de474142e52e';
+  const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
+  window.location.href = Auth_url;
+  console.log(this.code)
 
 
-  let token = sessionStorage.getItem('token');
+
+
+
+  /*
+  let token = sessionStorage.getItem('token')
+  console.log(token)
+
+  // 토큰 요청
 this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"token":token}})
 .then(function(res){
-
-  console.log(res.data.kakaotoken)
-  
-
-  
+  console.log(res.data.access_token) 
 })
+*/
 
-
+/*
+// 톡캘린더 스케줄 연동
+this.$axios.get("http://localhost:8181/api/kakao/add",)
+.then(function(res){
+  console.log(res.data)
+  // alert(res.data)
+})
+*/
 
   /*
   let formData = new FormData();
@@ -802,7 +847,6 @@ formData.append('day', self.day);
 
 // 네이버 스케줄 일정 연동
 naver(){
-
 
 
 
@@ -980,7 +1024,14 @@ console.error("URL 복사에 실패했습니다.", error);
           self.shareEvent = true;
 
           // 네이버에 데이터 전송
+          console.log(">>>>>>>>>>> naver")
           this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+            .then(function (res) {
+              alert(res.data)
+            })
+            console.log(">>>>>>>>>>> kakao")
+                 //카카오에 데이터 전송
+          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
             .then(function (res) {
               alert(res.data)
             })
@@ -1073,6 +1124,8 @@ cancel2(){
         formData.append('isLoop', '1');
         formData.append('day', null); // 요일 정보 null로 설정
       }
+
+
 
       // 데이터 전송
       self.$axios.put("http://localhost:8181/schedules", formData)

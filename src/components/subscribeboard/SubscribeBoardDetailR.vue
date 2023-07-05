@@ -1,60 +1,92 @@
 <template>
-    <div class="container text-center">
-        <div class="row">
-            <h1>{{ dto.site }}</h1>
-        </div>
-        <div class="row" style="text-align: center;">
-            <div class="col">
-                <h3>{{ dto.title }}</h3>
-                남은 모집 기간
-                {{ dif_day }}
-            </div>
-        </div>
+    <div class="body">
+        <div class="container text-center">
+            <div class="gird">
+                <div class="row bigtitle">
+                    <div class="col imgdiv">
+                        <!-- 티빙 -->
+                        <img v-if="dto.site == '티빙'" src="https://buts.co.kr/thema/Buts/colorset/category/1050.jpg" alt="">
+                        <!-- 넷플릭스 -->
+                        <img v-if="dto.site == '넷플릭스'" src="https://buts.co.kr/thema/Buts/colorset/category/1010.jpg"
+                            alt="">
+                        <!-- 웨이브 -->
+                        <img v-if="dto.site == '웨이브'" src="https://buts.co.kr/thema/Buts/colorset/category/1040.jpg" alt="">
+                        <!-- 디즈니플러스 -->
+                        <img v-if="dto.site == '디즈니플러스'" src="https://buts.co.kr/thema/Buts/colorset/category/1080.jpg"
+                            alt="">
+                        <!-- 왓챠 -->
+                        <img v-if="dto.site == '왓챠'" src="https://buts.co.kr/thema/Buts/colorset/category/1020.jpg" alt="">
+                        <!-- 프라임비디오 -->
+                        <img v-if="dto.site == '아마존프라임비디오'" src="https://buts.co.kr/thema/Buts/colorset/category/1070.jpg"
+                            alt="">
+                    </div>
+                    <div class="col sbgroup">
+                        <div class="row sbsmalltitle">
+                            {{ dto.site }}
+                        </div>
+                        <div class="row sbtitle">
+                            {{ dto.title }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row sbsmalltitle2">
+                            모집종료까지
+                        </div>
 
-        <div class="row">
-            <div class="col">
-                {{ dto.total_point }}
-            </div>
-            <div class="col">
-                {{ count }}/{{ dto.total_people }}
-            </div>
-            <div class="col">
-                인당 금액
-                {{ divisionResult }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                출금일
-                {{ paymentDate }}
-            </div>
-            <div class="col">
-                구독 시작날짜
-                {{ startDate }}
-            </div>
-            <div class="col">
-                구독 끝 날짜
-                {{ endDate }}
-            </div>
-        </div>
-    </div>
-    <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
+                        <div class="row sbtitle2">
+                            D - {{ diff_day }}
+                        </div>
 
-    <!-- 참여하기 버튼 -->
-    <div v-if="dto.email && dto.email.email !== loginId">
-        <div v-if="this.currentDate <= this.dto.recruit_endperiod">
-            <button v-on:click="addparty" class="btn btn-primary">참여하기</button>
-        </div>
-        <div v-if="this.currentDate > this.dto.recruit_endperiod">
-            모집이 종료되었습니다.<div class=""></div>
-        </div>
-    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row leftday">
+                파티 가입하고 <span class="stress">{{ left_day / 30 }}</span>개월동안 <span class="stress">{{ dto.site }}</span>를
+                <span class="stress">{{ divisionResult }}</span>원에 이용해보세요.
+            </div>
+            <div class="row point">
+                <div class="col">
+                    모여야하는 전체 포인트
+                </div>
 
-    <!-- 삭제하기 버튼 -->
-    <div v-else-if="dto.email && dto.email.email === loginId">
-        <div>
-            <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
+                <div class="col">
+                    {{ dto.total_point }} ₩
+                </div>
+            </div>
+            <div class="row point">
+                <div class="col">
+                    인당 지불할 포인트
+                </div>
+
+                <div class="col">
+                    {{ divisionResult }} ₩
+                </div>
+            </div>
+            <div class="row point">
+                <div class="col">
+                    구독 날짜
+                </div>
+
+                <div class="col">
+                    {{ startDate }} ~ {{ endDate }}
+
+                </div>
+            </div>
+
+            <div class="row point">
+                <div class="col">
+                    멤버 모집 현황
+                </div>
+                <div class="col">
+                    {{ count }} (모집된 인원) /{{ dto.total_people }} (총 모집인원)
+                </div>
+
+            </div>
+
         </div>
+        <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
+
+
     </div>
 </template>
 <script>
@@ -92,52 +124,99 @@ export default {
             formdata.append('subscribe_num', self.subscribe_num)
             formdata.append('email', sessionStorage.getItem('loginId'))
             formdata.append('point_basket', self.divisionResult)
-            // formdata.append('point_basket', self.divisionResult.toString())
             formdata.append('enddate', dayjs(self.enddate))
             formdata.append('start_check', 0)
             formdata.append('schedule_num', 0)
             // 이미 추가된건지 아닌지 확인해야함 
-
-            self.$axios.post('http://localhost:8181/subscribeparty', formdata)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        let dto = res.data.dto
-                        if (dto == null) {
-                            alert('이미 가입한 파티입니다')
+            if (self.count < self.dto.total_people) {
+                self.$axios.post('http://localhost:8181/subscribeparty', formdata)
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            let dto = res.data.dto
+                            if (dto == null) {
+                                alert('이미 가입한 파티입니다')
+                                self.checkjoined = false;
+                            } else {
+                                alert('파티에 추가되었습니다.')
+                                self.checkjoined = true;
+                                // alert('add: ' + self.checkjoined)
+                            }
+                            self.handleCheckJoined();
                         } else {
-                            alert('파티에 추가되었습니다.')
+                            alert('에러코드:' + res.status)
+
                         }
-
-                    } else {
-                        alert('에러코드:' + res.status)
-
-                    }
-                })
+                    })
+            } else {
+                alert('참여가 불가능한 모집입니다.')
+                self.checkjoined = false;
+            }
 
         },
-        deleteBoard() {
-
+        handleCheckJoined() {
             const self = this;
-            self.$axios.get('http://localhost:8181/subscribeparty/party/' + self.subscribe_num)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        self.flag = res.data.flag
+            // alert('checkjoined: ' + this.checkjoined);
+            if (this.checkjoined) {
+                // `checkjoined`가 true일 때 실행되는 코드
+                let form = new FormData();
+                let divisionnum = parseInt(self.divisionResult)
+                form.append('paidamount', divisionnum)
+                form.append('email', self.email)
 
-                        if (self.flag) {
-                            alert('flag 불러옴' + self.flag)
-                            self.$axios.delete('http://localhost:8181/subscribeboard/' + self.subscribe_num)
-                                .then(function (res) {
-                                    if (res.status == 200) {
-                                        alert('글이 삭제되었습니다.')
-                                        location.href = "/SubscribeBoardList"
-                                    }
-                                })
+                self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            alert(res.data.message)
                         } else {
-                            alert('참여자가 있어 삭제가 불가능한 모집 글입니다.')
+                            alert(res.data.message)
                         }
-                    }
+                    })
+            } else {
+                // `checkjoined`가 false일 때 실행되는 코드
+            }
+        },
 
+        checkcash() {
+            const self = this;
+            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                .then(function (res) {
+                    console.log(res)
+                    if (res.status == 200) {
+                        if (res.data.paydto != null) {
+
+                            // self.paidamount = self.paydto.paidamount;
+
+
+                            self.addparty();
+
+                            // let form = new FormData();
+                            // let divisionnum = parseInt(self.divisionResult)
+                            // form.append('paidamount', divisionnum)
+                            // form.append('email', self.email)
+                            // self.$nextTick(function () {
+                            //     alert('checkedjoined: ' + self.checkjoined)
+
+                            //     if (self.checkjoined == true) {
+                            //         self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+                            //             .then(function (res) {
+                            //                 if (res.status == 200) {
+                            //                     alert(res.data.message)
+                            //                 } else {
+                            //                     alert(res.data.message)
+                            //                 }
+                            //             })
+                            //     } else {
+
+                            //     }
+                            // })
+                        } else {
+                            alert(res.data.message);
+                        }
+                    } else if (res.status == 500) {
+                        alert('현금없음');
+                    }
                 })
+
         },
         checkmember() {
             const self = this;
@@ -156,8 +235,7 @@ export default {
                     // 에러 처리
                     console.error('에러 발생:', error);
                 });
-        }
-
+        },
 
 
     },
@@ -191,7 +269,7 @@ export default {
                     self.dif_day = recruitEndDate.diff(registerDate, 'day');
 
                     // addparty 호출
-                    self.addparty();
+                    self.checkcash();
                     alert('등록이 완료되었습니다.');
                 } else {
                     alert('에러코드:' + res.status)

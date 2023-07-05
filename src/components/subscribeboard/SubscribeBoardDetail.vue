@@ -34,14 +34,15 @@
                         </div>
 
                         <div class="row sbtitle2">
-                            {{ dif_day }}일
+                            D - {{ diff_day }}
                         </div>
 
                     </div>
                 </div>
             </div>
             <div class="row leftday">
-                파티 가입하고 <span class="stress">{{left_day/30}}</span>개월동안 <span class="stress">{{ dto.site }}</span>를 <span class="stress">{{ divisionResult }}</span>원에 이용해보세요.
+                파티 가입하고 <span class="stress">{{ left_day / 30 }}</span>개월동안 <span class="stress">{{ dto.site }}</span>를
+                <span class="stress">{{ divisionResult }}</span>원에 이용해보세요.
             </div>
             <div class="row point">
                 <div class="col">
@@ -68,10 +69,10 @@
 
                 <div class="col">
                     {{ startDate }} ~ {{ endDate }}
-                    
+
                 </div>
             </div>
-            
+
             <div class="row point">
                 <div class="col">
                     멤버 모집 현황
@@ -81,7 +82,7 @@
                 </div>
 
             </div>
-            
+
         </div>
         <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
 
@@ -90,7 +91,7 @@
             <div v-if="this.currentDate <= this.dto.recruit_endperiod">
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-if="this.currentDate > this.dto.recruit_endperiod" >
+            <div v-if="this.currentDate > this.dto.recruit_endperiod">
                 모집이 종료되었습니다.<div class=""></div>
             </div>
         </div>
@@ -101,7 +102,7 @@
                 <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
         </div>
-<!-- 
+        <!-- 
         <div>
             <router-link to="/SubscribeBoardList" class="nav-link"><button>목록으로 돌아가기</button> </router-link>
         </div> -->
@@ -121,6 +122,7 @@ export default {
             email: sessionStorage.getItem('loginId'),
             dto: {},
             dif_day: 0,
+            diff_day: null,
             divisionResult: 0,
             paymentDate: '',
             startDate: '',
@@ -137,6 +139,7 @@ export default {
             refundprice: 0,
             refundemail: null,
             left_day: 0,
+
         }
     },
     mounted() {
@@ -342,8 +345,16 @@ export default {
                     const registerDate = dayjs(self.dto.register_date);
                     const recruitEndDate = dayjs(self.dto.recruit_endperiod);
                     self.dif_day = recruitEndDate.diff(registerDate, 'day');
+                    if (self.dif_day > 0) {
+                        self.diff_day = self.dif_day
+                    } else if (self.dif_day == 0) {
+                        self.diff_day = '오늘 마감'
+                    } else {
+                        self.diff_day = '종료'
+                    }
                 } else {
                     alert('에러코드:' + res.status)
+
                 }
             })
 
@@ -351,7 +362,6 @@ export default {
 }
 </script>
 <style scoped>
-
 @font-face {
     font-family: 'Pretendard-Regular';
     src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
@@ -362,10 +372,12 @@ export default {
 * {
     font-family: 'Pretendard-Regular';
 }
+
 .body {
     text-align: center;
     margin-left: 15%;
     margin-right: 15%;
+    margin-bottom: 5%;
 }
 
 .sbsmalltitle2 {
@@ -388,8 +400,6 @@ export default {
     font-size: 35px;
 
 }
-
-.col.sbgroup {}
 
 .row.sbsmalltitle,
 .row.sbtitle {
@@ -436,7 +446,7 @@ img {
     ;
 }
 
-.leftday{
+.leftday {
     display: inline-block;
     font-size: 20px;
     font-weight: 700;
@@ -446,11 +456,11 @@ img {
 
 }
 
-.stress{
+.stress {
     color: red;
 }
 
-.btn{
+.btn {
     padding: 10px;
     color: white;
     margin: 20px;

@@ -27,7 +27,7 @@
             <router-link to="/chatlist" class="nav-link">채팅</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/" class="nav-link">공모전</router-link>
+            <router-link to="/concertlist" class="nav-link">공모전</router-link>
           </li>
 
 

@@ -23,7 +23,7 @@
                     src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" />
             </div>
             <div class="col-2" v-on:click="search('아마존프라임비디오')"><img
-                    src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" />
+                    src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" />
             </div>
         </div>
     </div>
@@ -415,7 +415,17 @@ export default {
 
 
 .body{
-    margin:7%;
+    /* margin-left:7%;
+    margin-right:7%;
+    margin-bottom:7%; */
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 30px;
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .col{
     text-align: center;
@@ -472,7 +482,7 @@ export default {
 }
 img{
     border-style: none;
-    margin: 10px;
+    margin: 5px;
 }
 .listtitle {
     /* background-color: aliceblue; */

@@ -3,10 +3,44 @@
     <div>
         <div v-for="(order, index) in list" :key="order.party">
             <div v-if="index === 0" class="row subscribeboardform">
+                <div class="row bigtitle">
+                    <div class="col imgdiv">
+                        <!-- 티빙 -->
+                        <img v-if="order.subscribe_num.site == '티빙'" src="https://buts.co.kr/thema/Buts/colorset/category/1050.jpg" alt="">
+                        <!-- 넷플릭스 -->
+                        <img v-if="order.subscribe_num.site == '넷플릭스'" src="https://buts.co.kr/thema/Buts/colorset/category/1010.jpg"
+                            alt="">
+                        <!-- 웨이브 -->
+                        <img v-if="order.subscribe_num.site == '웨이브'" src="https://buts.co.kr/thema/Buts/colorset/category/1040.jpg" alt="">
+                        <!-- 디즈니플러스 -->
+                        <img v-if="order.subscribe_num.site == '디즈니플러스'" src="https://buts.co.kr/thema/Buts/colorset/category/1080.jpg"
+                            alt="">
+                        <!-- 왓챠 -->
+                        <img v-if="order.subscribe_num.site == '왓챠'" src="https://buts.co.kr/thema/Buts/colorset/category/1020.jpg" alt="">
+                        <!-- 프라임비디오 -->
+                        <img v-if="order.subscribe_num.site == '아마존프라임비디오'" src="https://buts.co.kr/thema/Buts/colorset/category/1070.jpg"
+                            alt="">
+                    </div>
+                    <div class="col sbgroup">
+                        <div class="row sbsmalltitle">
+                            {{ order.subscribe_num.site }}
+                        </div>
+                        <div class="row sbtitle">
+                            {{order.subscribe_num.title}}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row sbsmalltitle2">
+                            모집종료까지
+                        </div>
 
-                <div class="row">
-                    <h2>{{order.subscribe_num.title}}</h2>
+                        <div class="row sbtitle2">
+                            D - {{ diff_day }}
+                        </div>
+
+                    </div>
                 </div>
+                
                 <div v-if="order.start_check==1" class="row">
                     <button v-on:click="addSchedule">캘린더에 일정 추가하기</button>
                 </div>
@@ -207,6 +241,27 @@ export default {
 * {
     font-family: 'Pretendard-Regular';
 }
+
+.body {
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 5%;
+}
+
+.bigtitle {
+    position: relative;
+    padding: 15px 0;
+    margin-top: 50px;
+    padding-left: 20px;
+    padding-right: 30px;
+    border-bottom: 5px double #7ac5ff;
+    display: flex;
+    flex-direction: row;
+    margin-left: 30px;
+    margin-right: 30px;
+    align-items: center;
+}
 .subscribeboardform {
     border: 1px solid;
     padding: 3%;
@@ -220,5 +275,21 @@ export default {
 
 .subboardcontent {
     padding: 0.4%;
+}
+
+.sbtitle2 {
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sbtitle {
+    /* margin: 50px; */
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+
 }
 </style>
