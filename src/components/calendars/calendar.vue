@@ -229,26 +229,27 @@
   </div>
 
   <!-- sns 공유 -->
-  <div v-if="snsEvent" class="share-event-form">
-    <div class="form-content">
-      <div style="text-align: center; margin-bottom: 10px;">
-        <h5>sns 연동</h5>
-      </div>
-      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-          <img :src="require('@/assets/image/naver.png')" style="margin-right: 10px; width: 50px;">
-          <span>naver</span>
+    <div v-if="snsEvent" class="share-event-form">
+      <div class="form-content">
+        <div class="shareform-row">
+          <h5 style="text-align: center;">sns 연동</h5>
+        </div>
+        <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
+          <div style="display: flex; align-items: center;">
+
+            <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')"
+                style="margin-right: 10px; width:50px" />naver</button>
+          </div>
         </div>
         <div style="display: flex; align-items: center;">
-          <img :src="require('@/assets/image/kakaotalk.png')" style="margin-right: 10px; width: 50px;">
-          <span>카카오톡</span>
+          <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao"
+              style="margin-right: 10px; width: 50px;" />카카오톡</button>
         </div>
       </div>
       <div style="display: flex; justify-content: center; margin-top: 10px;">
         <button class="share-btn" @click="cancel2">아니오</button>
       </div>
     </div>
-  </div>
 
 
 
