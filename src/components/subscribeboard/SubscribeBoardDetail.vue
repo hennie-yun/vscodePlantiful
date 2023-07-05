@@ -88,10 +88,13 @@
 
         <!-- 참여하기 버튼 -->
         <div v-if="dto.email && dto.email.email !== loginId" class="btn">
-            <div v-if="this.currentDate <= this.dto.recruit_endperiod">
+            <div v-if="this.currentDate = this.dto.recruit_endperiod">
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-if="this.currentDate > this.dto.recruit_endperiod">
+            <div v-if="this.currentDate < this.dto.recruit_endperiod">
+                <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
+            </div>
+            <div v-else-if="this.currentDate > this.dto.recruit_endperiod">
                 모집이 종료되었습니다.<div class=""></div>
             </div>
         </div>
