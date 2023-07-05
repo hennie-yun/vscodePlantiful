@@ -5,6 +5,9 @@
             </div>
             <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
+                    <div class="wrapper" v-if="roomList.length == 0">
+                        <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
+                    </div>
                     <div class="msg-box rounded-b-lg" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
                         <div class="img-info-box elevation-1" style="width:100%;" @click="goRoom(item.num)">
                             <div class="img-box">
@@ -53,8 +56,12 @@ export default {
         let list = this.roomList
         self.$axios.get("http://localhost:8181/chat/roomlist", {params : {email : this.loginId}})
         .then((ret) => {
-            for(let obj of ret.data.list) {
-                list.push(obj)
+            if(ret.data.list !== null) {
+                for(let obj of ret.data.list) {
+                    list.push(obj)
+                }
+            } else {
+                list = null
             }
         }).catch((error) => {
             console.log("error : " +error)
@@ -63,10 +70,16 @@ export default {
 }
 </script>
 <style scoped>
-
     #messages {
         overflow-x: hidden;
         overflow-y: auto;
+    }
+
+    .wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
     }
 
     .msg-box {
@@ -76,49 +89,54 @@ export default {
         margin-top : 32px;
         height: 88px;
         justify-content: space-between;
-        
-        .img-info-box {
-            display: flex;
-            .img-box {
-                img {
-                    width : 54px;
-                    height : 54px;
-                    border-radius: 16px;
-                }
-                .im-on{
-                    position: absolute;
-                    width: 8px;
-                    height: 8px;
-                    top: 0;
-                    right: 0;
-                    background-color: #00B286 ;
-                    border: 1.5px solid #F8F8FA;
-                    border-radius: 100%;
-                }
-                position: relative;
-                margin-right : 12px;
-                }
+    }
 
-                .info-box {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-around ;
-                width : 50vw;
-                    .site-name{
-                        font-size : 16px;
-                        font-weight: 700;
-                    }
+    .img-info-box {
+        display: flex;
+    }
 
-                    .last-msg{
-                        font-size :14px;
-                        margin: 0;
-                        color : #737373;
-                    }
-                }
-        }
+    .last-msg{
+        font-size :14px;
+        margin: 0;
+        color : #737373;
+    }
 
-        p {
-            margin : 0px;
-        }
+    .img-box {
+        position: relative;
+        margin-right : 12px;
+    }
+
+    .info-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around ;
+        width : 50vw;
+    }
+
+    .site-name{
+        font-size : 16px;
+        font-weight: 700;
+    }
+
+
+    .img-box img {
+        width : 54px;
+        height : 54px;
+        border-radius: 16px;
+    }
+
+    .im-on{
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        top: 0;
+        right: 0;
+        background-color: #00B286 ;
+        border: 1.5px solid #F8F8FA;
+        border-radius: 100%;
+    }
+
+    p {
+        margin : 0px;
     }
 </style>
