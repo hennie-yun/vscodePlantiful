@@ -1,6 +1,8 @@
 <template lang="">
-    <div class="subboardadd needs-validation">
+    <div class="subboardadd needs-validation body">
         <!-- site 선택 -->
+        <h1> 모집 글 추가하기 </h1>
+        <div class="text-center radiocheck">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio1" value="넷플릭스" required> 
             <label class="form-check-label" for="inlineRadio1"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914"/></label>
@@ -23,52 +25,54 @@
         </div>
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio6" value="아마존프라임비디오" required>
-            <label class="form-check-label" for="inlineRadio6"><img src="https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></label>
+            <label class="form-check-label" for="inlineRadio6"><img src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></label>
         </div>
-        <div class="row align-items-center">
-
-            <div class="col-8 form-floating">
-                <input type="text" class="form-control" id="floatingInput" v-model="title" placeholder="제목을 입력해주세요." required>
-                <label for="floatingInput"> 글 제목</label>
-
+        </div>
+        <div class="row bodycontent">
+            <div class="col">
+                <label for="title"  class="form-label text-start">제목</label>
+                <input type="text" class="form-control" id="title" v-model="title" placeholder="제목을 입력해주세요." required>
             </div>
-            <div class="col-4 form-floating">
-                <input type="text" class="form-control" id="floatingInputValue" name="email" v-model="email" required readonly>
-                <label for="floatingInputValue" class="form-label">작성자</label>
+        </div>
+        <div class="row bodycontent">
+            <div class="col">
+                <label for="recruit_endperiod" class="form-label">모집 마감일</label>
+                <input type="date" class="form-control" id="recruit_endperiod" v-model="recruit_endperiod" required :min="minDate">
             </div>
             
-            <div class="col ">
-                <label for="floatingInputValue" class="form-label">모집 마감일</label>
-                <input type="date" class="form-control" v-model="recruit_endperiod" required :min="minDate">
+        </div>
+        <!-- <div class="row bodycontent">
+            <div class="col-4">
+                <label for="floatingInputValue" class="form-label">작성자</label>
+                <input type="text" class="form-control" id="floatingInputValue" name="email" v-model="email" required readonly>
             </div>
+        </div> -->
+        <div class="row bodycontent">
+            
         </div>
 
         <div class="row align-items-center">
             <div class="col">
-                <label for="floatingInputValue" class="form-label">전체 금액 입력</label>
-                <input type="number" class="form-control" v-model="total_point" required>
+                <label for="total_point" class="form-label">전체 금액 입력</label>
+                <input type="number" class="form-control" id="total_point" v-model="total_point" required>
             </div>
             <div class="col">
-                <label for="floatingInputValue" class="form-label">전체 모집 인원 입력</label>
-                <input type="number" class="form-control" v-model="total_people" required>
+                <label for="total_people" class="form-label">전체 모집 인원 입력</label>
+                <input type="number" class="form-control" id="total_people" v-model="total_people" required>
             </div>
         </div>
-        <!-- <div class="col">
-                <label for="floatingInputValue" class="form-label">포인트 지불일</label>
-                <input type="date" class="form-control" v-model="payment_date" required>
-        </div> -->
-        <div class="col">
+        <div class="col warnmsg">
             지불한 총 금액, 본인을 포함한 인원을 입력해주세요.
         </div>
 
-        <div class="row align-items-center">
+        <div class="row align-items-center ">
             <div class="col">
-                <label for="floatingInputValue" class="form-label">구독 시작일</label>
-                <input type="date" class="form-control" v-model="subscribe_startdate" required :min="minStartDate">
+                <label for="subscribe_startdate" class="form-label">구독 시작일</label>
+                <input type="date" class="form-control" id="subscribe_startdate" v-model="subscribe_startdate" required :min="minStartDate">
             </div>
             <div class="col">
-                <label for="subscriptionPeriod">구독 기간</label>
-                <select id="subscriptionPeriod" v-model="subscriptionPeriod">
+                <label for="subscriptionPeriod">구독 기간</label><br/>
+                <select class="form-select" id="subscriptionPeriod" v-model="subscriptionPeriod">
                     <option value="1" selected>1개월</option>
                     <option value="2">2개월</option>
                     <option value="3">3개월</option>
@@ -83,12 +87,12 @@
                 <input type="date" class="form-control" v-model="subscribe_enddate" required>
             </div> -->
         </div>
-        <div class="form-check form-check-inline">
+        <div class="form-check form-check-inline checkbox">
             <input class="form-check-input" type="checkbox" id="agree" v-model="agree">
-            <label class="form-check-label" for="inlineCheckbox1">모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.</label>
+            <label class="form-check-label" for="agree">모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.</label>
         </div>
         <div class="row">
-            <button v-on:click="checkcash">글 등록하기 </button>
+            <button class="btn custom-button" v-on:click="checkcash" style="background-color: #7AC6FF; color:white;">글 등록하기 </button>
         </div>
 
     </div>
@@ -275,9 +279,52 @@ export default {
 }
 </script>
 <style>
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Pretendard-Regular';
+}
+
+.body {  
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.body h1{
+    margin: 50px;
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    color: black;
+}
+
+.bodycontent{
+
+}
+
+.warnmsg{
+    color: red;
+}
+
+
+.radiocheck{
+    margin-left: 27px;
+    margin-bottom: 2%;
+}
+
 .subboardadd {
     padding: 30px;
-    margin: 30px;
+    /* margin: 30px; */
 }
 
 .subboardadd div {
@@ -287,7 +334,17 @@ export default {
 #subscriptionPeriod {
     margin: 10px;
     padding-left: 5px;
-    border: 1.8px solid #7AC6FF;
+    /* border: 1.8px solid #7AC6FF; */
     border-radius: 7px;
+}
+
+.custom-button {
+    margin-top: 23px !important;
+    margin-bottom: 30px;
+    margin-right: 10px;
+}
+
+.checkbox{
+    margin-left:50px;
 }
 </style>

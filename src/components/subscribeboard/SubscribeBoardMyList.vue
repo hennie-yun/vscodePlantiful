@@ -1,6 +1,6 @@
 <!-- 내가 참여한 구독 목록. 내 구독 리스트 -> subscribeparty detail로 들어가기-->
 <template lang="">
-    <div>
+    <div class="body">
         <h1> {{loginId}} 님의 구독 목록</h1>
 
         <!-- <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
@@ -8,17 +8,44 @@
             {{order.subscribe_num.site}}
         </div> -->
 
-        <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="row row-cols-1 row-cols-md-3 g-4 cardblock">
             <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)" >
                 <div class="col mylistbody">
                     <!-- 팀원 -->
-                    <div class="card h-100 ingcardlist" v-if="order.start_check == 0 || order.start_check == 1" >
+                    <div class="card card border-light h-100 " v-if="order.start_check == 0 || order.start_check == 1" >
                         <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
-                        <div class="card-body">
+                        <div class="card-body ingcardlist">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
-                            <p class="card-text"> {{order.email.email}} (참여자) {{order.subscribe_num.subscribeNum}}</p>
-                            <p class="card-text"> 남은 포인트 {{order.point_basket}}</p>
-                            <p class="card-text"> 종료일 {{subenddate}}</p>
+                            <p class="card-text"> 
+                                <div class="row">
+                                    <div class="col">
+                                        구독 글 번호 
+                                    </div>
+                                    <div class="col">
+                                        {{order.subscribe_num.subscribeNum}} 
+                                    </div>
+                                </div>
+                            </p>
+                            <p class="card-text">
+                                <div class="row">
+                                    <div class="col">
+                                        남은 포인트
+                                    </div>
+                                    <div class="col">
+                                        {{order.point_basket}}
+                                    </div>
+                                </div>
+                            </p>
+                            <p class="card-text">
+                                <div class="row">
+                                    <div class="col">
+                                        구독 종료일
+                                    </div>
+                                    <div class="col">
+                                        {{subenddate}}
+                                    </div>
+                                </div>
+                            </p>
                             
                             <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
@@ -26,7 +53,7 @@
                         </div>
                     </div>
 
-                    <div class="card h-100 " v-if="order.start_check == 2" >
+                    <div class="card card border-light h-100 " v-if="order.start_check == 2" >
                         <img :src="getSiteLogo(order.subscribe_num.site)" class="card-img-top" alt="..." />
                         <div class="card-body endcardlist">
                             <h5 class="card-title">{{order.subscribe_num.title}}</h5>
@@ -66,17 +93,17 @@ export default {
         },
         getSiteLogo(site) {
             if (site === '넷플릭스') {
-                return 'https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix';
+                return 'https://www.edigitalagency.com.au/wp-content/uploads/Netflix-logo-red-black-png.png';
             } else if (site === '왓챠') {
-                return 'https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B';
+                return 'https://oopy.lazyrockets.com/api/v2/notion/image?src=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fd05ded51-54bf-4174-8b7e-e021c6eb6b5a%2FWATCHA_LOGO.svg&blockId=400d70c6-5698-4877-9ddf-83be123fb341';
             } else if (site === '티빙') {
-                return 'https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100';
+                return 'https://blog.kakaocdn.net/dn/ejB6gz/btrbljBlAK9/cKb8PmW2fgRMmGJI4WTykk/img.jpg';
             } else if (site === '웨이브') {
-                return 'https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white';
+                return 'https://img.pooq.co.kr/service30/profile/wavve2022.png';
             } else if (site === '디즈니플러스') {
-                return 'https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white';
+                return 'https://cdn.getnews.co.kr/news/photo/202103/519560_206621_2732.png';
             } else if (site === '아마존프라임비디오') {
-                return 'https://img.shields.io/badge/AMAZON_PRIME-01A4FF?style=for-the-badge&logo=amazon&logoColor=black';
+                return 'https://logos-world.net/wp-content/uploads/2021/02/Amazon-Prime-Video-Emblem.png';
             } else {
                 return '';
             }
@@ -116,11 +143,93 @@ export default {
 }
 </script>
 <style scoped>
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Pretendard-Regular';
+}
+
+.body {
+    text-align: center;
+    margin-left: 8%;
+    margin-right: 8%;
+    margin-bottom: 8%;
+    margin-top: 3%
+}
+
+.body h1 {
+    margin: 50px;
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    color: black;
+}
+
+.cardblock {
+    display: flex;
+    justify-content: center;
+}
+
 .mylistbody {
-    padding-top: 20%;
-    margin-left: 10%;
+    padding-top: 20% !important;
+    padding: 20px;
 }
-.endcardlist{
-    background-color: gainsboro;
+
+.card-img-top {
+    max-height: 130px;
 }
-</style>
+
+/* 카드 내부 CSS */
+
+
+.recruit {
+    padding: 3px;
+    border: 3px double #7ac5ff;
+    border-radius: 10px;
+}
+
+.ing {
+    padding: 3px;
+    border: 2.5px double rgb(104, 104, 104);
+    border-radius: 10px;
+}
+
+.ingcardlist .card-title {
+    color: #4fb3ff;
+    font-weight: bold;
+    font-size: 28px;
+    padding: 20px;
+}
+
+.ingcardlist .card-text {
+    padding: 3px;
+    background-color: rgb(246, 246, 246);
+    border-radius: 10px;
+}
+
+.ingcardlist {
+    border: dashed 2px #7ac5ff;
+}
+
+.ingcardlist:hover {
+    background-color: #9ed5ff64;
+}
+
+.endcardlist {
+    background-color: #e4e4e4;
+}
+
+.endcardlist:hover {
+    background-color: #bfc0c0;
+}
+
+.endcardlist .card-title {
+    color: rgb(65, 65, 65);
+    font-weight: bold;
+    font-size: 28px;
+    padding: 20px;
+}</style>
