@@ -4,7 +4,7 @@
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-itmes-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card bg-white text-black" style="border-radius:1rem">
+                <div class="card bg-white text-black" style="border-radius:1rem; font-family: 'Pretendard-Regular';">
                     <div class="card-body p-5 text-center">
                         <div class="md-md-5 mt-md-4 pb-5">
                             <h2 class="fw-bold mb-2">Group</h2>
@@ -115,6 +115,10 @@ span {
     height: 25px;
     width: 25px;
     margin-right: 5px;
+}
+
+.card bg-white text-black{
+    font-family: 'Pretendard-Regular';
 }
 
 
