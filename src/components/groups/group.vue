@@ -1,6 +1,7 @@
 
 <template lang="">
-    <section :style="{backgroundColor: '#CEE2F1'}" class="vh-100 gradient-custom background" >
+    <section  class="vh-100 gradient-custom background" >
+        <!-- :style="{backgroundColor: '#CEE2F1'}" -->
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-itmes-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -14,12 +15,12 @@
                                 <input type="hidden" v-model="color"/>
                             </div>
                             <div class="form-outline form-white">
-                                <span :style="{backgroundColor: '#3F48CC'}" class="dot" v-on:click="a(1)"></span>
-                                <span :style="{backgroundColor: '#FFFD55'}" class="dot" v-on:click="a(2)"></span>
-                                <span :style="{backgroundColor: '#8D2196'}" class="dot" v-on:click="a(3)"></span>
-                                <span :style="{backgroundColor: '#ED87BD'}" class="dot" v-on:click="a(4)"></span>
-                                <span :style="{backgroundColor: '#A1FB8E'}" class="dot" v-on:click="a(5)"></span>
-                                <span :style="{backgroundColor: '#7E84F7'}" class="dot" v-on:click="a(6)"></span>
+                                <span :style="{backgroundColor: '#f7a482'}" class="dot" v-on:click="a(1)"></span>
+                                <span :style="{backgroundColor: '#add4a5'}" class="dot" v-on:click="a(2)"></span>
+                                <span :style="{backgroundColor: '#d094e5'}" class="dot" v-on:click="a(3)"></span>
+                                <span :style="{backgroundColor: '#e6c493'}" class="dot" v-on:click="a(4)"></span>
+                                <span :style="{backgroundColor: '#ffc0cb'}" class="dot" v-on:click="a(5)"></span>
+                                <span :style="{backgroundColor: '#98a6ff'}" class="dot" v-on:click="a(6)"></span>
                             </div>
                             <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
                            
