@@ -1,6 +1,6 @@
 <!-- 구독 그룹별 파티 인원 -->
 <template lang="">
-    <div>
+    <div class="body">
         <div v-for="(order, index) in list" :key="order.party">
             <div v-if="index === 0" class="row subscribeboardform">
                 <div class="row bigtitle">
@@ -31,11 +31,11 @@
                     </div>
                     <div class="col">
                         <div class="row sbsmalltitle2">
-                            모집종료까지
+                            구독종료일
                         </div>
 
                         <div class="row sbtitle2">
-                            D - {{ diff_day }}
+                            {{  order.subscribe_num.subscribe_enddate }} 
                         </div>
 
                     </div>
@@ -119,36 +119,40 @@
                         </div>
                 </div>
             </div>
-            
-
             <div v-if="index === 0" class="row">
-                <h3>참여자 정보 </h3>
-            </div>
-            <div class="row">
-                <div class="col">
-                    참여 번호
+                    <div class="border">
+                    </div>
+                    <div class="col ">
+                        <h3 class="title">참여자 정보 </h3>
+                    </div>
                 </div>
-                <div class="col ">
-                    {{ order.party }}
+            <div class="partyinfo">
+                <div class="row content">
+                    <div class="col">
+                        참여 번호
+                    </div>
+                    <div class="col ">
+                        {{ order.party }}
+                    </div>
+                    <div class="col">
+                        참여자 아이디
+                    </div>
+                    <div class="col">
+                        {{ order.email.email }}
+                    </div>
+                    <div class="col">
+                        지불한 포인트
+                    </div>
+                    <div class="col">
+                        {{ order.point_basket }}
+                    </div>
+                    <!-- <div class="col" v-if="order.email.email === loginId">
+                        {{ order.point_basket }}
+                    </div>
+                    <div class="col" v-if="order.email.email !== loginId">
+                        비공개 
+                    </div> -->
                 </div>
-                <div class="col">
-                    참여자 아이디
-                </div>
-                <div class="col">
-                    {{ order.email.email }}
-                </div>
-                <div class="col">
-                    남은 포인트
-                </div>
-                <div class="col">
-                    {{ order.point_basket }}
-                </div>
-                <!-- <div class="col" v-if="order.email.email === loginId">
-                    {{ order.point_basket }}
-                </div>
-                <div class="col" v-if="order.email.email !== loginId">
-                    비공개 
-                </div> -->
             </div>
         </div>       
     </div>
@@ -246,35 +250,73 @@ export default {
     text-align: center;
     margin-left: 15%;
     margin-right: 15%;
-    margin-bottom: 5%;
+    margin-bottom: 8%;
 }
 
 .bigtitle {
     position: relative;
     padding: 15px 0;
-    margin-top: 50px;
     padding-left: 20px;
-    padding-right: 30px;
+    padding-right: 42px;
     border-bottom: 5px double #7ac5ff;
     display: flex;
     flex-direction: row;
-    margin-left: 30px;
-    margin-right: 30px;
+    /* margin-top: 50px; */
+    /* margin-left: 30px;
+    margin-right: 30px; */
+    margin-bottom: 30px;
     align-items: center;
-}
-.subscribeboardform {
-    border: 1px solid;
-    padding: 3%;
-    margin: 3%;
+    
 }
 
+.imgdiv {
+    max-width: 130px;
+}
+
+img {
+    max-width: 80px;
+    margin: 10px;
+    border-radius: 12px;
+}
+.subscribeboardform {
+    /* border: 1px solid; */
+    padding: 3%;
+    margin: 3%;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    
+}
+
+.border{
+    border-style: dashed !important;
+    border-color: #7ac5ff !important;
+    margin-bottom: 30px;
+    margin-top: 18px;
+}
+
+.sbsmalltitle2 {
+    display: flex;
+    justify-content: flex-end;
+}
+.row.sbsmalltitle,
+.row.sbtitle {
+    align-self: flex-end;
+    /* 수직 축 정렬은 아래로 */
+}
 .subboardtitle {
-    background-color: skyblue;
-    padding: 0.4%;
+    background-color: rgb(246, 246, 246);
+    border-radius: 8px;
+    margin: 5px;
+    padding: 7px;
+    padding-left: 14px;
+    padding-right: 14px;
 }
 
 .subboardcontent {
     padding: 0.4%;
+    margin: 5px;
+    padding: 7px;
 }
 
 .sbtitle2 {
@@ -290,6 +332,26 @@ export default {
     font-weight: 600;
     /* color: #7ac5ff; */
     font-size: 35px;
+
+}
+
+.partyinfo{
+    padding: 7px;
+    margin: 4px;
+    background-color: #7ac5ffa3;   
+    color: black;
+    /* background-color: #7ac5ff;   
+    color: white; */
+    border-radius: 10px;
+    
+    /* font-weight: 600; */
+}
+.title{
+    margin: 10px;
+    margin-bottom: 29px;
+    /* font-weight: 600; */
+}
+.partyinfo .content{
 
 }
 </style>

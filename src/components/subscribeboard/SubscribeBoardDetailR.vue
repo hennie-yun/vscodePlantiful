@@ -28,22 +28,10 @@
                             {{ dto.title }}
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="row sbsmalltitle2">
-                            모집종료까지
-                        </div>
-
-                        <div class="row sbtitle2">
-                            D - {{ diff_day }}
-                        </div>
-
-                    </div>
+                    
                 </div>
             </div>
-            <div class="row leftday">
-                파티 가입하고 <span class="stress">{{ left_day / 30 }}</span>개월동안 <span class="stress">{{ dto.site }}</span>를
-                <span class="stress">{{ divisionResult }}</span>원에 이용해보세요.
-            </div>
+            
             <div class="row point">
                 <div class="col">
                     모여야하는 전체 포인트
@@ -280,6 +268,108 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style scoped>
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Pretendard-Regular';
+}
+
+.body {
+    text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-bottom: 5%;
+}
+
+.sbsmalltitle2 {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sbtitle2 {
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sbtitle {
+    /* margin: 50px; */
+    font-weight: 600;
+    /* color: #7ac5ff; */
+    font-size: 35px;
+
+}
+
+.row.sbsmalltitle,
+.row.sbtitle {
+    align-self: flex-end;
+    /* 수직 축 정렬은 아래로 */
+}
+
+
+.bigtitle {
+    position: relative;
+    padding: 15px 0;
+    margin-top: 50px;
+    padding-left: 20px;
+    padding-right: 30px;
+    border-bottom: 5px double #7ac5ff;
+    display: flex;
+    flex-direction: row;
+    margin-left: 30px;
+    margin-right: 30px;
+    align-items: center;
+}
+
+
+.imgdiv {
+    max-width: 130px;
+}
+
+img {
+    max-width: 80px;
+    margin: 10px;
+    border-radius: 12px;
+}
+
+.point {
+    background-color: rgb(246, 246, 246);
+    /* border: 4px dotted #7ac5ff; */
+    border-radius: 15px;
+    padding: 15px;
+    margin: 20px 30px 0px 30px
+        /* margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 2px; */
+    ;
+}
+
+.leftday {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    /* margin: 0px 50px; */
+    margin: 30px 50px 30px;
+    justify-content: center;
+
+}
+
+.stress {
+    color: red;
+}
+
+.btn {
+    padding: 10px;
+    color: white;
+    margin: 20px;
+}
 </style>

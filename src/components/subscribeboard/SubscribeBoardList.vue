@@ -1,157 +1,161 @@
 <template>
     <div class="body">
-    <div class="container text-center">
+        <div class="container text-center">
 
-        <div class="grid text-center">
-            <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
+            <div class="grid text-center">
+                <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
+            </div>
+            <div class="row alllistsite">
+                <div class="col" v-on:click="search('all')"><img
+                        src="https://img.shields.io/badge/전체보기-black?style=for-the-badge&logo=headlessui&logoColor=white" />
+                </div>
+                <div class="col" v-on:click="search('넷플릭스')"><img
+                        src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" />
+                </div>
+                <div class="col" v-on:click="search('왓챠')"><img
+                        src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" />
+                </div>
+                <div class="col" v-on:click="search('티빙')"><img
+                        src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" />
+                </div>
+                <div class="col" v-on:click="search('웨이브')"><img
+                        src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white" />
+                </div>
+                <div class="col-2" v-on:click="search('디즈니플러스')"><img
+                        src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" />
+                </div>
+                <div class="col-2" v-on:click="search('아마존프라임비디오')"><img
+                        src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" />
+                </div>
+            </div>
         </div>
-        <div class="row alllistsite">
-            <div class="col" v-on:click="search('all')"><img
-                    src="https://img.shields.io/badge/전체보기-black?style=for-the-badge&logo=headlessui&logoColor=white" />
+        <div class="text-right">
+            <router-link to="/SubscribeBoardAdd">
+                <button class="btn custom-button" style="background-color: #7AC6FF; color:white;">글 등록</button>
+            </router-link>
+            <router-link to="/SubscribeBoardMyList">
+                <button class="btn custom-button" style="background-color: #7AC6FF; color: white;">내 구독 목록</button>
+            </router-link>
+        </div>
+        <div class="bodylist">
+            <div class="row listtitle">
+                <div class="col">
+                    글 번호
+                </div>
+                <div class="col">
+                    사이트
+                </div>
+                <div class="col">
+                    이름
+                </div>
+
+                <div class="col">
+                    작성자
+                </div>
+                <div class="col">
+                    모집 마감일
+                </div>
+                <div class="col">
+                    모집 현황
+                </div>
+                <div class="col">
+                    진행 여부
+                </div>
             </div>
-            <div class="col" v-on:click="search('넷플릭스')"><img
-                    src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914" />
+
+            <div v-if="list != null">
+                <div v-for="order in list" :key="order.subscribe_num">
+                    <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
+                        <div class="col">
+                            {{ order.subscribe_num }}
+                        </div>
+                        <div class="col">
+                            {{ order.site }}
+                        </div>
+                        <div class="col">
+                            {{ order.title }}
+                        </div>
+                        <div class="col">
+                            {{ order.email.email }}
+                        </div>
+                        <div class="col">
+                            {{ order.recruit_endperiod }}
+                        </div>
+
+                        <div class="col">
+                            {{ order.recruitpeople }} / {{ order.total_people }}
+                        </div>
+                        <div class="col">
+                            <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                            <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                            <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                        </div>
+                    </div>
+                </div>
+            
+                <div v-for="order in list" :key="order.subscribe_num">
+                    <div class="row inglist" v-if="order.start_check === 1" v-on:click="detail(order.subscribe_num)">
+                        <div class="col">
+                            {{ order.subscribe_num }}
+                        </div>
+                        <div class="col">
+                            {{ order.site }}
+                        </div>
+                        <div class="col">
+                            {{ order.title }}
+                        </div>
+                        <div class="col">
+                            {{ order.email.email }}
+                        </div>
+                        <div class="col">
+                            {{ order.recruit_endperiod }}
+                        </div>
+
+                        <div class="col">
+                            {{ order.recruitpeople }} / {{ order.total_people }}
+                        </div>
+                        <div class="col">
+                            <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                            <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                            <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div v-for="order in list" :key="order.subscribe_num">
+                    <div class="row endlist" v-if="order.start_check === 2" v-on:click="detail(order.subscribe_num)">
+                        <div class="col">
+                            {{ order.subscribe_num }}
+                        </div>
+                        <div class="col">
+                            {{ order.site }}
+                        </div>
+                        <div class="col">
+                            {{ order.title }}
+                        </div>
+                        <div class="col">
+                            {{ order.email.email }}
+                        </div>
+                        <div class="col">
+                            {{ order.recruit_endperiod }}
+                        </div>
+
+                        <div class="col">
+                            {{ order.recruitpeople }} / {{ order.total_people }}
+                        </div>
+                        <div class="col">
+                            <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
+                            <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
+                            <p class="care-text end" v-if="order.start_check == 2">종료</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col" v-on:click="search('왓챠')"><img
-                    src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B" />
-            </div>
-            <div class="col" v-on:click="search('티빙')"><img
-                    src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100" /></div>
-            <div class="col" v-on:click="search('웨이브')"><img
-                    src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white" /></div>
-            <div class="col-2" v-on:click="search('디즈니플러스')"><img
-                    src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white" />
-            </div>
-            <div class="col-2" v-on:click="search('아마존프라임비디오')"><img
-                    src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black" />
+            <div v-else >
+                모집이 없습니다.
             </div>
         </div>
     </div>
-    <div class="text-right">
-        <router-link to="/SubscribeBoardAdd">
-            <button class="btn custom-button" style="background-color: #7AC6FF; color:white;">글 등록</button>
-        </router-link>
-        <router-link to="/SubscribeBoardMyList">
-            <button class="btn custom-button" style="background-color: #7AC6FF; color: white;">내 구독 목록</button>
-        </router-link>
-    </div>
-    <div class="bodylist">
-        <div class="row listtitle">
-            <div class="col">
-                글 번호
-            </div>
-            <div class="col">
-                사이트
-            </div>
-            <div class="col">
-                이름
-            </div>
-
-            <div class="col">
-                작성자
-            </div>
-            <div class="col">
-                모집 마감일
-            </div>
-            <div class="col">
-                모집 현황
-            </div>
-            <div class="col">
-                진행 여부
-            </div>
-        </div>
-
-        
-        <div v-for="order in list" :key="order.subscribe_num">
-            <div class="row" v-if="order.subscribe_num === null">
-                글 목록이 비었습니다.
-            </div>
-            <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
-                <div class="col">
-                    {{ order.subscribe_num }}
-                </div>
-                <div class="col">
-                    {{ order.site }}
-                </div>
-                <div class="col">
-                    {{ order.title }}
-                </div>
-                <div class="col">
-                    {{ order.email.email }}
-                </div>
-                <div class="col">
-                    {{ order.recruit_endperiod }}
-                </div>
-
-                <div class="col">
-                    {{ order.recruitpeople }} / {{ order.total_people }}
-                </div>
-                <div class="col">
-                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
-                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
-                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
-                </div>
-            </div>
-        </div>
-        <div v-for="order in list" :key="order.subscribe_num">
-            <div class="row inglist" v-if="order.start_check === 1" v-on:click="detail(order.subscribe_num)">
-                <div class="col">
-                    {{ order.subscribe_num }}
-                </div>
-                <div class="col">
-                    {{ order.site }}
-                </div>
-                <div class="col">
-                    {{ order.title }}
-                </div>
-                <div class="col">
-                    {{ order.email.email }}
-                </div>
-                <div class="col">
-                    {{ order.recruit_endperiod }}
-                </div>
-
-                <div class="col">
-                    {{ order.recruitpeople }} / {{ order.total_people }}
-                </div>
-                <div class="col">
-                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
-                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
-                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
-                </div>
-            </div>
-
-        </div>
-        <div v-for="order in list" :key="order.subscribe_num">
-            <div class="row endlist" v-if="order.start_check === 2" v-on:click="detail(order.subscribe_num)">
-                <div class="col">
-                    {{ order.subscribe_num }}
-                </div>
-                <div class="col">
-                    {{ order.site }}
-                </div>
-                <div class="col">
-                    {{ order.title }}
-                </div>
-                <div class="col">
-                    {{ order.email.email }}
-                </div>
-                <div class="col">
-                    {{ order.recruit_endperiod }}
-                </div>
-
-                <div class="col">
-                    {{ order.recruitpeople }} / {{ order.total_people }}
-                </div>
-                <div class="col">
-                    <p class="care-text recruit" v-if="order.start_check == 0">모집 중</p>
-                    <p class="care-text ing" v-if="order.start_check == 1">진행 중</p>
-                    <p class="care-text end" v-if="order.start_check == 2">종료</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </template>
 <script>
 import dayjs from 'dayjs';
@@ -194,7 +198,7 @@ export default {
                 } else {
                     alert('에러코드:' + res.status)
                 }
-            })
+            }.bind(this))
 
     },
     methods: {
@@ -212,6 +216,10 @@ export default {
                         if (res.status == 200) {
                             self.list = res.data.list
                             self.checkmember();
+
+                            if (self.list == null){
+                                alert('모집이 없습니다.')
+                            }
                         } else {
                             alert('에러코드:' + res.status)
                         }
@@ -226,6 +234,9 @@ export default {
                             self.searchedList = res.data.list;
                             self.list = self.searchedList;
                             self.checkmember();
+                            if (self.list == null){
+                                alert('모집이 없습니다.')
+                            }
                         }
                     })
             }
@@ -262,11 +273,12 @@ export default {
             });
 
             Promise.all(promises)
-                .then(function () {
-                    const self = this;
-                    // console.log('모든 비동기 요청 완료');
+                .then(() => {
+                    this.list.forEach((order) => {
+                        const self = this;
+                        // // console.log('모든 비동기 요청 완료');
 
-                    self.list.forEach(function (order) {
+                        // self.list.forEach(function (order) {
                         // console.log(self.list);
 
                         const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
@@ -288,25 +300,26 @@ export default {
                             if (self.point_basket != 0) {
 
                                 const price = order.total_point / self.total_people
-                                console.log(price)
+                                console.log('price:'+price+' id:'+self.email)
                                 const form = new FormData();
                                 form.append('price', price)
                                 form.append('email', self.email)
-                                console.log(self.email)
                                 self.$axios.post('http://localhost:8181/payment/' + self.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             console.log('모집 종료로 금액 반환 되었음')
-                                            self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
-                                                .then(function (res) {
-                                                    if (res.status === 200) {
-                                                        console.log('취소돼서 0으로 만들고 돌아감');
-                                                    }
-                                                })
-                                                .catch(function (error) {
-                                                    // 에러 처리
-                                                    console.error('에러 발생:', error);
-                                                });
+                                            if (self.point_basket != 0) {
+                                                self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                                    .then(function (res) {
+                                                        if (res.status === 200) {
+                                                            console.log('취소돼서 0으로 만들고 돌아감');
+                                                        }
+                                                    })
+                                                    .catch(function (error) {
+                                                        // 에러 처리
+                                                        console.error('에러 발생:', error);
+                                                    });
+                                                }
                                         } else {
                                             alert('오류')
                                         }
@@ -414,7 +427,7 @@ export default {
 } */
 
 
-.body{
+.body {
     /* margin-left:7%;
     margin-right:7%;
     margin-bottom:7%; */
@@ -427,7 +440,8 @@ export default {
     flex-direction: column;
     justify-content: center;
 }
-.col{
+
+.col {
     text-align: center;
 }
 
@@ -480,10 +494,12 @@ export default {
     padding: 5px;
     /* margin: -158px; */
 }
-img{
+
+img {
     border-style: none;
     margin: 5px;
 }
+
 .listtitle {
     /* background-color: aliceblue; */
     border-bottom: 1px solid;
