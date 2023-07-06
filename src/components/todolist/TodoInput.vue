@@ -1,38 +1,37 @@
 <template>
-    <div class="inputBox shadow">
-        <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo"
-            title="Let's Todo!" placeholder="Let's Todo!">  
+    <div class="inputBox">
+        <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo" title="Let's Todo!" placeholder="Let's Todo!">
         <!-- <button v-on:click="addTodo">add</button> -->
         <span class="addContainer" @click="addTodo">
-            <i class="far fa-plus-square addBtn" aria-hidden="true"></i> 
+            <i class="far fa-plus-square addBtn" aria-hidden="true"></i>
         </span>
         <div>
             <myModal @closemodal="closeModal" v-if="showModal">
-            <p>Vue.js Modal Window!</p>
-            <div>asdasd</div>
-            <template #footer>
-                THIS IS FOOTER
-            </template>
+                <p>Vue.js Modal Window!</p>
+                <div>asdasd</div>
+                <template #footer>
+                    THIS IS FOOTER
+                </template>
             </myModal>
         </div>
-    </div> 
+    </div>
 </template>
 <script>
 import myModal from './common/ModalView.vue'
 
 export default {
     props: ['propsdata'],
-    data : function() {
+    data: function () {
         return {
-            newTodoItem : '',
-            showModal : false
+            newTodoItem: '',
+            showModal: false
         }
-    }, 
+    },
 
-    methods : {
-        addTodo : function() {
-            if(this.newTodoItem !== '') {
-                let item = {msg : this.newTodoItem, index : this.propsdata.length}
+    methods: {
+        addTodo: function () {
+            if (this.newTodoItem !== '') {
+                let item = { msg: this.newTodoItem, index: this.propsdata.length }
                 this.$emit('addTodoItem', item)
                 this.clearInput()
             } else {
@@ -40,7 +39,7 @@ export default {
             }
         },
 
-        clearInput : function () {
+        clearInput: function () {
             this.newTodoItem = ''
         },
 
@@ -54,45 +53,39 @@ export default {
         }
     },
 
-    components : {    
+    components: {
         myModal,
     }
 }
 </script>
 <style scoped>
-    input {
+/* input {
         border-radius: 5px;
-    }
+    } */
 
-    input:focus {
-        outline : none;
-    }    
-    
-    .inputBox {
-        background: white;
-        height: 50px;
-        line-height: 50px;
-        border-radius : 5px;
-    }
+input:focus {
+    outline: none;
+}
 
-    .inputBox input {
-        width:80%;
-        border-style : none;
-        font-size : 0.9rem;
-    }
+.inputBox {
+    background: white;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 5px;
+}
 
-    .addContainer {
-        float:right;
-        background: linear-gradient(to right, #62EAC6, #32CEE6);
-        display: block;
-        width: 3rem;
-        height: 3rem;
-        border-radius: 0 5px 5px 0;
-    }
+.inputBox input {
+    width: 68%;
+    height: 20px;
+    margin-top: 10%;
+    border-bottom: 1px solid #B3ADAD;
+    /* border-style: none; */
+    /* font-size: 0.9rem; */
+}
 
-    .addBtn {
-        color :white;
-        vertical-align: middle;
-    }
-
+.addBtn {
+    color: black;
+    vertical-align: middle;
+    margin-left :5%;
+}
 </style>

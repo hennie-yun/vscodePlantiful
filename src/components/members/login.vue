@@ -213,7 +213,6 @@ export default {
           if (res.status == 200) {
             if (res.data.flag) {
               sessionStorage.setItem('token', res.data.token)
-              alert (res.data.loginId)
               sessionStorage.setItem('loginId', res.data.loginId)
               location.href = "/calendar"
             } else {
