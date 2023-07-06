@@ -143,25 +143,26 @@ export default {
         },
         handleCheckJoined() {
             const self = this;
+            location.href='/SubscribeBoardList'
             // alert('checkjoined: ' + this.checkjoined);
-            if (this.checkjoined) {
-                // `checkjoined`가 true일 때 실행되는 코드
-                let form = new FormData();
-                let divisionnum = parseInt(self.divisionResult)
-                form.append('paidamount', divisionnum)
-                form.append('email', self.email)
+            // if (this.checkjoined) {
+            //     // `checkjoined`가 true일 때 실행되는 코드
+            //     let form = new FormData();
+            //     let divisionnum = parseInt(self.divisionResult)
+            //     form.append('paidamount', divisionnum)
+            //     form.append('email', self.email)
 
-                self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
-                    .then(function (res) {
-                        if (res.status == 200) {
-                            alert(res.data.message)
-                        } else {
-                            alert(res.data.message)
-                        }
-                    })
-            } else {
-                // `checkjoined`가 false일 때 실행되는 코드
-            }
+            //     self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+            //         .then(function (res) {
+            //             if (res.status == 200) {
+            //                 alert(res.data.message)
+            //             } else {
+            //                 alert(res.data.message)
+            //             }
+            //         })
+            // } else {
+            //     // `checkjoined`가 false일 때 실행되는 코드
+            // }
         },
 
         checkcash() {
