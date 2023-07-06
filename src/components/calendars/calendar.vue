@@ -415,8 +415,9 @@ export default {
 
     this.code = this.$route.query.code
     console.log(this.code)
-    this.getKakaoToken()
-
+    
+    //this.getKakaoToken()
+  
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
     const self = this;
@@ -705,17 +706,20 @@ export default {
   methods: {
 
 
-    getKakaoToken(){
-  
-      if(this.code !== undefined){
-      this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
-      .then(function(res){
-        console.log(res.data)
-     
-       
-      
-      })
-    }
+    getKakaoToken(){ // id값으로 분류하는것 추가!!!
+      let token = sessionStorage.getItem('token')
+      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
+      .then((res)=>{
+        let id = res.data.id
+        console.log(id)
+        if(id==1){
+          console.log("코드 확인:"+this.code)
+          this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+          .then(function(res){
+            console.log(res.data)
+          })
+      } 
+    })
     },
     
     /*
@@ -891,13 +895,55 @@ export default {
 // 카카오 스케줄 일정 연동
 kakao(){
 
-  const redirect_uri = 'http://localhost:8182/calendar';
-  const clientId = 'd54083f94196531e75d7de474142e52e';
-  const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
-  window.location.href = Auth_url;
-  console.log(this.code)
+  let token = sessionStorage.getItem('token')
+      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
+      .then((res)=>{
+        let id = res.data.id
+        if(id==1){ // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
+            if(this.code === undefined){ // 받아온 this.code값이 있어!! 
+            const redirect_uri = 'http://localhost:8182/calendartoken'
+            const clientId = 'd54083f94196531e75d7de474142e52e';
+            const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
+            window.location.href = Auth_url;
+            } else {
+              location.href='/kakao'
+            }
+            } else {
+
+              location.href = '/login'
+            }        
+                })
+        
+            
+      
 
 
+  // var auth = function(){
+  //   setTimeout(function(){
+  //     const redirect_uri = 'http://localhost:8182/calendar';
+  //     const clientId = 'd54083f94196531e75d7de474142e52e';
+  //     const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
+  //     window.location.href = Auth_url;
+  //     console.log("callback"+this.code)
+  
+  //   }, 0);
+  // };
+  // auth(function(){
+  //   console.log('aaa')
+  //   if(this.code != null){
+  //     this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+  //     .then(function(res){
+  //       console.log("data"+res.data)
+     
+
+
+  // const redirect_uri = 'http://localhost:8182/calendar';
+  // const clientId = 'd54083f94196531e75d7de474142e52e';
+  // const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
+  // window.location.href = Auth_url;
+  // console.log(this.code)
+  
+ // this.getKakaoToken()
 
 
 
@@ -945,29 +991,29 @@ formData.append('day', self.day);
 // 네이버 스케줄 일정 연동
 naver(){
 
-
-
-  this.$axios.get("http://localhost:8181/api/naver/oauth")
-  .then(function(res){
-    console.log("oauth성공!!")
-   // location.href=encodeURIComponent(res.data)
-  })
   
  // window.location.href = "http://localhost:8181/api/naver/oauth"
    const clientId = "IiiFJKBOyzL3qvfXasPq"
-   const redirectURI = encodeURIComponent("http://localhost:8181/api/naver/callback");
+   const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
   
    const state = this.generateRandomState()
    const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
 
   window.location.href = naverAuthURL
 
+  let formData = new FormData()
+  formData.append('state', state)
+  formData.append('code', this.code)
+  this.$axios.get("http://localhost:8181/api/naver/callback", formData)
+  .then((res)=> {
+    console.log(res.data)
+  })
 
-  this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
+  /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
   .then(function(res){
     console.log(res.data)
   })
- 
+ */
   // this.$axios.get(naverAuthURL)
   // .then(function(res){
   //   console.log(res.data)
