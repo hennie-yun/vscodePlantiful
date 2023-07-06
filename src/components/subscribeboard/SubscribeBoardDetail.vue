@@ -88,19 +88,19 @@
 
         <!-- 참여하기 버튼 -->
         <div v-if="dto.email && dto.email.email !== loginId" class="btn">
-            <div v-if="this.currentDate = this.dto.recruit_endperiod">
-                <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
-            </div>
             <div v-if="this.currentDate < this.dto.recruit_endperiod">
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-else-if="this.currentDate > this.dto.recruit_endperiod">
+            <div v-else-if="this.currentDate = this.dto.recruit_endperiod">
+                <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
+            </div>
+            <div v-else="this.currentDate > this.dto.recruit_endperiod">
                 모집이 종료되었습니다.<div class=""></div>
             </div>
         </div>
 
         <!-- 삭제하기 버튼 -->
-        <div v-else-if="dto.email && dto.email.email === loginId" class="btn">
+        <div v-else-if="dto.email && dto.email.email === loginId && (this.currentDate < this.dto.recruit_endperiod)" class="btn">
             <div>
                 <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
@@ -147,7 +147,7 @@ export default {
     },
     mounted() {
         this.currentDate = dayjs().format('YYYY-MM-DD');
-
+    
     },
     methods: {
         addparty() {
@@ -324,6 +324,7 @@ export default {
             .then(function (res) {
                 if (res.status == 200) {
                     self.dto = res.data.dto;
+                    
                     self.checkmember();
                     // 출금일 날짜 변환
                     self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
@@ -345,12 +346,15 @@ export default {
                     self.divisionResult = value1 / value2;
 
                     // 날짜 차이 계산
-                    const registerDate = dayjs(self.dto.register_date);
+                    // const registerDate = dayjs(self.dto.register_date);
                     const recruitEndDate = dayjs(self.dto.recruit_endperiod);
-                    self.dif_day = recruitEndDate.diff(registerDate, 'day');
+                    self.dif_day = recruitEndDate.diff(self.currentDate, 'day', true); // 'true'를 추가하여 시간까지 고려한 차이 계산
+                    console.log(self.currentDate)
+                    console.log(recruitEndDate)
+                    console.log(self.dif_day)
                     if (self.dif_day > 0) {
                         self.diff_day = self.dif_day
-                    } else if (self.dif_day == 0) {
+                    } else if (self.dif_day === 0) {
                         self.diff_day = '오늘 마감'
                     } else {
                         self.diff_day = '종료'
