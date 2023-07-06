@@ -43,7 +43,7 @@
             <div style="text-align: center;">
                 <b-pagination v-model="currentPage" 
                     :total-rows="count" align="center"
-                    :per-page="perPage" pills size="lg"
+                    :per-page="perPage" size="lg" page-class="custom-page"
                 ></b-pagination>
             </div>
             <div>
@@ -123,7 +123,6 @@ export default {
 }
 </script>
 <style scoped>
-
     html {
         height: 100%;
     }
@@ -154,7 +153,6 @@ export default {
         text-align: center;
         /* margin : 0 auto; */
         width: 100%;
-        background: #e0e0e0;
         line-height: 50px;
         border-radius : 5px;
     }
@@ -233,7 +231,6 @@ export default {
     }
 
     .source {
-        background-color: #e0e0e0;
         padding:36px;
         font-family: Arial, 
         Helvetica, sans-serif; 
