@@ -183,7 +183,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
     .ml-auto {  
         background-color: #7AC6FF
 ;

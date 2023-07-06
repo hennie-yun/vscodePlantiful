@@ -92,8 +92,7 @@
         </div>
         <div class="present-box">
             <b-tabs card fill="true" 
-                active-nav-item-class="bg-blue-accent-1"
-                active-tab-class=""
+                active-nav-item-class="bg-blue-lighten-3"
                 style="font-family: 'TheJamsil5Bold';"
             >
                 <b-tab title="소개" active>
@@ -104,8 +103,10 @@
                         >
                     </div>
                 </b-tab>
-                <b-tab title="공연 장소">
-                    <div class="present-box">지도들어갈자리</div>
+                <b-tab title="공연 장소" @click="relay">
+                    <div class="present-box">
+                        <KakaoMap v-bind:propsdata="loc" ref="kakaomap"></KakaoMap>
+                    </div>
                 </b-tab>
             </b-tabs>
         </div>
@@ -117,33 +118,44 @@
     </div>
 </template>
 <script>
-export default {
-    name: 'concertdetail',
-    data() {
-        return {
-            id : '',
-            concert : {}
-        }
-    }, 
+    import KakaoMap from "@/components/concert/KakaoMap"
 
-    methods : {
-        addToSchedule() {
-            alert("추가 예정")
+    export default {
+        components: {
+            'KakaoMap' : KakaoMap
+        },
+        name: 'concertdetail',
+        data() {
+            return {
+                id : '',
+                concert : {},
+                loc : ''
+            }
+        }, 
+
+        methods : {
+            addToSchedule() {
+                alert("추가 예정")
+            },
+
+            relay() {
+                this.$refs.kakaomap.relay()
+            }
+        },
+        
+        created () {
+            this.id = this.$route.query.id
+            const self = this
+            self.$axios('http://localhost:8181/concert/detail/'+this.id)
+            .then((result) => {
+                console.log(result.data.concert)
+                this.concert = result.data.concert
+                this.loc = result.data.concert.loc
+            }).catch((err) => {
+                console.log("error : "+err)    
+            });
         }
-    },
-    
-    created () {
-        this.id = this.$route.query.id
-        const self = this
-        self.$axios('http://localhost:8181/concert/detail/'+this.id)
-        .then((result) => {
-            console.log(result.data.concert)
-            this.concert = result.data.concert
-        }).catch((err) => {
-            console.log("error : "+err)    
-        });
     }
-}
 </script>
 <style scoped>
     #app {
@@ -228,6 +240,10 @@ export default {
         width: 90%;
     }
 
+    .active-tab {
+        background-color:#7AC6FF
+    }
+
     .present-box {
         width: 100%;
         padding : 36px;
@@ -235,8 +251,11 @@ export default {
         border:1px solid #e0e0e0;
     }
 
+    .present-box img {
+        max-width: 100%;
+    }
+
     .source {
-        background-color: #e0e0e0;
         padding:36px;
         font-family: Arial, 
         Helvetica, sans-serif; 
