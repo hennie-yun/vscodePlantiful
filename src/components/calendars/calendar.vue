@@ -66,7 +66,7 @@
             <ul class="sidebar-list-group">
               <li v-for="group in groups" :key="group.schedulegroup_num" style="margin-top:0px">
                 <div style="display:flex; justify-content:space-evenly; align-items: center;">
-                  <span style="float: left; position: absolute; margin-left: -120px;">
+                  <span style="float: left; position: absolute; margin-left: -135px;">
                     <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
                       @change="toggleGroupSchedule(group)" /></span>
                   <span><label :for="group.schedulegroup_num" style="margin-right: -80px;">{{ group.schedulegroup_title
@@ -186,11 +186,14 @@
             </option>
           </select>
         </div>
+
+
+
         <div class="form-row">
           <label for="isLoop" style="position:absolute; margin-left:10px;">
             <img :src="require('@/assets/image/formrepeat.png')" style="width:28px;" /></label>
           <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" class="radio-input"
-            style="margin-left:18%;" />
+            style="margin-left:18%;" checked/>
           <label for="isLoop">반복 안 함</label>
           <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input" />
           <label for="isLoop2">반복 설정</label>
@@ -421,12 +424,12 @@ export default {
     this.email = sessionStorage.getItem('loginId');
 
     self.groupColors = {
-      1: '#3F48CC',
-      2: '#FFFD55',
-      3: '#8D2196',
-      4: '#ED87BD',
-      5: '#A1FB8E',
-      6: '#7E84F7',
+     1: '#f7a482',
+      2: '#add4a5',
+      3: '#d094e5',
+      4: '#e6c493',
+      5: '#ffc0cb',
+      6: '#98a6ff',
     };
 
     self.$axios
@@ -443,9 +446,14 @@ export default {
           //   group_color: item.schedulegroup_color,
           //   group_title: item.schedulegroup_title
           // }));
+           if (grouplist == undefined) {
+            alert("로그아웃")
+            location.href = "/login"
+            return;
+          }
           self.groups = grouplist.map((item) => item.schedulegroup_num);
           console.log(self.groups);
-          self.colors = self.groups.map((group) => self.groupColors[group.group_color] || 'blue');
+          self.colors = self.groups.map((group) => self.groupColors[group.group_color] || '#7AC6FF');
 
           self.$axios
             .get("http://localhost:8181/schedules/email/" + self.email, {
@@ -457,7 +465,7 @@ export default {
                 console.log(self.reslist)
 
                 self.reslist.forEach(function (item) {
-                  const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || 'blue';
+                  const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || '#7AC6FF';
                   const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
                   const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
                   if (!existingEvent) {
@@ -1032,9 +1040,10 @@ alert("URL이 복사되었습니다.");
 // 복사 실패 시 처리할 내용
 console.error("URL 복사에 실패했습니다.", error);
 });
-},
+    },
     //날짝 클릭하면 입력 폼 나옴
     handleDateClick(arg) {
+      
       this.showEventForm = true;
       this.isNewEvent = true,
         this.newEvent = {
@@ -1046,7 +1055,7 @@ console.error("URL 복사에 실패했습니다.", error);
           endTime: '',
           info: '',
           isLoop: 1,
-          day: null
+          day: 1
         };
     },
 
@@ -1057,7 +1066,10 @@ console.error("URL 복사에 실패했습니다.", error);
       const formData = new FormData();
       if (self.newEvent.end == 0) {
         self.newEvent.end = self.newEvent.start;
-      };
+  };
+  if (self.newEvent.isLoop === 1) {
+    self.newEvent.day = '';
+      }
 
       formData.append('email', sessionStorage.getItem('loginId'));
       formData.append('group_num', self.newEvent.group_num);
@@ -1118,13 +1130,11 @@ console.error("URL 복사에 실패했습니다.", error);
           console.log(">>>>>>>>>>> naver")
           this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
             .then(function (res) {
-              alert(res.data)
             })
             console.log(">>>>>>>>>>> kakao")
                  //카카오에 데이터 전송
           this.$axios.post('http://localhost:8181/api/kakao/form', formData)
             .then(function (res) {
-              alert(res.data)
             })
 
         })
@@ -1747,6 +1757,12 @@ alert("에러코드:" + res.status);
 
 .fc-event {
   cursor: pointer;
+}
+
+.fc-h-event{
+      background-color: #7AC6FF;
+    border: 1px solid #7AC6FF;
+    display: block;
 }
 
 .fc-icon {
