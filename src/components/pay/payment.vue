@@ -80,9 +80,22 @@
                 <div class="bankselect">
                     <select class="form-select" id="bankselect" v-model="bankname" aria-label="Default select example">
                         <option value="">은행선택</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="1">국민은행</option>
+                        <option value="2">우리은행</option>
+                        <option value="3">신한은행</option>
+                        <option value="4">기업은행</option>
+                        <option value="5">하나은행</option>
+                        <option value="6">농협은행</option>
+                        <option value="7">외환은행</option>
+                        <option value="8">카카오뱅크</option>
+                        <option value="9">부산은행</option>
+                        <option value="10">우체국</option>
+                        <option value="11">대구은행</option>
+                        <option value="12">전북은행</option>
+                        <option value="13">제주은행</option>
+                        <option value="14">수협은행</option>
+                        <option value="15">씨티은행</option>
+                        <option value="16">경남은행</option>
                     </select>
                     <input class="inputname" id="accountname" type="text" v-model="name" placeholder="예금주명">
                     <br />
@@ -253,7 +266,7 @@ export default {
                             this.paydto = res.data.paydto;
                             this.paidamount = this.paydto.paidamount;
                         } else {
-                            alert('페이먼트251번째 줄쯤에서 오류난다~~~ ')
+                            
                         }
                     }
                 });

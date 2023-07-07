@@ -63,11 +63,9 @@ export default {
             formData.append('schedulegroup_title', this.title)
             formData.append('schedulegroup_color', this.color)
             let token = sessionStorage.getItem('token')
-            alert(token)
             self.$axios.post('http://localhost:8181/schedulegroup', formData, {headers:{'token':token}})
             .then(function(res){
                 if(res.status == 200){
-                    alert(res.data.dto)
                         location.href = "/calendar"
                 } else {
                     alert('그룹생성실패'+res.status)
@@ -80,7 +78,6 @@ export default {
                 el.onclick = () => {
                     
                     this.color = index+1
-                    alert(this.color)
                     el.classList.add('active')
                    
                 }
