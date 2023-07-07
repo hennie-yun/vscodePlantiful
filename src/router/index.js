@@ -20,7 +20,7 @@ import naverlogin from '../components/groups/naverlogin.vue'
 import naveraccess from '../components/groups/naveraccess.vue'
 import payment from '../components/pay/payment.vue'
 import kakaojoin from '../components/members/kakaojoin.vue'
-import calendartoken from '../components/calendars/calendartoken.vue'
+
 
 const routes = [
   {
@@ -154,12 +154,7 @@ const routes = [
         name : 'concertdetail',
         component : () => import('@/components/concert/concertDetail.vue'),
         props: true,
-      },
-      {
-        path: "/calendartoken",
-        name: "calendartoken",
-        component: calendartoken
-      },
+      }
     ]
   }
 ]

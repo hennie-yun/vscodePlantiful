@@ -88,9 +88,9 @@ export default {
             for(let obj of ret.data.list) {
                 let date = new Date(obj.sendTime)
                 obj.sendTime = (date.getMonth() + 1) + "월 " 
-                    + (date.getDay()+2)+ "일 " 
+                    + date.getDate()+ "일 "
                     + date.getHours() + "시 " 
-                    + (date.getSeconds()-20) + "분" 
+                    + date.getMinutes() + "분" 
                 list.push(obj)
             }
         })
@@ -139,11 +139,11 @@ export default {
                         let obj = JSON.parse(res.body)
                         let date = new Date(obj.sendTime)
                         obj.sendTime = (date.getMonth() + 1) + "월 " 
-                        + (date.getDay()) + "일 " 
-                        + date.getHours() + "시 " 
-                        + date.getSeconds() + "분" 
-                        this.recvList.push(obj)
+                            + date.getDate()+ "일 "
+                            + date.getHours() + "시 " 
+                            + date.getMinutes() + "분" 
                         // this.scrollToBottom()
+                        this.recvList.push(obj)
                     })
                 }, 
                 error => {

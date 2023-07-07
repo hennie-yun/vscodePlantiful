@@ -1,8 +1,9 @@
 <template>
     <v-app>
         <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto;">
-            <!-- <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
-            </div> -->
+            <div class="text-center head-title">
+                구독 파티 채팅방
+            </div>
             <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
                     <div class="wrapper" v-if="roomList.length == 0">
@@ -15,13 +16,13 @@
                                 @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:48px; height: 48px;"/>
                             </div>
                             <div class="info-box text-left">
-                                <p class="last-msg" style="">
+                                <p class="last-msg" style="font-size: 14px;">
                                     {{ item.subscribeNum.email.nickname }} 님의 
                                     {{ item.subscribeNum.site }} 구독 채팅방
                                 </p>
 
-                                <p class="last-msg">{{ item.lastSender.nickname }}</p>
-                                <p class="last-msg" style="font-size: 24px;">{{ item.lastMsg }}</p>
+                                <p class="last-msg" style="font-size:13px;">{{ item.lastSender.nickname }}</p>
+                                <p class="last-msg" style="">{{ item.lastMsg }}</p>
                             </div>
                             <div>
                                 
@@ -59,6 +60,7 @@ export default {
             if(ret.data.list !== null) {
                 for(let obj of ret.data.list) {
                     list.push(obj)
+                    console.log(obj)
                 }
 
                 list = list.sort((a, b) => {
@@ -82,6 +84,14 @@ export default {
         height : 100%;
     }
 
+    .head-title {
+        font-size: 48px; 
+        margin: 0 auto; 
+        color:white; 
+        height: 10%; 
+        background-color: #7AC6FF;
+    }
+
     .wrapper {
         display: flex;
         justify-content: center;
@@ -90,7 +100,7 @@ export default {
     }
 
     .msg-box {
-        background-color: #e0e0e0;
+        background-color: #7AC6FF;
         display : flex;
         margin-left: 24px;
         margin-right: 24px;
@@ -100,13 +110,14 @@ export default {
     }
 
     .img-info-box {
+        align-items: center;
         display: flex;
     }
 
     .last-msg{
-        font-size :14px;
+        font-size :20px;
         margin: 0;
-        color : #737373;
+        color : white;
     }
 
     .img-box {
