@@ -281,17 +281,17 @@
       <p style="font-size: larger; font-weight: 600;">그룹을 삭제하시겠습니까?</p>
       <div class="delete-buttons">
         <button class="delete-button" @click="delParty">네</button>
-      <button class="cancel-button" @click="xbtn">아니오</button>
+        <button class="cancel-button" @click="xbtn">아니오</button>
+      </div>
     </div>
   </div>
-</div>
 
 
 
 
 
 
-<router-view />
+  <router-view />
 </template>
 
 <script>
@@ -304,9 +304,13 @@ import axios from 'axios';
 
 export default {
   mounted() {
-  
+   
   },
+
   computed: {
+
+    
+
     sortedSchedules() {
       return this.uniqueSchedules.sort((a, b) => {
         // startTime을 오름차순으로 정렬합니다.
@@ -324,12 +328,13 @@ export default {
       });
     }
   },
-  
+
   components: {
     FullCalendar
   },
   data() {
     return {
+      state: this.$route.query.state,
       code: this.$route.query.code,
       access_token: '',
       isNewEvent: true,
@@ -402,19 +407,36 @@ export default {
     }
   },
 
-      
 
- 
+
+
   // 페이지 시작- 실행되는 함수
   //로그인 한 사람의 일정 보여주기
-   created() {
-   
+  created() {
+
 
     this.code = this.$route.query.code
+    this.state = this.$route.query.state
     console.log(this.code)
+    console.log(this.state)
+
+    let kakaocode = sessionStorage.getItem('kakaocode')
+    if (kakaocode == this.code) {
+      this.getKakaoToken()
+      sessionStorage.removeItem('kakaocode')
+    }
+
+    let navercode = sessionStorage.getItem('navercode')
+    let naverstate = sessionStorage.getItem('naverstate')
+    if(navercode == this.code && naverstate == this.state){
+      this.executeNaverCode()
+      sessionStorage.removeItem('navercode')
+      sessionStorage.removeItem('naverstate')
+    }
+
+
+
     
-    //this.getKakaoToken()
-  
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
     const self = this;
@@ -690,6 +712,9 @@ export default {
 
 
 
+
+
+
   },
 
 
@@ -697,41 +722,45 @@ export default {
 
   methods: {
 
+    // kakao 스케줄 연동할때 시간 5분 차이로 설정할 것!!!!
+    getKakaoToken() { // id값으로 분류하는것 추가!!
 
-    getKakaoToken(){ // id값으로 분류하는것 추가!!!
+
       let token = sessionStorage.getItem('token')
-      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
-      .then((res)=>{
-        let id = res.data.id
-        console.log(id)
-        if(id==1){
-          console.log("코드 확인:"+this.code)
-          this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
-          .then(function(res){
-            console.log(res.data)
-          })
-      } 
-    })
-    },
-    
-    /*
-    kakaoscheduleadd(access_token){
-      const self = this
-      console.log(self.code)
-      this.$axios.get('http://localhost:8181/api/kakao/add', {headers:{"access_token":access_token}})
-    .then((res)=>{
-      console.log(res.data)
-    })
-    },
-    */
+      this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+        .then((res) => {
+          let id = res.data.id
+          console.log(id)
+          if (id == 1) {
+            if (this.code !== undefined) {
+              console.log("코드 확인:" + this.code)
+              // 새 토큰 요청 및 스케줄 연동
 
-     toggleInviteForm() {
+              this.$axios.get("http://localhost:8181/api/kakao/token", { headers: { "authorization_code": this.code } })
+                .then(function (res) {
+                  console.log(res.data)
+                })
+                .catch((error) => {
+                  console.log("Error:", error)
+                })
+
+
+            }
+          }
+        })
+
+    },
+
+
+
+
+    toggleInviteForm() {
       this.showInviteForm = !this.showInviteForm;
     },
 
 
     //그룹 초대
-   inviteToGroup(schedulegroup_num) {
+    inviteToGroup(schedulegroup_num) {
       const groupnum = schedulegroup_num.schedulegroup_num;
       const email = this.newEvent.email;
 
@@ -883,147 +912,96 @@ export default {
         })
     },
 
-    
-// 카카오 스케줄 일정 연동
-kakao(){
 
-  let token = sessionStorage.getItem('token')
-      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
-      .then((res)=>{
-        let id = res.data.id
-        if(id==1){ // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
-            if(this.code === undefined){ // 받아온 this.code값이 있어!! 
-            const redirect_uri = 'http://localhost:8182/calendartoken'
-            const clientId = 'd54083f94196531e75d7de474142e52e';
-            const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
-            window.location.href = Auth_url;
-            } else {
-              location.href='/kakao'
+    // 카카오 스케줄 일정 연동
+    kakao() {
+
+      let token = sessionStorage.getItem('token')
+      this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+        .then((res) => {
+          let id = res.data.id
+          if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
+            if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
+              const redirect_uri = 'http://localhost:8182/calendar'
+              const clientId = 'd54083f94196531e75d7de474142e52e';
+              const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
+
+
+              window.location.href = Auth_url;
+
+            } else { // 받아온 this.code값이 있을때는
+              console.log(this.code)
+              // 세션에 KakaoToken()함수가 있는지 확인용
+
+              sessionStorage.setItem('kakaocode', this.code)
+
             }
-            } else {
+          } else {
+            location.href = '/login'
+          }
+        })
 
-              location.href = '/login'
-            }        
-                })
-        
-            
+
+
+
+    
+    },
+
+    // 네이버 스케줄 일정 연동
+    naver() {
+
+
+      const clientId = "IiiFJKBOyzL3qvfXasPq"
+      const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
+
+      const state = this.generateRandomState()
+      const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectURI + '&state=' + state;
+
+      
       
 
-
-  // var auth = function(){
-  //   setTimeout(function(){
-  //     const redirect_uri = 'http://localhost:8182/calendar';
-  //     const clientId = 'd54083f94196531e75d7de474142e52e';
-  //     const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
-  //     window.location.href = Auth_url;
-  //     console.log("callback"+this.code)
-  
-  //   }, 0);
-  // };
-  // auth(function(){
-  //   console.log('aaa')
-  //   if(this.code != null){
-  //     this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
-  //     .then(function(res){
-  //       console.log("data"+res.data)
-     
-
-
-  // const redirect_uri = 'http://localhost:8182/calendar';
-  // const clientId = 'd54083f94196531e75d7de474142e52e';
-  // const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
-  // window.location.href = Auth_url;
-  // console.log(this.code)
-  
- // this.getKakaoToken()
-
-
-
-  /*
-  let token = sessionStorage.getItem('token')
-  console.log(token)
-
-  // 토큰 요청
-this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"token":token}})
-.then(function(res){
-  console.log(res.data.access_token) 
-})
-*/
-
-/*
-// 톡캘린더 스케줄 연동
-this.$axios.get("http://localhost:8181/api/kakao/add",)
-.then(function(res){
-  console.log(res.data)
-  // alert(res.data)
-})
-*/
-
-  /*
-  let formData = new FormData();
-formData.append('email', sessionStorage.getItem('loginId'));
-formData.append('group_num', self.newEvent.group_num);
-formData.append('title', self.newEvent.title);
-formData.append('start', self.newEvent.start);
-formData.append('end', dayjs(self.end).format('YYYY-MM-DD'));
-formData.append('startTime', self.startTime);
-formData.append('endTime', self.endTime);
-formData.append('info', self.info);
-formData.append('alert', self.alert);
-formData.append('isLoop', self.isLoop);
-formData.append('day', self.day);
-*/
-
-
-  //location.href = "/login"
- // res.data null이면 카카오 로그인하러 가기로 이동 
-
-},
-
-// 네이버 스케줄 일정 연동
-naver(){
-
-  
- // window.location.href = "http://localhost:8181/api/naver/oauth"
-   const clientId = "IiiFJKBOyzL3qvfXasPq"
-   const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
-  
-   const state = this.generateRandomState()
-   const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
-
-  window.location.href = naverAuthURL
-
-  let formData = new FormData()
-  formData.append('state', state)
-  formData.append('code', this.code)
-  this.$axios.get("http://localhost:8181/api/naver/callback", formData)
-  .then((res)=> {
-    console.log(res.data)
-  })
-
-  /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
-  .then(function(res){
-    console.log(res.data)
-  })
- */
-  // this.$axios.get(naverAuthURL)
-  // .then(function(res){
-  //   console.log(res.data)
-  // })
-
-  // this.$axios.get("http://localhost:8181/api/naver/oauth")
-  // .then(function(res){
-  //   console.log(res.data)
+      
+      
+      window.location.href = naverAuthURL
     
-  //   let url = encodeURIComponent(res.data)
-  //   console.log(url)
-  //  
-  // })
 
-},
 
-// state 생성
-generateRandomState() {
+      /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
+      .then(function(res){
+        console.log(res.data)
+      })
+     */
+      // this.$axios.get(naverAuthURL)
+      // .then(function(res){
+      //   console.log(res.data)
+      // })
+
+      // this.$axios.get("http://localhost:8181/api/naver/oauth")
+      // .then(function(res){
+      //   console.log(res.data)
+
+      //   let url = encodeURIComponent(res.data)
+      //   console.log(url)
+      //  
+      // })
+
+    },
+    
+    executeNaverCode(code, state) {
+      let formData = new FormData()
+      formData.append('state', state)
+      formData.append('code', code)
+      this.$axios.get("http://localhost:8181/api/naver/callback", formData)
+        .then((res) => {
+          console.log(res.data)
+        }).catch((error) => {
+          console.log(error)
+        })
+
+    },
+
+    // state 생성
+    generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       let state = "";
 
@@ -1036,156 +1014,156 @@ generateRandomState() {
     },
 
 
-//카카오톡 메세지
-shareKakao() {
-const self = this;
-Kakao.Link.sendDefault({
-objectType: 'feed',
-content: {
-title: '일정:   ' + self.kakaoShareTitle,
-description: '날짜:  ' + self.kakaoShareDescription + '   시간:  ' + self.kakaoShareTime,
-imageUrl: 'https://images.squarespace-cdn.com/content/v1/5ca4dc7716b6402eeb189bc0/48bb2da5-f85b-4b1a-a378-66a844509e46/Plantiful-Secondary2-Black.png?format=150w',
-link: {
-webUrl: 'https://localhost:8081'
-}
-},
-// social: {
-//   likeCount: 257,
-//   commentCount: 257,
-//   sharedCount: 257,
-// },
-// buttons: [{
-//   title: 'KOSTA로 이동',
-//   link: {
-//     mobileWebUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993',
-//     webUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993'
-//   }
-// }]
-installTalk: true,
-});
-window.location.reload();
+    //카카오톡 메세지
+    shareKakao() {
+      const self = this;
+      Kakao.Link.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: '일정:   ' + self.kakaoShareTitle,
+          description: '날짜:  ' + self.kakaoShareDescription + '   시간:  ' + self.kakaoShareTime,
+          imageUrl: 'https://images.squarespace-cdn.com/content/v1/5ca4dc7716b6402eeb189bc0/48bb2da5-f85b-4b1a-a378-66a844509e46/Plantiful-Secondary2-Black.png?format=150w',
+          link: {
+            webUrl: 'https://localhost:8081'
+          }
+        },
+    // social: {
+    //   likeCount: 257,
+    //   commentCount: 257,
+    //   sharedCount: 257,
+    // },
+    // buttons: [{
+    //   title: 'KOSTA로 이동',
+    //   link: {
+    //     mobileWebUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993',
+    //     webUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993'
+    //   }
+    // }]
+    installTalk: true,
+  });
+  window.location.reload();
 },
 copyUrl() {
-const url = window.location.href;
-navigator.clipboard.writeText(url)
-.then(() => {
-// 복사 성공 시 처리할 내용
-          this.shareEvent = false;
-          this.snsEvent = true;
-alert("URL이 복사되었습니다.");
-})
-.catch((error) => {
-// 복사 실패 시 처리할 내용
-console.error("URL 복사에 실패했습니다.", error);
-});
+  const url = window.location.href;
+  navigator.clipboard.writeText(url)
+    .then(() => {
+      // 복사 성공 시 처리할 내용
+      this.shareEvent = false;
+      this.snsEvent = true;
+      alert("URL이 복사되었습니다.");
+    })
+    .catch((error) => {
+      // 복사 실패 시 처리할 내용
+      console.error("URL 복사에 실패했습니다.", error);
+    });
 },
-    //날짝 클릭하면 입력 폼 나옴
-    handleDateClick(arg) {
-      this.showEventForm = true;
-      this.isNewEvent = true,
-        this.newEvent = {
-          schedule_num: 0,
-          title: '',
-          start: dayjs(arg.date).format('YYYY-MM-DD'),
-          end: dayjs(arg.date).format('YYYY-MM-DD'),
-          startTime: '',
-          endTime: '',
-          info: '',
-          isLoop: 1,
-          day: null
-        };
-    },
+//날짝 클릭하면 입력 폼 나옴
+handleDateClick(arg) {
+  this.showEventForm = true;
+  this.isNewEvent = true,
+    this.newEvent = {
+      schedule_num: 0,
+      title: '',
+      start: dayjs(arg.date).format('YYYY-MM-DD'),
+      end: dayjs(arg.date).format('YYYY-MM-DD'),
+      startTime: '',
+      endTime: '',
+      info: '',
+      isLoop: 1,
+      day: null
+    };
+},
 
 
-    //일정 추가
-    addEvent() {
-      const self = this;
-      const formData = new FormData();
-      if (self.newEvent.end == 0) {
-        self.newEvent.end = self.newEvent.start;
+//일정 추가
+addEvent() {
+  const self = this;
+  const formData = new FormData();
+  if (self.newEvent.end == 0) {
+    self.newEvent.end = self.newEvent.start;
+  };
+
+  formData.append('email', sessionStorage.getItem('loginId'));
+  formData.append('group_num', self.newEvent.group_num);
+  formData.append('title', self.newEvent.title);
+  formData.append('start', self.newEvent.start);
+  formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+  formData.append('startTime', self.newEvent.startTime);
+  formData.append('endTime', self.newEvent.endTime);
+  formData.append('info', self.newEvent.info);
+  formData.append('alert', self.newEvent.alert);
+  formData.append('isLoop', self.newEvent.isLoop);
+  formData.append('day', self.newEvent.day);
+
+  if (self.newEvent.group_num == null) {
+    alert("그룹 선택하세요")
+    return;
+  }
+  // 데이터 전송
+  self.$axios.post("http://localhost:8181/schedules", formData)
+    .then(response => {
+
+      // 저장된 이벤트 변수에 저장
+      const savedEvent = response.data.dto;
+      self.kakaoShareTitle = savedEvent.title;
+      self.kakaoShareDescription = savedEvent.start;
+      self.kakaoShareTime = savedEvent.startTime;
+      // 캘린더에 저장된 이벤트 추가
+      self.calendarOptions.events.push({
+        title: savedEvent.title,
+        start: savedEvent.start,
+        end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+        daysOfWeek: savedEvent.day,
+        display: 'block', // 시간 표시 설정
+        // startEditable: true, // 시작 시간 편집 가능 설정
+        // durationEditable: true, // 종료 시간 편집 가능 설정
+      });
+
+
+      // 입력된 값들 초기화
+      self.newEvent = {
+        title: '',
+        start: '',
+        end: '',
+        startTime: '',
+        endTime: '',
+        // alert: '',
+        info: '',
+        isLoop: 1,
+        day: ''
       };
+      self.$refs.fullCalendar.getApi().refetchEvents();
 
-      formData.append('email', sessionStorage.getItem('loginId'));
-      formData.append('group_num', self.newEvent.group_num);
-      formData.append('title', self.newEvent.title);
-      formData.append('start', self.newEvent.start);
-      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
-      formData.append('startTime', self.newEvent.startTime);
-      formData.append('endTime', self.newEvent.endTime);
-      formData.append('info', self.newEvent.info);
-      formData.append('alert', self.newEvent.alert);
-      formData.append('isLoop', self.newEvent.isLoop);
-      formData.append('day', self.newEvent.day);
+      // self.$router.go(0);
+      self.showEventForm = false;
+      self.shareEvent = true;
 
-      if (self.newEvent.group_num == null) {
-        alert("그룹 선택하세요")
-        return;
-      }
-      // 데이터 전송
-      self.$axios.post("http://localhost:8181/schedules", formData)
-        .then(response => {
-
-          // 저장된 이벤트 변수에 저장
-          const savedEvent = response.data.dto;
-          self.kakaoShareTitle = savedEvent.title;
-          self.kakaoShareDescription = savedEvent.start;
-          self.kakaoShareTime = savedEvent.startTime;
-          // 캘린더에 저장된 이벤트 추가
-          self.calendarOptions.events.push({
-            title: savedEvent.title,
-            start: savedEvent.start,
-            end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
-            daysOfWeek: savedEvent.day,
-            display: 'block', // 시간 표시 설정
-            // startEditable: true, // 시작 시간 편집 가능 설정
-            // durationEditable: true, // 종료 시간 편집 가능 설정
-          });
-
-
-          // 입력된 값들 초기화
-          self.newEvent = {
-            title: '',
-            start: '',
-            end: '',
-            startTime: '',
-            endTime: '',
-            // alert: '',
-            info: '',
-            isLoop: 1,
-            day: ''
-          };
-          self.$refs.fullCalendar.getApi().refetchEvents();
-
-          // self.$router.go(0);
-          self.showEventForm = false;
-          self.shareEvent = true;
-
-          // 네이버에 데이터 전송
-          console.log(">>>>>>>>>>> naver")
-          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
-            .then(function (res) {
-              alert(res.data)
-            })
-            console.log(">>>>>>>>>>> kakao")
-                 //카카오에 데이터 전송
-          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
-            .then(function (res) {
-              alert(res.data)
-            })
-
+      // 네이버에 데이터 전송
+      console.log(">>>>>>>>>>> naver")
+      this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+        .then(function (res) {
+          alert(res.data)
+        })
+      console.log(">>>>>>>>>>> kakao")
+      //카카오에 데이터 전송
+      this.$axios.post('http://localhost:8181/api/kakao/form', formData)
+        .then(function (res) {
+          alert(res.data)
         })
 
-        .catch(error => {
-          console.error(error);
-        });
+      })
 
-    },
+    .catch(error => {
+      console.error(error);
+    });
+
+},
 
 //폼 취소
 cancel() {
-this.showEventForm = false;
-this.shareEvent = false;
-this.snsEvent = true;
+  this.showEventForm = false;
+  this.shareEvent = false;
+  this.snsEvent = true;
 
 
 },
@@ -1194,168 +1172,169 @@ cancel2(){
 
   this.snsEvent = false;
   this.showEventForm = false;
-      window.location.reload();
+  window.location.reload();
 },
 
-    xbtn() {
-      this.showEventForm = false;
-      this.shareEvent = false;
-      this.showInviteForm = false;
-      this.showDeleteForm = false;
-      this.showOutForm = false;
-    },
+xbtn() {
+  this.showEventForm = false;
+  this.shareEvent = false;
+  this.showInviteForm = false;
+  this.showDeleteForm = false;
+  this.showOutForm = false;
+},
 
-    //일정 클릭 상세보기
-    handleEventClick(arg) {
-      this.dayMaxEvents = false,
-        this.showEventForm = true;
-      this.isNewEvent = false;
-      const event = arg.event;
-      const schedule_num = event.extendedProps.schedule_num;
-      this.schedule_num = schedule_num;
-      const self = this;
-      self.$axios.get("http://localhost:8181/schedules/schedule_num/" + schedule_num)
-        .then(response => {
-          const scheduleData = response.data.dto;
-          console.log(scheduleData);
-          // 조회된 데이터를 폼에 보여주기
-          self.newEvent = {
-            schedule_num: schedule_num,
-            title: scheduleData.title,
-            start: scheduleData.start,
-            end: scheduleData.end,
-            startTime: scheduleData.startTime,
-            endTime: scheduleData.endTime,
-            info: scheduleData.info || '',
-            isLoop: scheduleData.isLoop,
-            day: scheduleData.day,
-            group_num: scheduleData.group_num
-          };
-
-
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-
-    //수정
-    updateEvent() {
-      const self = this;
-      const formData = new FormData();
-      if (self.newEvent.end == 0) {
-        self.newEvent.end = self.newEvent.start;
+//일정 클릭 상세보기
+handleEventClick(arg) {
+  this.dayMaxEvents = false,
+    this.showEventForm = true;
+  this.isNewEvent = false;
+  const event = arg.event;
+  const schedule_num = event.extendedProps.schedule_num;
+  this.schedule_num = schedule_num;
+  const self = this;
+  self.$axios.get("http://localhost:8181/schedules/schedule_num/" + schedule_num)
+    .then(response => {
+      const scheduleData = response.data.dto;
+      console.log(scheduleData);
+      // 조회된 데이터를 폼에 보여주기
+      self.newEvent = {
+        schedule_num: schedule_num,
+        title: scheduleData.title,
+        start: scheduleData.start,
+        end: scheduleData.end,
+        startTime: scheduleData.startTime,
+        endTime: scheduleData.endTime,
+        info: scheduleData.info || '',
+        isLoop: scheduleData.isLoop,
+        day: scheduleData.day,
+        group_num: scheduleData.group_num
       };
-      formData.append('schedule_num', self.schedule_num);
-      formData.append('group_num', self.group_num);
-      formData.append('title', self.newEvent.title);
-      formData.append('start', self.newEvent.start);
-      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
-      formData.append('startTime', self.newEvent.startTime);
-      formData.append('endTime', self.newEvent.endTime);
-      formData.append('info', self.newEvent.info);
-      formData.append('alert', self.newEvent.alert);
-      if (self.newEvent.isLoop === '2') {
-        // 반복하는 일정인 경우
-        formData.append('isLoop', '2');
-        formData.append('day', self.newEvent.day); // 요일 정보 추가
-      } else {
-        // 반복하지 않는 일정인 경우
-        formData.append('isLoop', '1');
-        formData.append('day', null); // 요일 정보 null로 설정
+
+
+    })
+    .catch(error => {
+      console.error(error);
+    });
+},
+
+//수정
+updateEvent() {
+  const self = this;
+  const formData = new FormData();
+  if (self.newEvent.end == 0) {
+    self.newEvent.end = self.newEvent.start;
+  };
+  formData.append('schedule_num', self.schedule_num);
+  formData.append('group_num', self.group_num);
+  formData.append('title', self.newEvent.title);
+  formData.append('start', self.newEvent.start);
+  formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+  formData.append('startTime', self.newEvent.startTime);
+  formData.append('endTime', self.newEvent.endTime);
+  formData.append('info', self.newEvent.info);
+  formData.append('alert', self.newEvent.alert);
+  if (self.newEvent.isLoop === '2') {
+    // 반복하는 일정인 경우
+    formData.append('isLoop', '2');
+    formData.append('day', self.newEvent.day); // 요일 정보 추가
+  } else {
+    // 반복하지 않는 일정인 경우
+    formData.append('isLoop', '1');
+    formData.append('day', null); // 요일 정보 null로 설정
+  }
+
+
+
+  // 데이터 전송
+  self.$axios.put("http://localhost:8181/schedules", formData)
+    .then(function (res) {
+      if (res.status == 200) {
+        let dto = res.data.dto;
+        if (dto != null) {
+          self.group_num = dto.group_num;
+          self.title = dto.title;
+          self.start = dto.start;
+          self.end = dto.end;
+          self.startTime = dto.startTime;
+          self.endTime = dto.endTime;
+          self.info = dto.info;
+          self.isLoop = dto.isLoop;
+          self.day = dto.day;
+        }
+
+        self.showEventForm = false; // 폼 닫기
+        self.event = null; // 선택한 이벤트 초기화
+        location.reload();
+
       }
+    });
+},
 
+//일정 옮겨서 수정
+handleEventDrop(info) {
+  const event = info.event;
+  const schedule_num = event._def.extendedProps.schedule_num;
+  const newStart = dayjs(event.start).format('YYYY-MM-DD');
+  const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
 
+  console.log(event.start)
+  let self = this;
+  // 변경된 일정 정보를 서버로 전송
+  self.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
+    .then(function (response) {
+      const newschedule = response.data.dto;
+      // 일정 업데이트 성공
+      // location.reload();
+      console.log(newschedule + '일정 업데이트');
+    })
+    .catch(function (error) {
+      // 일정 업데이트 실패
+      console.error(error);
+    });
+},
 
-      // 데이터 전송
-      self.$axios.put("http://localhost:8181/schedules", formData)
-        .then(function (res) {
-          if (res.status == 200) {
-            let dto = res.data.dto;
-            if (dto != null) {
-              self.group_num = dto.group_num;
-              self.title = dto.title;
-              self.start = dto.start;
-              self.end = dto.end;
-              self.startTime = dto.startTime;
-              self.endTime = dto.endTime;
-              self.info = dto.info;
-              self.isLoop = dto.isLoop;
-              self.day = dto.day;
-            }
-
-            self.showEventForm = false; // 폼 닫기
-            self.event = null; // 선택한 이벤트 초기화
-            location.reload();
-
-          }
-        });
-    },
-
-    //일정 옮겨서 수정
-    handleEventDrop(info) {
-      const event = info.event;
-      const schedule_num = event._def.extendedProps.schedule_num;
-      const newStart = dayjs(event.start).format('YYYY-MM-DD');
-      const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
-
-      console.log(event.start)
-      let self = this;
-      // 변경된 일정 정보를 서버로 전송
-      self.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
-        .then(function (response) {
-          const newschedule = response.data.dto;
-          // 일정 업데이트 성공
-          // location.reload();
-          console.log(newschedule + '일정 업데이트');
-        })
-        .catch(function (error) {
-          // 일정 업데이트 실패
-          console.error(error);
-        });
-    },
-
-    //일정 길이 늘려서 수정
-    handleEventResize(info) {
-      const event = info.event;
-      const schedule_num = event._def.extendedProps.schedule_num;
-      const newStart = dayjs(event.start).format('YYYY-MM-DD');
-      const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
-      console.log(info.event._def.extendedProps.schedule_num)
-      // 변경된 일정 정보를 서버로 전송
-      this.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
-        .then(function (response) {
-          // 일정 업데이트 성공
-          const resize = response.data.dto;
-          console.log(resize + '일정 업데이트');
-          // location.reload();
-        })
-        .catch(function (error) {
-          // 일정 업데이트 실패
-          console.error('일정 업데이트 실패', error);
-        });
-    },
+//일정 길이 늘려서 수정
+handleEventResize(info) {
+  const event = info.event;
+  const schedule_num = event._def.extendedProps.schedule_num;
+  const newStart = dayjs(event.start).format('YYYY-MM-DD');
+  const newEnd = dayjs(event.end).add(-1, 'day').format('YYYY-MM-DD');
+  console.log(info.event._def.extendedProps.schedule_num)
+  // 변경된 일정 정보를 서버로 전송
+  this.$axios.patch("http://localhost:8181/schedules/resize/" + schedule_num + '/' + newStart + '/' + newEnd)
+    .then(function (response) {
+      // 일정 업데이트 성공
+      const resize = response.data.dto;
+      console.log(resize + '일정 업데이트');
+      // location.reload();
+    })
+    .catch(function (error) {
+      // 일정 업데이트 실패
+      console.error('일정 업데이트 실패', error);
+    });
+},
 
 //삭제
 deleteEvent() {
-const self = this;
-// 선택한 이벤트 가져오기
-const schedule_num = self.schedule_num; // 이벤트의 schedule_num 값 가져오기
-self.$axios.delete("http://localhost:8181/schedules/" + schedule_num)
-.then(function (res) {
-if (res.status === 200) {
-self.showEventForm = false; // 폼 닫기
-self.event = null; // 선택한 이벤트 초기화
-window.location.reload();
-} else {
-alert("에러코드:" + res.status);
+  const self = this;
+  // 선택한 이벤트 가져오기
+  const schedule_num = self.schedule_num; // 이벤트의 schedule_num 값 가져오기
+  self.$axios.delete("http://localhost:8181/schedules/" + schedule_num)
+    .then(function (res) {
+      if (res.status === 200) {
+        self.showEventForm = false; // 폼 닫기
+        self.event = null; // 선택한 이벤트 초기화
+        window.location.reload();
+      } else {
+        alert("에러코드:" + res.status);
+      }
+    })
 }
-}
-)
 }
 }
 
-}
+
+
 
 </script>
 
