@@ -2,8 +2,10 @@
   <div class="form" :class="activeForm">
   
     <br />
+    <div>
+  </div>
     <div class="form-header">
-      <div class="show-signup">카카오톡 간편 회원가입</div>
+      <img :src="require('@/assets/image/startwithkakao.png')" style="margin-top:20%; width: 97%; height:25%; "/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
@@ -28,7 +30,10 @@
     </div>
   </div>
 </template>
+
+
 <script>
+
 export default {
   name: 'kakaojoin',
   data() {
@@ -119,12 +124,17 @@ export default {
       const self = this;
       const form = new FormData();
       //전화번호 11자리로 고정 
+      //전화번호 11자리로 고정 
       if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
         alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
+        return;
+      } else if (!self.phone.startsWith('010')) {
+        alert('전화번호 형식이 잘 못 되었습니다');
         return;
       } else {
         form.append('phone', self.phone.replace(/[^0-9]/g, ''));
       }
+
       form.append('email', self.form.email);
       form.append('nickname', self.form.nickname);
       form.append('pwd', self.form.pwd)
@@ -167,7 +177,7 @@ export default {
   color : darkgrey;
 }
 .form .form-header {
-  height: 30px;
+
   display: flex;
   align-items: center;
   text-align: center;
@@ -176,13 +186,13 @@ export default {
   justify-content: center;
 }
 
-.form .form-header>div {
+/* .form .form-header>div {
   color: #7AC6FF;
   font-size: 18px;
   text-align: center;
   font-weight: 600;
   cursor: pointer;
-}
+} */
 
 .form.signup .form-header div.show-signup {
   color: #7AC6FF;
