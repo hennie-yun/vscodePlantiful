@@ -1,18 +1,18 @@
 <template>
     <v-app>
-        <div class="elevation-12 h-100 text-center" style="width: 65%; margin: 0 auto;">
-            <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
-            </div>
+        <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto;">
+            <!-- <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
+            </div> -->
             <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
                     <div class="wrapper" v-if="roomList.length == 0">
                         <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
                     </div>
-                    <div class="msg-box rounded-b-lg" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
-                        <div class="img-info-box elevation-1" style="width:100%;" @click="goRoom(item.num)">
-                            <div class="img-box">
+                    <div class="msg-box rounded-3" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
+                        <div class="img-info-box" style="width:100%;" @click="goRoom(item.num)">
+                            <div class="img-box rounded-circle h-50">
                                 <img :src="'http://localhost:8181/chat/' + item.lastSender.email"
-                                @error="replaceProfile" style="width:84px; height: 84px;"/>
+                                @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:48px; height: 48px;"/>
                             </div>
                             <div class="info-box text-left">
                                 <p class="last-msg" style="">
@@ -60,6 +60,12 @@ export default {
                 for(let obj of ret.data.list) {
                     list.push(obj)
                 }
+
+                list = list.sort((a, b) => {
+                    if(b.lastSendTime > a.lastSendTime) return 1
+                    if(b.lastSendTime < a.lastSendTime) return -1
+                    return 0
+                })
             } else {
                 list = null
             }
@@ -73,6 +79,7 @@ export default {
     #messages {
         overflow-x: hidden;
         overflow-y: auto;
+        height : 100%;
     }
 
     .wrapper {
@@ -83,6 +90,7 @@ export default {
     }
 
     .msg-box {
+        background-color: #e0e0e0;
         display : flex;
         margin-left: 24px;
         margin-right: 24px;
@@ -102,6 +110,10 @@ export default {
     }
 
     .img-box {
+        display: flexbox;
+        background-color:white ;
+        justify-content: center;
+        align-items: center;
         position: relative;
         margin-right : 12px;
     }

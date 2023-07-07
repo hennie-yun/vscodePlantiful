@@ -1,8 +1,10 @@
 <template>
     <div id="app">
         <div class="inputBox" style="">
-            <input class="my-6 w-75" type="text" placeholder="검색어 입력">
-            <v-btn class="searchBtn" style="background-color: #7AC6FF;">검색</v-btn>
+            <input class="my-6 w-75" v-model="keyword" type="text" placeholder="검색어 입력" 
+            @keyup.enter="search">
+            <v-btn class="searchBtn" style="background-color: #7AC6FF;" @click="search">검색</v-btn>
+            <v-btn class="searchBtn" style="background-color: #7AC6FF;" @click="rollback">되돌리기</v-btn>
         </div>
         <div class="text-center">
             <!-- <b-pagination v-model="currentPage" :total-rows="count" align="center"
@@ -18,6 +20,9 @@
             ></v-progress-circular>
         </div>
         <div>
+            <div class="empty-div" v-if="items.length === 0 && isShow === false"> 
+                <div class="inner-empty-div">검색 결과가 없습니다</div> 
+            </div>
             <ul id="itemList">
                 <li class="uls" v-for="(item, index) of items" :key="index">
                     <div class="imgDiv">
@@ -43,7 +48,7 @@
             <div style="text-align: center;">
                 <b-pagination v-model="currentPage" 
                     :total-rows="count" align="center"
-                    :per-page="perPage" pills size="lg"
+                    :per-page="perPage" size="lg" page-class="custom-page"
                 ></b-pagination>
             </div>
             <div>
@@ -68,12 +73,15 @@ export default {
 
     data() {
         return {
+            originalItems : [],
             items : [],
+            tempItems : [],
             perPage : 30, 
             currentIndex : -1,
             currentPage : 1,
             count : 0,
-            isShow : true
+            isShow : true,
+            keyword : ''
         }
     }, 
 
@@ -89,6 +97,7 @@ export default {
                 this.items = []
                 for(let obj of result.data.list) {
                     this.items.push(obj)
+                    this.originalItems.push(obj)
                 }
 
                 this.count = this.items.length
@@ -105,6 +114,22 @@ export default {
         pageChange : function(value) {
             console.log(value)
             this.currentPage = value
+        }, 
+
+        search() {
+            for(let item of this.originalItems) {
+                if(item.name.includes(this.keyword)) {
+                    this.tempItems.push(item)
+                }
+            }
+
+            this.items = this.tempItems
+            this.count = this.tempItems.length
+            this.tempItems = []
+        },
+
+        rollback() {
+            this.items = this.originalItems
         }
     }, 
 
@@ -123,7 +148,6 @@ export default {
 }
 </script>
 <style scoped>
-
     html {
         height: 100%;
     }
@@ -154,7 +178,6 @@ export default {
         text-align: center;
         /* margin : 0 auto; */
         width: 100%;
-        background: #e0e0e0;
         line-height: 50px;
         border-radius : 5px;
     }
@@ -167,13 +190,13 @@ export default {
     }
 
     .searchBtn {
-        background: linear-gradient(to right, #40aef7, #5d8bff);
+        /* background: linear-gradient(to right, #40aef7, #5d8bff); */
         color: white;
         font-weight: 700;
         
         width: 5rem;
         height: 2.5rem;
-        border-radius: 0 5px 5px 0;
+        border-radius: 5px 5px 5px 5px;
     }
 
     #itemList {
@@ -219,6 +242,10 @@ export default {
         padding-left: 10px;
     }
 
+    .imgDiv img {
+        max-width: 100%;
+    }
+
     .zi .zl{
         margin-top: 12px;
         padding-left: 0px;
@@ -233,7 +260,6 @@ export default {
     }
 
     .source {
-        background-color: #e0e0e0;
         padding:36px;
         font-family: Arial, 
         Helvetica, sans-serif; 
@@ -241,4 +267,17 @@ export default {
         text-align: center;
     }
 
+    .empty-div {
+        height:300px;
+        text-align: center;
+        font-family: TheJamsil5Bold;
+        font-weight: 900;
+        justify-content: center;
+        align-items : center;
+
+    }
+
+    .inner-empty-div{
+        font-size: 60px; 
+    }
 </style>

@@ -1,17 +1,24 @@
 <template>
-    <div>
-        <h1>TodoList</h1>
+    <div style="margin-top : 6% ">
+        <span class="todoheader">TodoList</span>
     </div>
 </template>
+  
 <script>
 export default {
-    
+
 }
 </script>
-<style>
-    h1 {
-        color: #2F3B52;
-        font-weight: 900;
-        margin : 2.5rem 0 1.5rem
-    }
+  
+<style scoped>
+.todoheader {
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 10%;
+    font-family: 'Pretendard-Regular';
+    font-weight: 600;
+    font-size: 30px;
+    background: linear-gradient(to top, #c0e8f8 40%, transparent 40%);
+
+}
 </style>

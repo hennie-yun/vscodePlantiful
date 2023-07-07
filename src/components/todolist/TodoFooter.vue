@@ -1,37 +1,61 @@
 <template>
-    <div class="clearAllContainer">
-        <p class="clearAllBtn" v-on:click="clearTodo">Clear All
-        </p>
+    <div class="button-wrapper">
+        <button class="clearAllBtn" v-on:click="clearTodo">Clear All
+        </button>
     </div>
 </template>
 <script>
 export default {
-    methods : {
-        clearTodo : function() {
+    methods: {
+        clearTodo: function () {
             console.log("FOOTER HERE")
             this.$emit('clearAll')
         }
     }
 }
 </script>
-<style>
-    
+<style scoped>
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5%;
+    padding-top: 5%;
+}
 
-    .clearAllContainer {
-        width : 8.5rem;
-        height: 50px;
-        line-height: 50px;
-        background-color: #DB4467;
-        border: 1px solid #2c3e50;
-        border-radius: 5px;
-        margin: 0 auto;
-    }
+.button-wrapper button {
+    border: none;
+    background-color: transparent;
+    padding: 5px 10px;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    width: 100px;
+}
 
-    .clearAllBtn {
-        color: #2c3e50;
-        display: block;
-        margin: 0 auto;
-    }
+.button-wrapper button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: transparent;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
 
-    
+
+.button-wrapper button:hover::before {
+    visibility: visible;
+    background-color: #7AC6FF;
+    transform: scaleX(1);
+}
+
+
+.button-wrapper button:hover {
+    color: #7AC6FF;
+}
 </style>

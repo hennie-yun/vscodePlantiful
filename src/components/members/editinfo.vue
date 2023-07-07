@@ -73,7 +73,9 @@
 
 <br/>
       <div class="button-wrapper">
-        <button @click="edit">수정</button></div>
+        <button @click="edit">수정</button>
+        <router-link to ="/mypage" class="custom-link">돌아가기</router-link>
+      </div>
  </div>
 
      
@@ -142,14 +144,15 @@ export default {
           .then(function (res) {
             if (res.status == 200) {
               alert(res.data.message);
+              self.isVisible = false;
+              window.location.reload(true);
+            
             }
-            self.isVisible = false;
           })
           .catch(function (error) {
             console.error(error);
           });
       } else {
-        // Handle the case where no file is selected
         console.error('No file selected.');
       }
     },
@@ -261,6 +264,7 @@ export default {
 .fontchange{
   font-family: 'Pretendard-Regular';
    font-weight: 400;
+   font-size: 16px;
 }
 .out {
   float: right;
@@ -277,21 +281,22 @@ export default {
 
 .button-wrapper {
   display: flex;
-  gap: 10px;
+  gap: 15px;
   margin-top: 10px;
 }
-
-.button-wrapper button {
+.button-wrapper button,
+.button-wrapper .custom-link {
+  /* 공통 스타일 속성들 */
   border: none;
   background-color: transparent;
   padding: 5px 10px;
   color: #000;
-  /* font-weight: bold; */
   text-decoration: none;
   position: relative;
   overflow: hidden;
 }
 
+.button-wrapper .custom-link::before,
 .button-wrapper button::before {
   content: '';
   position: absolute;
@@ -305,15 +310,18 @@ export default {
   transition: all 0.3s ease-in-out;
 }
 
-.button-wrapper button:hover::before {
+.button-wrapper button:hover::before,
+.button-wrapper .custom-link:hover::before {
   visibility: visible;
   background-color: #7AC6FF;
   transform: scaleX(1);
 }
 
+.button-wrapper .custom-link:hover,
 .button-wrapper button:hover {
   color: #7AC6FF;
 }
+
 
 .info {
   position: relative;
@@ -411,7 +419,7 @@ input[type="file"] {
 
 
 .fullcontainer{
-  padding-left :15%;
+  padding-left :8%;
 }
 
 

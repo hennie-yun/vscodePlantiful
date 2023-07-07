@@ -356,14 +356,15 @@ export default {
 
 #checkList {
   font-family: 'Pretendard-Regular';
-  font-weight: 600;
-  border: 1px solid #B3ADAD;
-  width: 470px;
-  height: 450px;
-  left: 68%;
-  /* top : 10%; */
-  overflow-x: hidden;
-  overflow-y: auto;
+  font-weight: 400;
+  border: 4px solid #7AC6FF;
+  border-radius: 45px;
+  max-width: 100%;
+  width: 327px;
+  height: auto;
+  left: 75.3%;
+  margin-top: -5%;
+  overflow: hidden;
   text-align: center;
   background-color: white;
   white-space: pre;
@@ -372,9 +373,10 @@ export default {
   z-index: 999;
 }
 
+
 input {
   border-style: groove;
-  width: 200px;
+  width: 100px;
 }
 
 button {
