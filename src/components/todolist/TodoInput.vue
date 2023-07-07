@@ -1,6 +1,6 @@
 <template>
     <div class="inputBox">
-        <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo" title="Let's Todo!" placeholder="Let's Todo!">
+        <input type="text" maxlength="15" v-model="newTodoItem" v-on:keyup.enter="addTodo" title="Let's Todo!" placeholder="Let's Todo!">
         <!-- <button v-on:click="addTodo">add</button> -->
         <span class="addContainer" @click="addTodo">
             <i class="far fa-plus-square addBtn" aria-hidden="true"></i>
