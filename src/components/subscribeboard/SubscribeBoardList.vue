@@ -376,6 +376,7 @@ export default {
                             }
                         } else {
                             order.flag = 0;
+                            alert('빠져나옴 !! 다 해당안돼'+ order.subscribe_num)
                         }
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
