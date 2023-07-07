@@ -92,10 +92,9 @@
         </div>
         <div class="present-box">
             <b-tabs card fill="true" 
-                active-nav-item-class="bg-blue-lighten-3"
-                style="font-family: 'TheJamsil5Bold';"
-            >
-                <b-tab title="소개" active>
+                active-nav-item-class="bg-blue-lighten-2 font-weight-bold text-white "
+                style="font-family: 'TheJamsil5Bold';">
+                <b-tab title="소개">
                     <div class="present-box">
                         <img 
                             v-for="(styurl, index) in concert.styurls" 
@@ -268,8 +267,8 @@ import { formatDate } from '@fullcalendar/core'
         width: 90%;
     }
 
-    .active-tab {
-        background-color:#7AC6FF
+    .atab {
+       background-color: #7AC6FF !important;
     }
 
     .present-box {
