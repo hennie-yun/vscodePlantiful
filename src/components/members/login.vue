@@ -16,6 +16,7 @@
 
       <div class="form-element">
         <input v-model="pwd" type="password" placeholder="비밀번호">
+        <span v-if="pwdcheck == false">'비밀번호는 대문자 1개, 특수문자 1개, 8자리 이상으로 구성되어야 합니다.'</span>
       </div>
 
       <div v-if="activeForm == 'signup'" class="form-element">
@@ -40,7 +41,7 @@
 
       <div class="form-element">
         <button id="submit-btn" v-show="AllFieldsFilled" @click="handleButtonClick">{{ submitText }}</button>
-        <p v-show="!AllFieldsFilled" style="margin-top :10px;">이메일 인증 후 가입이 가능합니다</p>
+        <p v-show="!AllFieldsFilled" style="margin-top :10px; text-align: center;">이메일 인증 후 가입이 가능합니다</p>
       </div>
       <br />
       <div>
@@ -69,7 +70,8 @@ export default {
       AllFieldsFilled: false,
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
-      submitText: "가입"
+      submitText: "가입",
+      pwdcheck :0,
     }
   },
 
@@ -177,7 +179,7 @@ export default {
       // 비밀번호 정규식 추가
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
       if (!passwordRegex.test(self.pwd)) {
-        alert('비밀번호는 대문자 1개, 특수문자 1개, 8자리 이상으로 구성되어야 합니다.');
+        alert();
         return;
       } else {
         form.append('pwd', self.pwd);

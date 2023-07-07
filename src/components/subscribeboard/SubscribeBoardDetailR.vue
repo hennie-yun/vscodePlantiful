@@ -143,7 +143,7 @@ export default {
         },
         handleCheckJoined() {
             const self = this;
-            location.href='/SubscribeBoardList'
+            // location.href='/SubscribeBoardList'
             // alert('checkjoined: ' + this.checkjoined);
             // if (this.checkjoined) {
             //     // `checkjoined`가 true일 때 실행되는 코드
