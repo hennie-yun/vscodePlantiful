@@ -119,6 +119,7 @@
 </template>
 <script>
     import KakaoMap from "@/components/concert/KakaoMap"
+import { formatDate } from '@fullcalendar/core'
 
     export default {
         components: {
@@ -135,7 +136,29 @@
 
         methods : {
             addToSchedule() {
-                alert("추가 예정")
+                let sDate = this.concert.startDate.replaceAll('.', '-')
+                let eDate = this.concert.endDate.replaceAll('.', '-')
+                console.log(sDate)
+                console.log(eDate)
+                const self = this
+                const formData = new FormData()
+                formData.append('email', sessionStorage.getItem('loginId'));
+                formData.append('title', this.concert.name);
+                formData.append('start', sDate);
+                formData.append('end', eDate);
+                formData.append('info', this.concert.genre);
+                formData.append('isLoop', 1);
+                self.$axios.post("http://localhost:8181/concert", formData)
+                    .then((result) => {
+                        console.log(result)
+                        if(result.data.isJoin == true) {
+                            alert("이미 추가하신 일정입니다!")
+                        } else {
+                            self.$router.push('calendar')
+                        }
+                    }).catch((err) => {
+                        console.log("error : "+err)
+                    });
             },
 
             relay() {
@@ -150,7 +173,12 @@
             .then((result) => {
                 console.log(result.data.concert)
                 this.concert = result.data.concert
-                this.loc = result.data.concert.loc
+                self.$axios('http://localhost:8181/concert/getAdrs/'+ this.concert.locId)
+                .then((result) => {
+                    this.loc = result.data.adres
+                }).catch((err) => {
+                    console.log("error : "+err)
+                });
             }).catch((err) => {
                 console.log("error : "+err)    
             });

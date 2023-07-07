@@ -80,8 +80,12 @@ export default {
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
       submitText: "가입",
+<<<<<<< HEAD
       passwordValid: false,
       showPasswordMsg: false
+=======
+      pwdcheck :0,
+>>>>>>> a09bd102249efc976833597495d9b4d5d81b704f
     }
   },
 
