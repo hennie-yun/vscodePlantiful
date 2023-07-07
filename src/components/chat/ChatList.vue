@@ -15,13 +15,13 @@
                                 @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:48px; height: 48px;"/>
                             </div>
                             <div class="info-box text-left">
-                                <p class="last-msg" style="">
+                                <p class="last-msg" style="font-size: 14px;">
                                     {{ item.subscribeNum.email.nickname }} 님의 
                                     {{ item.subscribeNum.site }} 구독 채팅방
                                 </p>
 
-                                <p class="last-msg">{{ item.lastSender.nickname }}</p>
-                                <p class="last-msg" style="font-size: 24px;">{{ item.lastMsg }}</p>
+                                <p class="last-msg" style="font-size:13px;">{{ item.lastSender.nickname }}</p>
+                                <p class="last-msg" style="">{{ item.lastMsg }}</p>
                             </div>
                             <div>
                                 
@@ -59,6 +59,7 @@ export default {
             if(ret.data.list !== null) {
                 for(let obj of ret.data.list) {
                     list.push(obj)
+                    console.log(obj)
                 }
 
                 list = list.sort((a, b) => {
@@ -90,7 +91,7 @@ export default {
     }
 
     .msg-box {
-        background-color: #e0e0e0;
+        background-color: #7AC6FF;
         display : flex;
         margin-left: 24px;
         margin-right: 24px;
@@ -100,13 +101,14 @@ export default {
     }
 
     .img-info-box {
+        align-items: center;
         display: flex;
     }
 
     .last-msg{
-        font-size :14px;
+        font-size :20px;
         margin: 0;
-        color : #737373;
+        color : white;
     }
 
     .img-box {
