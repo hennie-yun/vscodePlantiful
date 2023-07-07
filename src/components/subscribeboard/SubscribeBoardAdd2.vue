@@ -152,9 +152,6 @@ export default {
         recruit_endperiod(value) {
             this.formValidated = !!value;
         },
-        // payment_date(value) {
-        //     this.formValidated = !!value;
-        // },
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },

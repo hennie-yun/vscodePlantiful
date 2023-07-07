@@ -92,7 +92,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <div v-for="order in list" :key="order.subscribe_num">
                     <div class="row inglist" v-if="order.start_check === 1" v-on:click="detail(order.subscribe_num)">
                         <div class="col">
@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else >
+            <div v-else>
                 모집이 없습니다.
             </div>
         </div>
@@ -217,7 +217,7 @@ export default {
                             self.list = res.data.list
                             self.checkmember();
 
-                            if (self.list == null){
+                            if (self.list == null) {
                                 alert('모집이 없습니다.')
                             }
                         } else {
@@ -234,7 +234,7 @@ export default {
                             self.searchedList = res.data.list;
                             self.list = self.searchedList;
                             self.checkmember();
-                            if (self.list == null){
+                            if (self.list == null) {
                                 alert('모집이 없습니다.')
                             }
                         }
@@ -297,12 +297,12 @@ export default {
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
+                            alert('num:'+order.subscribe_num + ' pb;'+self.point_basket)
                             if (self.point_basket != 0) {
-
                                 const price = order.total_point / self.total_people
-                                console.log('price:'+price+' id:'+self.email)
+                                console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
                                 const form = new FormData();
-                                form.append('price', price)
+                                form.append('paidamount', price)
                                 form.append('email', self.email)
                                 self.$axios.post('http://localhost:8181/payment/' + self.email, form)
                                     .then(function (res) {
@@ -319,7 +319,7 @@ export default {
                                                         // 에러 처리
                                                         console.error('에러 발생:', error);
                                                     });
-                                                }
+                                            }
                                         } else {
                                             alert('오류')
                                         }
@@ -334,12 +334,12 @@ export default {
 
                                 const self = this;
                                 const price = order.subscribe_num.total_point;
-                                console.log(price);
+                                console.log('구독 종료일 지남:' + price);
                                 const email = order.subscribe_num.email.email(모집자);
-                                console.log(email);
+                                console.log('구독 종료일 지남:' + email);
                                 const form = new FormData();
                                 form.append('email', email);
-                                form.append('price', price);
+                                form.append('paidamount', price);
                                 self.$axios.post('http://localhost:8181/payment/' + self.subscribe_num.email.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
@@ -373,7 +373,7 @@ export default {
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
                                 // alert(res.data);
-                                console.log(order.subscribe_num + ':' + order.start_check);
+                                console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check);
                             })
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
@@ -427,6 +427,8 @@ export default {
 } */
 
 
+
+
 .body {
     /* margin-left:7%;
     margin-right:7%;
@@ -468,6 +470,9 @@ export default {
     border: 2px dashed #7ac5ff;
     margin-top: 5px;
     margin-bottom: 5px;
+    /* 마우스 커서 */
+
+    cursor: pointer;
 }
 
 .inglist {
@@ -478,12 +483,16 @@ export default {
     background-size: 100% 10px; */
     margin-top: 5px;
     margin-bottom: 5px;
+    /* 마우스 커서 */
+    cursor: pointer;
 }
 
 .endlist {
     background-color: rgb(237, 237, 237);
     padding-top: 10px;
     border-bottom: 1px solid rgba(82, 82, 82, 0.224);
+    /* 마우스 커서 */
+    cursor: pointer;
 }
 
 .bodylist {
