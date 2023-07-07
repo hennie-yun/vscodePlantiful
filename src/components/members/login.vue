@@ -1,6 +1,6 @@
 <template>
   <div class="form" :class="activeForm">
-    <p style="font-family:'TheJamsil5Bold'; text-align:center; font-weight: 500; font-size : 35px;">  plan + tiful </p>
+    <p style="font-family:'TheJamsil5Bold'; text-align:center; font-weight: 500; font-size : 35px;"> plan + tiful </p>
     <br />
     <div class="form-header">
       <div class="show-signup" @click="showSignup">회원가입</div>
@@ -14,10 +14,19 @@
           인증</button>
       </div>
 
-      <div class="form-element">
-        <input v-model="pwd" type="password" placeholder="비밀번호">
-        <span v-if="pwdcheck == false">'비밀번호는 대문자 1개, 특수문자 1개, 8자리 이상으로 구성되어야 합니다.'</span>
+
+      <div v-if="activeForm == 'signup'" class="form-element">
+        <input v-model="pwd" type="password" placeholder="비밀번호" @focus="showPasswordMessage" @blur="hidePasswordMessage"
+          @input="checkPassword">
       </div>
+      <span v-if="!passwordValid && showPasswordMsg" style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
+        특수문자를 포함한 8자리 이상만 가능합니다.</span>
+
+
+      <div v-if="activeForm == 'signin'" class="form-element">
+        <input v-model="pwd" type="password" placeholder="비밀번호">
+      </div>
+
 
       <div v-if="activeForm == 'signup'" class="form-element">
         <input type="text" @input="autoHyphen($event.target)" maxlength="13" v-model="phone" placeholder="phone number">
@@ -71,7 +80,8 @@ export default {
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
       submitText: "가입",
-      pwdcheck :
+      passwordValid: false,
+      showPasswordMsg: false
     }
   },
 
@@ -159,7 +169,19 @@ export default {
 
     //사진 완료 시 업로드 완료 되었다 표시해 줌 
     handleFileUpload() {
-      this.uploadButtonText = '프로필 사진 업로드 완료';
+      this.uploadButtonText = '사진 업로드 완료';
+    },
+
+    // 비밀번호 정규식
+    checkPassword() {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      this.passwordValid = passwordRegex.test(this.pwd);
+    },
+    showPasswordMessage() {
+      this.showPasswordMsg = true;
+    },
+    hidePasswordMessage() {
+      this.showPasswordMsg = false;
     },
 
     //이메일 인증이 끝난 뒤 이제 진짜 가입 진행 
@@ -168,18 +190,23 @@ export default {
       const form = new FormData();
 
       //전화번호 11자리로 고정 
-      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
+       if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
         alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
+        return;
+      } else if (!self.phone.startsWith('010')) {
+        alert('전화번호 형식이 잘 못 되었습니다');
         return;
       } else {
         form.append('phone', self.phone.replace(/[^0-9]/g, ''));
       }
+
       form.append('email', self.email);
 
-      // 비밀번호 정규식 추가
+      // 비밀번호 정규식
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
       if (!passwordRegex.test(self.pwd)) {
-        alert();
+        alert('비밀번호는 대문자 1개와 특수문자 1개를 포함한 8자리 이상만 가능합니다. \n 다시 입력 해주세요')
+        self.pwd = '';
         return;
       } else {
         form.append('pwd', self.pwd);
@@ -241,6 +268,7 @@ export default {
             } else if (res.status == 200) {
               alert('이메일이 발송되었습니다');
               alert('전달 드린 임시비밀번호로 로그인 하세요')
+              self.showSignin();
               const key = res.data.key;
               alert(key);
               self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
@@ -248,22 +276,21 @@ export default {
               alert('잘못된 이메일입니다');
             }
           })
-        }
-      },
-
-      //카카오톡 로그인 하기  
-      kakaoLogin() {
-        const redirect_uri = 'http://localhost:8182/kakaojoin';
-        const clientId = 'd54083f94196531e75d7de474142e52e';
-        const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
-        window.location.href = Auth_url;
       }
+    },
+
+    //카카오톡 로그인 하기  
+    kakaoLogin() {
+      const redirect_uri = 'http://localhost:8182/kakaojoin';
+      const clientId = 'd54083f94196531e75d7de474142e52e';
+      const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
+      window.location.href = Auth_url;
     }
   }
+}
 </script>
 
-<style scoped> 
-.form {
+<style scoped> .form {
    font-family: 'Pretendard-Regular';
    font-weight: 400;
    position: absolute;

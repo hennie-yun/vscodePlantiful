@@ -2,10 +2,12 @@
   <div>
     <nav class="navbar navbar-expand-custom navbar-mainbg">
       <a class="navbar-brand navbar-logo" href="/calendar">plan + tiful</a>
+
       <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">
+        aria-label="Toggle navigation" @click="toggleNavigation">
         <i class="fas fa-bars text-white"></i>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
           <div class="hori-selector">
@@ -87,13 +89,35 @@ export default {
       arr: [],
       activeLink: '',
       active: false,
-      todoItems: []
+      todoItems: [],
+      dto: {
+        nickname: '',
+        phone: '',
+        email: '',
+        id : ''
+      },
     }
   },
   created() {
     let token = sessionStorage.getItem('token');
     this.loginId = sessionStorage.getItem('loginId');
-    this.img = 'http://localhost:8181/members/plantiful/' + this.loginId;
+    const self = this;
+    self.$axios.get('http://localhost:8181/members/getmember/' + self.email, { headers: { 'token': token } })
+      .then(function (res) {
+        if (res.status == 200) {
+          self.dto = res.data.dto
+          if (self.dto != null) {
+            self.email = self.dto.email
+            self.nickname = self.dto.nickname
+            self.phone = self.dto.phone
+            self.id = self.dto.id
+            if (self.dto.img) {
+              self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
+            }
+          }
+        }
+      });
+
     if (localStorage.length > 0) {
       for (var i = 0; i < localStorage.length; i++) {
         if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
@@ -109,14 +133,27 @@ export default {
     this.initializeNavbar();
   },
   methods: {
+    toggleNavigation() {
+      const navbarCollapse = document.getElementById('navbarSupportedContent');
+      navbarCollapse.classList.toggle('show');
+    },
     replaceImg(e) {
       e.target.src = img;
     },
     logout() {
       console.log("logout")
+      if (this.id ==0 || this.id == ''){
       sessionStorage.removeItem('token')
       sessionStorage.removeItem('loginId')
       location.href = '/';
+    }else {
+      console.log('카카오톡 로그아웃 시도 ')
+      const redirect_uri = 'http://localhost:8182/login';
+      const clientId = 'd54083f94196531e75d7de474142e52e';
+      const Auth_url = `https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirect_uri}`;
+      location.href = Auth_url;
+      }
+      
     },
     openMenu(value) {
       if (typeof value === 'boolean') {
@@ -213,6 +250,9 @@ export default {
   font-size: 25px;
 }
 
+.navbar-logo:hover{
+  color : #ffe77a;
+}
 .navbar-mainbg {
   background-color: #7AC6FF;
   padding: 0px;

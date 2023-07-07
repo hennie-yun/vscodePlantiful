@@ -1,11 +1,11 @@
 <template>
-  <div class ="fontchange" id="mypage" style="display: flex;   flex-direction: column; align-items: center;">
+  <div class="fontchange" id="mypage" style="display: flex;   flex-direction: column; align-items: center;">
     <div class="container">
       <div class="out" @click="out" style="float: right;">탈퇴하기
-    </div>
+      </div>
       <div class="middle">
         <div>
-         
+
           <div v-if="changeimg">
             <img :src="changeimg" @click="imgedit"
               style="margin-top: -40px; margin-bottom:30px; width: 200px; border-radius: 50%; height: 200px;" />
@@ -54,31 +54,46 @@
         <br />
 
         <div class="fullcontainer">
-        <div v-if="dto.id != 1" class="input-container">
-          <label for="pwd">비밀번호</label>
-          <input id="pwd" type="password" v-model="pwd" @click="checkpwd" class="input-field">
+          <div v-if="dto.id != 1" class="input-container">
+            <label for="pwd">비밀번호</label>
+            <input v-if="changepwd == false" type="password" v-model="pwd" @click="checkpwd" class="input-field">
+            <input v-if="changepwd == true" v-model="pwd" type="text" placeholder="비밀번호" @focus="showPasswordMessage"
+              @blur="hidePasswordMessage" @input="checkPassword" class="input-field">
+            </div>
+           
+              <span v-if="!passwordValid && showPasswordMsg"
+              style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
+              특수문자를 포함한 8자리 이상만 가능합니다.</span>
+          
+
+
+
+
+
+
+
+
+
+          <div class="input-container">
+            <label for="nickname"> 닉네임</label>
+            <input id="nickname" type="text" v-model="nickname" class="input-field">
+          </div>
+
+          <div class="input-container">
+            <label for="phone">전화번호</label>
+            <input id="phone" type="text" v-model="phone" class="input-field">
+          </div>
         </div>
 
-        <div class="input-container">
-          <label for="nickname"> 닉네임</label>
-          <input id="nickname" type="text" v-model="nickname" class="input-field">
-        </div>
 
-        <div class="input-container">
-          <label for="phone">전화번호</label>
-          <input id="phone" type="text" v-model="phone" class="input-field">
+        <br />
+        <div class="button-wrapper">
+          <button @click="edit">수정</button>
+          <router-link to="/mypage" class="custom-link">돌아가기</router-link>
         </div>
       </div>
 
 
-<br/>
-      <div class="button-wrapper">
-        <button @click="edit">수정</button>
-        <router-link to ="/mypage" class="custom-link">돌아가기</router-link>
-      </div>
- </div>
-
-     
     </div>
   </div>
 </template>
@@ -99,6 +114,10 @@ export default {
       },
       isVisible: false,
       changeimg: null,
+      pwd: '',
+      changepwd: false,
+      passwordValid: false,
+      showPasswordMsg: false
     };
   },
 
@@ -130,6 +149,17 @@ export default {
     });
   },
   methods: {
+    // 비밀번호 정규식
+    checkPassword() {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      this.passwordValid = passwordRegex.test(this.pwd);
+    },
+    showPasswordMessage() {
+      this.showPasswordMsg = true;
+    },
+    hidePasswordMessage() {
+      this.showPasswordMsg = false;
+    },
     cancelEdit() {
       this.isVisible = false;
     },
@@ -146,7 +176,6 @@ export default {
               alert(res.data.message);
               self.isVisible = false;
               window.location.reload(true);
-            
             }
           })
           .catch(function (error) {
@@ -191,19 +220,36 @@ export default {
       // 기존 비밀번호 확인
       if (existingPwd === self.dto.pwd) {
         self.pwd = ''; // 새 비밀번호를 초기화
+        self.changepwd = true;
       } else {
         alert('기존 비밀번호가 일치하지 않습니다.');
       }
     },
     edit() {
       const self = this;
+
+      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
+        alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
+        return;
+      } else if (!self.phone.startsWith('010')) {
+        alert('전화번호 형식이 잘 못 되었습니다');
+        return;
+      }
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+      if (!passwordRegex.test(self.pwd)) {
+        alert('비밀번호는 대문자 1개와 특수문자 1개를 포함한 8자리 이상만 가능합니다. \n 다시 입력 해주세요');
+        self.pwd = '';
+        return;
+      }
+
       const data = {
+        phone: self.phone.replace(/[^0-9]/g, ''),
         email: self.email,
         pwd: self.pwd,
+        id: self.id,
         nickname: self.nickname,
-        phone: self.phone,
-        id: self.id
       };
+
       // json형태로전달할때 JSON.stringify(data) data 를 const로 정의하고 부르면 됌 
       self.$axios.post('http://localhost:8181/members/editinfo/' + self.email, data, JSON.stringify(data))
         .then(function (res) {
@@ -223,16 +269,31 @@ export default {
     out() {
       const self = this;
       let token = sessionStorage.getItem('token')
-      alert('정말 탈퇴 하시겠습니까?')
-      if(this.dto.id ==0){
-      const existingPwd = prompt("기존 비밀번호를 입력하세요");
-      if (existingPwd === self.dto.pwd) {
-      self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+      if(confirm("정말 탈퇴 하시겠습니까?")){    
+      if (this.dto.id == 0) {
+        const existingPwd = prompt("비밀번호를 입력하세요");
+        if (existingPwd === self.dto.pwd) {
+          self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+            .then(function (res) {
+              if (res.status == 200) {
+                if (res.data.flag) {
+                  alert('탈퇴완료')
+                  self.logout()
+                  location.href = '/'
+                }
+              } else {
+                alert('에러')
+              }
+            });
+        }
+      } else {
+        alert('카카오톡을 이용한 탈퇴를 진행 합니다');
+        const self = this;
+      self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
         .then(function (res) {
           if (res.status == 200) {
             if (res.data.flag) {
               alert('탈퇴완료')
-              self.logout()
               location.href = '/'
             }
           } else {
@@ -240,35 +301,24 @@ export default {
           }
         });
       }
-    } else {
-      alert('카카오톡을 이용한 탈퇴를 진행 합니다');
-      self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
-        .then(function (res) {
-          if (res.status == 200) {
-            if (res.data.flag) {
-              alert('탈퇴완료')
-              self.logout()
-              location.href = '/'
-            }
-          } else {
-            alert('에러')
-          }
-        });
-      }
+    }else {
+      alert ('탈퇴를 취소 합니다')
+    }
     }
   }
 }
 </script>
 
 <style scoped>
-.fontchange{
+.fontchange {
   font-family: 'Pretendard-Regular';
-   font-weight: 400;
-   font-size: 16px;
+  font-weight: 400;
+  font-size: 16px;
 }
+
 .out {
   float: right;
-  margin-top : 10px;
+  margin-top: 10px;
   color: gray;
   cursor: pointer;
 }
@@ -284,6 +334,7 @@ export default {
   gap: 15px;
   margin-top: 10px;
 }
+
 .button-wrapper button,
 .button-wrapper .custom-link {
   /* 공통 스타일 속성들 */
@@ -418,9 +469,7 @@ input[type="file"] {
 }
 
 
-.fullcontainer{
-  padding-left :8%;
+.fullcontainer {
+  padding-left: 8%;
 }
-
-
 </style>
