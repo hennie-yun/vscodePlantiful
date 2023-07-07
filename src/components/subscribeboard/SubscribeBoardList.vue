@@ -316,7 +316,7 @@ export default {
                                         if (res.status == 200) {
                                             console.log(order.subscribe_num+' 모집 종료로 금액 반환 되었음 '+price)
                                             if (currentTotalPointBasket != 0) {
-                                                self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                                self.$axios.post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                     .then(function (res) {
                                                         if (res.status === 200) {
                                                             console.log('취소돼서 0으로 만들고 돌아감');
@@ -337,8 +337,8 @@ export default {
 
                         } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
                             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
+                            order.flag = 2;
                             if (currentTotalPointBasket != 0) {
-
                                 const self = this;
                                 const price = order.subscribe_num.total_point;
                                 console.log('구독 종료일 지남:' + price);
