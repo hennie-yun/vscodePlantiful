@@ -143,6 +143,7 @@ export default {
                             + date.getHours() + "시 " 
                             + date.getMinutes() + "분" 
                         // this.scrollToBottom()
+                        this.recvList.push(obj)
                     })
                 }, 
                 error => {
