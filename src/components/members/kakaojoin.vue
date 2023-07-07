@@ -2,8 +2,10 @@
   <div class="form" :class="activeForm">
   
     <br />
+    <div>
+  </div>
     <div class="form-header">
-      <div class="show-signup">카카오톡 간편 회원가입</div>
+      <img :src="require('@/assets/image/startwithkakao.png')" style="margin-top:20%; width: 97%; height:25%; "/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
@@ -26,9 +28,16 @@
         <button id="submit-btn" @click="onSubmit()">카카오톡으로 회원가입 하기</button>
       </div>
     </div>
-  </div>
+    <div class="button-wrapper">
+          <router-link to="/" class="custom-link">돌아가기</router-link>
+        </div>
+      </div>
+
 </template>
+
+
 <script>
+
 export default {
   name: 'kakaojoin',
   data() {
@@ -64,7 +73,7 @@ export default {
     },
 
     handleFileUpload() {
-      this.uploadButtonText = '프로필 사진 업로드 완료';
+      this.uploadButtonText = '사진이 업로드 되었습니다';
     },
 
     klogin() { //아이디 저장이 되어 있으면 갈 곳 
@@ -119,12 +128,17 @@ export default {
       const self = this;
       const form = new FormData();
       //전화번호 11자리로 고정 
+      //전화번호 11자리로 고정 
       if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
         alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
+        return;
+      } else if (!self.phone.startsWith('010')) {
+        alert('전화번호 형식이 잘 못 되었습니다');
         return;
       } else {
         form.append('phone', self.phone.replace(/[^0-9]/g, ''));
       }
+
       form.append('email', self.form.email);
       form.append('nickname', self.form.nickname);
       form.append('pwd', self.form.pwd)
@@ -156,7 +170,7 @@ export default {
 <style scoped> 
 .form {
   font-family: 'Pretendard-Regular';
-  font-weight: 600;
+  font-weight: 500;
   position: absolute;
   top: 30%;
   left: 50%;
@@ -167,7 +181,7 @@ export default {
   color : darkgrey;
 }
 .form .form-header {
-  height: 30px;
+
   display: flex;
   align-items: center;
   text-align: center;
@@ -176,13 +190,13 @@ export default {
   justify-content: center;
 }
 
-.form .form-header>div {
+/* .form .form-header>div {
   color: #7AC6FF;
   font-size: 18px;
   text-align: center;
   font-weight: 600;
   cursor: pointer;
-}
+} */
 
 .form.signup .form-header div.show-signup {
   color: #7AC6FF;
@@ -248,5 +262,45 @@ export default {
   outline: none !important;
   border-color: #7AC6FF;
 
+}
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.button-wrapper .custom-link {
+  /* 공통 스타일 속성들 */
+  border: none;
+  background-color: transparent;
+  padding: 5px 10px;
+  color: #000;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-wrapper .custom-link::before{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.3s ease-in-out;
+}
+
+.button-wrapper .custom-link:hover::before {
+  visibility: visible;
+  background-color: #7AC6FF;
+  transform: scaleX(1);
+}
+
+.button-wrapper .custom-link:hover {
+  color: #7AC6FF;
 }
 </style>
