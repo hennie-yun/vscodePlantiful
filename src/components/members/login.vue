@@ -71,7 +71,7 @@ export default {
       uploadButtonText: '프로필 사진 업로드',
       activeForm: "signup",
       submitText: "가입",
-      pwdcheck :
+      pwdcheck :0,
     }
   },
 

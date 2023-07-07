@@ -177,6 +177,7 @@ export default {
             total_people: 0,
             subscribe_num: 0,
             point_basket: 0,
+            AllPointbasket: 0,
         }
     },
 
@@ -254,9 +255,14 @@ export default {
                             const item = res.data.list[0]; // 첫 번째 항목 선택
                             order.start_check = item.start_check; // start_check 값 확인
                             // console.log(order.start_check); // start_check 값 출력
-                            self.partylist.forEach(function (item) {
-                                self.point_basket = item.point_basket
-                            });
+                            // let AllPointbasket = 0;
+                            // self.partylist.forEach(function (item) {
+                            order.point_basket = item.point_basket;
+                            // });
+                            // self.AllPointbasket = AllPointbasket;
+                            // self.partylist.forEach(function (item) {
+                            //     self.point_basket = item.point_basket
+                            // });
                             const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
                             self.recruit_endperiod = recruitEndPeriodFormatted;
                             order.recruit_endperiod = recruitEndPeriodFormatted;
@@ -277,6 +283,7 @@ export default {
                     this.list.forEach((order) => {
                         const self = this;
                         // // console.log('모든 비동기 요청 완료');
+                        const currentTotalPointBasket = order.point_basket;
 
                         // self.list.forEach(function (order) {
                         // console.log(self.list);
@@ -297,8 +304,8 @@ export default {
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-                            alert('num:'+order.subscribe_num + ' pb;'+self.point_basket)
-                            if (self.point_basket != 0) {
+                            alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
+                            if (currentTotalPointBasket != 0) {
                                 const price = order.total_point / self.total_people
                                 console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
                                 const form = new FormData();
@@ -307,8 +314,8 @@ export default {
                                 self.$axios.post('http://localhost:8181/payment/' + self.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
-                                            console.log('모집 종료로 금액 반환 되었음')
-                                            if (self.point_basket != 0) {
+                                            console.log(order.subscribe_num+' 모집 종료로 금액 반환 되었음 '+price)
+                                            if (currentTotalPointBasket != 0) {
                                                 self.$axios.patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                     .then(function (res) {
                                                         if (res.status === 200) {
@@ -330,7 +337,7 @@ export default {
 
                         } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
                             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
-                            if (self.point_basket != 0) {
+                            if (currentTotalPointBasket != 0) {
 
                                 const self = this;
                                 const price = order.subscribe_num.total_point;
