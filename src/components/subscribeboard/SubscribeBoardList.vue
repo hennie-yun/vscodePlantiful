@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div v-if="list != null">
+            <div v-if="list != null && list.length > 0">
                 <div v-for="order in list" :key="order.subscribe_num">
                     <div class="row beforelist" v-if="order.start_check === 0" v-on:click="detail(order.subscribe_num)">
                         <div class="col">
@@ -151,9 +151,10 @@
                     </div>
                 </div>
             </div>
-            <div v-else>
+            <div v-else class="norecruit">
                 모집이 없습니다.
             </div>
+
         </div>
     </div>
 </template>
@@ -304,7 +305,7 @@ export default {
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-                            alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
+                            // alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
                             if (currentTotalPointBasket != 0) {
                                 const price = order.total_point / self.total_people
                                 console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
@@ -314,7 +315,7 @@ export default {
                                 self.$axios.post('http://localhost:8181/payment/' + self.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
-                                            console.log(order.subscribe_num+' 모집 종료로 금액 반환 되었음 '+price)
+                                            console.log(order.subscribe_num + ' 모집 종료로 금액 반환 되었음 ' + price)
                                             if (currentTotalPointBasket != 0) {
                                                 self.$axios.post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                     .then(function (res) {
@@ -376,7 +377,7 @@ export default {
                             }
                         } else {
                             order.flag = 0;
-                            alert('빠져나옴 !! 다 해당안돼'+ order.subscribe_num)
+                            alert('빠져나옴 !! 다 해당안돼' + order.subscribe_num)
                         }
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
@@ -528,6 +529,10 @@ img {
 
 .container {
     padding-left: 30px;
+}
+
+.norecruit{
+    margin: 30px;
 }
 </style>
 
