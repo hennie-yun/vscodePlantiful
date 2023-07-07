@@ -41,14 +41,14 @@
             </div>
             <div class="sidebar-groupinfo-users">
               <span>참여인원 {{ selectedGroupEmails.length }}명</span>
-              <span>
+              <span style="margin-right: 10px;">
                 <button @click="showEmailList = !showEmailList">
                   <img :src="require('@/assets/image/groupdown.gif')" style="width:20px;" />
                 </button>
               </span>
             </div>
             <transition name="fade">
-              <ul class="sidebar-list" v-if="showEmailList" style="height: 110px;">
+              <ul class="sidebar-list" v-if="showEmailList" style="height: 110px; font-size: 1rem;">
                 <li v-for="email in selectedGroupEmails" :key="email">
                   {{ email }}
                 </li>
@@ -62,14 +62,14 @@
             <h4 style="position:absolute; color:gray; padding-top:0">그룹 리스트</h4>
             <router-link to="/group" class="sidebar-grouplist-link">+</router-link>
           </div>
-          <div>
-            <ul class="sidebar-list-group">
+          <div class="sidebar-list-group">
+            <ul style="list-style-type: none;">
               <li v-for="group in groups" :key="group.schedulegroup_num" style="margin-top:0px">
-                <div style="display:flex; justify-content:space-evenly; align-items: center;">
+                <div style="display:flex; justify-content:space-around; align-items: center; position: relative;">
                   <span style="float: left; position: absolute; margin-left: -135px;">
                     <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
                       @change="toggleGroupSchedule(group)" /></span>
-                  <span><label :for="group.schedulegroup_num" style="margin-right: -80px;">{{ group.schedulegroup_title
+                  <span><label :for="group.schedulegroup_num" style="margin-right: -100px;">{{ group.schedulegroup_title
                   }}</label></span>
                   <span class="grouplist_btn"><button class="grouplist_btn" :value="group.schedulegroup_num"
                       @click="getGroupParty(group.schedulegroup_num)"
@@ -113,16 +113,29 @@
     <!-- 초대 폼 -->
     <transition name="slide">
       <div v-if="showInviteForm" class="invite-form">
-        <button class="calendar_btn" style="float: right;" @click="xbtn">X</button>
-        <h3>그룹 초대하기</h3>
-        <p>{{ selectedGroup.schedulegroup_num.schedulegroup_title }}</p>
         <div>
-          <label for="emailInput">이메일:</label>
-          <input type="text" style="width:65%;" id="email" v-model="newEvent.email" />
+          <button class="calendar_btn"
+            style="float: right; float: right; border: none; font-size: 18px; margin-right: 13px;"
+            @click="xbtn">X</button>
         </div>
-        <button @click="inviteToGroup(selectedGroup.schedulegroup_num)" style="padding-top: 6%;">
-          초대 보내기
-        </button>
+        <h3 style="display:flex; justify-content: center; color: darkslategray;">그룹 초대하기</h3>
+        <div style="display:flex; justify-content: center; font-size: 1.2em;">
+          <span>{{ selectedGroup.schedulegroup_num.schedulegroup_title }}</span><span
+            :style="{ color: groupColors[selectedGroup.schedulegroup_num.schedulegroup_color] }"
+            style="margin-left: 10px;">●</span>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;">
+          <label for="emailInput">
+            <img :src="require('@/assets/image/invite.png')" style="width:30px; margin-right: 10px; " />
+          </label>
+          <input type="text" style="width:65%; border:1px solid gray; border-radius: 5px; padding-left: 5px;" id="email"
+            v-model="newEvent.email" placeholder=" ex) plantiful@plantiful.com" />
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <button @click="inviteToGroup(selectedGroup.schedulegroup_num)" class="invite-msg">
+            초대
+          </button>
+        </div>
       </div>
     </transition>
 
@@ -143,8 +156,8 @@
           <label for="title" style="postion:absolute;"><img :src="require('@/assets/image/formtitle.png')"
               style="width:32px;" /></label>
           <div class="input-wrapper" style="width:100%">
-            <input type="text" id="title" v-model="newEvent.title" class="title-input" style="border-radius: 5px;"
-              placeholder="제목" />
+            <input type="text" id="title" v-model="newEvent.title" class="title-input"
+              style="border-radius: 5px; padding-left:5px;" :class="{ 'error': !newEvent.title }" placeholder="제목" />
           </div>
         </div>
 
@@ -171,16 +184,16 @@
         <div class="form-row">
           <label for="info" style="position:absolute; margin-left:10px;">
             <img :src="require('@/assets/image/forminfo.png')" style="width:27px;" /></label>
-          <textarea id="info" v-model="newEvent.info" class="textarea-input" style="border-radius: 5px; height:60px;"
-            placeholder="일정 내용"></textarea>
+          <textarea id="info" v-model="newEvent.info" class="textarea-input"
+            style="border-radius: 5px; height:60px; padding-left: 5px;" placeholder="일정 내용"></textarea>
         </div>
 
         <div class="form-row">
           <label for="group_num" style="position:absolute; margin-left:10px;">
             <img :src="require('@/assets/image/formgroup.png')" style="width:27px;" /></label>
           <select id="group_num" v-model="newEvent.group_num" class="select-input"
-            style="margin-left: 17.2%; margin-right: 3.6%; border-radius: 5px;">
-            <option value="0">개인 일정</option>
+            style="margin-left: 17.2%; margin-right: 3.6%; border-radius: 5px;" :disabled="!isReadOnly">
+            <option value="">개인 일정</option>
             <option v-for="group in groups" :value="group.schedulegroup_num" :key="group.schedulegroup_num"> {{
               group.schedulegroup_title }}
             </option>
@@ -189,11 +202,11 @@
 
 
 
-        <div class="form-row">
+        <div class="form-row" style="height: 40px;">
           <label for="isLoop" style="position:absolute; margin-left:10px;">
             <img :src="require('@/assets/image/formrepeat.png')" style="width:28px;" /></label>
-          <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" class="radio-input"
-            style="margin-left:18%;" checked/>
+          <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" class="radio-input" style="margin-left:18%;"
+            checked />
           <label for="isLoop">반복 안 함</label>
           <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input" />
           <label for="isLoop2">반복 설정</label>
@@ -215,10 +228,12 @@
 
 
         <div class="form-row form-buttons">
-          <button v-if="isNewEvent" class="calendar_btn fixed-button" @click="addEvent" style="margin-right:17px">일정
-            추가</button>
+          <button v-if="isNewEvent && newEvent.title.trim() !== ''" class="calendar_btn fixed-button" @click="addEvent"
+            style="margin-right:17px">
+            등록
+          </button>
 
-          <button v-else class="calendar_btn" @click="updateEvent">수정</button>
+          <button v-else-if="!isNewEvent" class="calendar_btn" @click="updateEvent">수정</button>
 
           <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
 
@@ -229,54 +244,51 @@
   </div>
 
 
-  <!-- 일정 공유 -->
-  <div v-if="shareEvent" class="share-event-form">
+  <div v-if="shareEvent || snsEvent" class="share-event-form">
     <div class="form-content">
+      <div class="shareform-top">
+        <button @click="cancel" style="margin-right: 10px; color:gray;">
+          X
+        </button>
+      </div>
       <div class="shareform-row">
-        <h5 style="text-align: center;">일정 공유</h5>
-      </div>
-      <div class="shareform">
-
-        <div class="share-btn-div">
-          <button class="share-btn" @click="copyUrl">
-            <img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width:45px" />url복사</button>
+        <div class="shareform-left">
+          <div class="shareform-title">일정 공유</div>
+          <div style="display: flex; justify-content: space-evenly;">
+            <button class="share-btn" @click="copyUrl" style="display: grid;">
+              <img :src="require('@/assets/image/url.png')" style="margin-right: 10px; width: 40px" />
+              <span style="font-size: 14px;">URL 복사</span>
+            </button>
+            <button class="share-btn" @click="shareKakao" style="display: grid;">
+              <img :src="require('@/assets/image/kakaotalk.png')" style="width: 40px; border-radius: 29px;" />
+              <span style="font-size: 14px;">메세지 전송</span>
+            </button>
+          </div>
         </div>
-
-        <div class="share-btn-div">
-          <button class="share-btn" @click="shareKakao">
-            <img :src="require('@/assets/image/kakaotalk.png')" @click="shareKakao"
-              style="width: 45px;border-radius: 29px;" /><span>메세지 전송</span></button>
+        <div class="shareform-divider"></div>
+        <div class="shareform-right">
+          <div class="shareform-title">소셜 캘린더 연동</div>
+          <div style="display: flex; justify-content: space-evenly;">
+            <button class="share-btn" @click="naver" style="display: grid;">
+              <img :src="require('@/assets/image/naver.webp')"
+                style="margin-right: 10px; width: 40px; border-radius: 8px;" />
+              <span style="font-size: 14px;">네이버 캘린더</span>
+            </button>
+            <button class="share-btn" @click="kakao" style="display: grid;">
+              <img :src="require('@/assets/image/kakaotalk.png')"
+                style="margin-right: 10px; width: 40px; border-radius: 8px;" />
+              <span style="font-size: 14px;">카카오 캘린더</span>
+            </button>
+          </div>
         </div>
+      </div>
 
-      </div>
-      <div style="display: flex; justify-content: center; margin-top: 10px;">
-        <button class="share-btn" @click="cancel">아니오</button>
-      </div>
     </div>
   </div>
 
-  <!-- sns 공유 -->
-  <div v-if="snsEvent" class="share-event-form">
-    <div class="form-content">
-      <div class="shareform-row">
-        <h5 style="text-align: center;">sns 연동</h5>
-      </div>
-      <div class="shareform" style="display: flex; justify-content: center; align-items: center;">
-        <div style="display: flex; align-items: center;">
 
-          <button class="share-btn" @click="naver"><img :src="require('@/assets/image/naver.png')"
-              style="margin-right: 10px; width:50px" />naver</button>
-        </div>
-      </div>
-      <div style="display: flex; align-items: center;">
-        <button class="share-btn" @click="kakao"><img :src="require('@/assets/image/kakaotalk.png')" @click="kakao"
-            style="margin-right: 10px; width: 50px;" />카카오톡</button>
-      </div>
-    </div>
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
-      <button class="share-btn" @click="cancel2">아니오</button>
-    </div>
-  </div>
+
+
 
 
   <div v-if="showShareForm" class="centered-form">
@@ -284,18 +296,17 @@
       <p style="font-size: larger; font-weight: 600;">그룹을 삭제하시겠습니까?</p>
       <div class="delete-buttons">
         <button class="delete-button" @click="delParty">네</button>
-      <button class="cancel-button" @click="xbtn">아니오</button>
+        <button class="cancel-button" @click="xbtn">아니오</button>
+      </div>
     </div>
   </div>
-</div>
 
 
 
 
 
 
-<router-view />
-</template>
+<router-view /></template>
 
 <script>
 import FullCalendar from '@fullcalendar/vue3'
@@ -333,9 +344,10 @@ export default {
   },
   data() {
     return {
+      state: this.$route.query.state,
       code: this.$route.query.code,
       access_token: '',
-      isNewEvent: true,
+       isNewEvent: true,
       showEventForm: false,
       showShareForm: false,
       showDeleteForm: false,
@@ -344,7 +356,6 @@ export default {
       snsEvent: false,
       showEmailList: false,
       groupTitle: '',
-      group_num: 0,
       reslist: [],
       list: [],
       items: [],
@@ -367,6 +378,7 @@ export default {
       inviteall: [],
       newEvent: [{
         id: 0,
+        group_num: '',
         title: '',
         start: '',
         end: '',
@@ -394,7 +406,7 @@ export default {
         events: [], // 이벤트 데이터를 추가할 배열
         eventSources: [{
           events: this.getFilteredEvents,
-          color: '#7AC6FF',
+          color: '',
           textColor: 'white',
           startEditable: true,
           durationEditable: true,
@@ -410,7 +422,27 @@ export default {
  
   // 페이지 시작- 실행되는 함수
   //로그인 한 사람의 일정 보여주기
-   created() {
+  created() {
+
+        this.code = this.$route.query.code
+    this.state = this.$route.query.state
+    console.log(this.code)
+    console.log(this.state)
+
+    let kakaocode = sessionStorage.getItem('kakaocode')
+    if (kakaocode == this.code) {
+      this.getKakaoToken()
+      sessionStorage.removeItem('kakaocode')
+    }
+
+    let navercode = sessionStorage.getItem('navercode')
+    let naverstate = sessionStorage.getItem('naverstate')
+    if (navercode == this.code && naverstate == this.state) {
+      this.executeNaverCode()
+      sessionStorage.removeItem('navercode')
+      sessionStorage.removeItem('naverstate')
+    }
+
    
 
     this.code = this.$route.query.code
@@ -706,21 +738,35 @@ export default {
   methods: {
 
 
-    getKakaoToken(){ // id값으로 분류하는것 추가!!!
+   // kakao 스케줄 연동할때 시간 5분 차이로 설정할 것!!!!
+    getKakaoToken() { // id값으로 분류하는것 추가!!
+
+
       let token = sessionStorage.getItem('token')
-      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
-      .then((res)=>{
-        let id = res.data.id
-        console.log(id)
-        if(id==1){
-          console.log("코드 확인:"+this.code)
-          this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
-          .then(function(res){
-            console.log(res.data)
-          })
-      } 
-    })
+      this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+        .then((res) => {
+          let id = res.data.id
+          console.log(id)
+          if (id == 1) {
+            if (this.code !== undefined) {
+              console.log("코드 확인:" + this.code)
+              // 새 토큰 요청 및 스케줄 연동
+
+              this.$axios.get("http://localhost:8181/api/kakao/token", { headers: { "authorization_code": this.code } })
+                .then(function (res) {
+                  console.log(res.data)
+                })
+                .catch((error) => {
+                  console.log("Error:", error)
+                })
+
+
+            }
+          }
+        })
+
     },
+
     
     /*
     kakaoscheduleadd(access_token){
@@ -738,8 +784,8 @@ export default {
     },
 
 
-    //그룹 초대
-   inviteToGroup(schedulegroup_num) {
+     //그룹 초대
+    inviteToGroup(schedulegroup_num) {
       const groupnum = schedulegroup_num.schedulegroup_num;
       const email = this.newEvent.email;
 
@@ -753,31 +799,30 @@ export default {
           this.inviteall = response.data.list;
           console.log(this.inviteall);
           console.log(this.partylist)
+          console.log(email)
           // 중복 여부 확인
           const isEmailDuplicate = this.inviteall.some(item => item.email.email === email);
           const isGroupnumDuplicate = this.inviteall.some(item => item.groupnum.schedulegroup_num === groupnum);
-          const isPartyemailDuplicate = this.partylist.some(item => item.member_email.email === email);
-          const isPartygroupnumDuplicate = this.partylist.some(item => item.schedulegroup_num.schedulegroup_num === groupnum);
+          // const isPartyemailDuplicate = this.partylist.some(item => item.member_email.email === email);
+          // const isPartygroupnumDuplicate = this.partylist.some(item => item.schedulegroup_num.schedulegroup_num === groupnum);
 
           if (isEmailDuplicate && isGroupnumDuplicate) {
             alert("이미 초대된 email 입니다. invite"); // 초대 테이블 중복인 경우 알림 표시
             this.showInviteForm = false;
             return;
-          } if (isPartyemailDuplicate && isPartygroupnumDuplicate) {
-            // isPartyemailDuplicate와 isPartygroupnumDuplicate 모두 참인 경우 실행되는 코드
-            console.log("이미 가입?");
+          }
 
-            // partylist 배열을 순회하면서 조건에 해당하는 항목을 찾기
-            for (let i = 0; i < this.partylist.length; i++) {
-              const item = this.partylist[i];
 
-              if (item.member_email.email === email && item.schedulegroup_num.schedulegroup_num === groupnum) {
-                // 조건에 해당하는 항목을 찾았을 때 추가 작업 수행
-                console.log("Matching item found:", item);
-                // 추가 작업 수행
-                // ...
-              }
+          // partylist 배열을 순회하면서 조건에 해당하는 항목을 찾기
+          for (let i = 0; i < this.partylist.length; i++) {
+            const item = this.partylist[i];
+
+            if (item.member_email.email === email && item.schedulegroup_num.schedulegroup_num === groupnum) {
+              // 조건에 해당하는 항목을 찾았을 때 추가 작업 수행
+              alert('이미 가입된 이메일 입니다.')
+              return;
             }
+
           } if (isEmailDuplicate == true) {
             alert("다른 그룹의 가입을 대기 중입니다.")
             return;
@@ -892,143 +937,93 @@ export default {
     },
 
     
-// 카카오 스케줄 일정 연동
-kakao(){
+    // 카카오 스케줄 일정 연동
+    kakao() {
 
-  let token = sessionStorage.getItem('token')
-      this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
-      .then((res)=>{
-        let id = res.data.id
-        if(id==1){ // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
-            if(this.code === undefined){ // 받아온 this.code값이 있어!! 
-            const redirect_uri = 'http://localhost:8182/calendartoken'
-            const clientId = 'd54083f94196531e75d7de474142e52e';
-            const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
-            window.location.href = Auth_url;
-            } else {
-              location.href='/kakao'
+      let token = sessionStorage.getItem('token')
+      this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+        .then((res) => {
+          let id = res.data.id
+          if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
+            if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
+              const redirect_uri = 'http://localhost:8182/calendar'
+              const clientId = 'd54083f94196531e75d7de474142e52e';
+              const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
+
+
+              window.location.href = Auth_url;
+
+            } else { // 받아온 this.code값이 있을때는
+              console.log(this.code)
+              // 세션에 KakaoToken()함수가 있는지 확인용
+
+              sessionStorage.setItem('kakaocode', this.code)
+
             }
-            } else {
-
-              location.href = '/login'
-            }        
-                })
-        
-            
-      
-
-
-  // var auth = function(){
-  //   setTimeout(function(){
-  //     const redirect_uri = 'http://localhost:8182/calendar';
-  //     const clientId = 'd54083f94196531e75d7de474142e52e';
-  //     const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
-  //     window.location.href = Auth_url;
-  //     console.log("callback"+this.code)
-  
-  //   }, 0);
-  // };
-  // auth(function(){
-  //   console.log('aaa')
-  //   if(this.code != null){
-  //     this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
-  //     .then(function(res){
-  //       console.log("data"+res.data)
-     
-
-
-  // const redirect_uri = 'http://localhost:8182/calendar';
-  // const clientId = 'd54083f94196531e75d7de474142e52e';
-  // const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`;
-  // window.location.href = Auth_url;
-  // console.log(this.code)
-  
- // this.getKakaoToken()
+          } else {
+            location.href = '/login'
+          }
+        })
 
 
 
-  /*
-  let token = sessionStorage.getItem('token')
-  console.log(token)
-
-  // 토큰 요청
-this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"token":token}})
-.then(function(res){
-  console.log(res.data.access_token) 
-})
-*/
-
-/*
-// 톡캘린더 스케줄 연동
-this.$axios.get("http://localhost:8181/api/kakao/add",)
-.then(function(res){
-  console.log(res.data)
-  // alert(res.data)
-})
-*/
-
-  /*
-  let formData = new FormData();
-formData.append('email', sessionStorage.getItem('loginId'));
-formData.append('group_num', self.newEvent.group_num);
-formData.append('title', self.newEvent.title);
-formData.append('start', self.newEvent.start);
-formData.append('end', dayjs(self.end).format('YYYY-MM-DD'));
-formData.append('startTime', self.startTime);
-formData.append('endTime', self.endTime);
-formData.append('info', self.info);
-formData.append('alert', self.alert);
-formData.append('isLoop', self.isLoop);
-formData.append('day', self.day);
-*/
 
 
-  //location.href = "/login"
- // res.data null이면 카카오 로그인하러 가기로 이동 
+    },
 
-},
+    // 네이버 스케줄 일정 연동
+    naver() {
 
-// 네이버 스케줄 일정 연동
-naver(){
 
-  
- // window.location.href = "http://localhost:8181/api/naver/oauth"
-   const clientId = "IiiFJKBOyzL3qvfXasPq"
-   const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
-  
-   const state = this.generateRandomState()
-   const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id='+clientId+'&redirect_uri='+redirectURI+'&state='+state;
+      const clientId = "IiiFJKBOyzL3qvfXasPq"
+      const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
 
-  window.location.href = naverAuthURL
+      const state = this.generateRandomState()
+      const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectURI + '&state=' + state;
 
-  let formData = new FormData()
-  formData.append('state', state)
-  formData.append('code', this.code)
-  this.$axios.get("http://localhost:8181/api/naver/callback", formData)
-  .then((res)=> {
-    console.log(res.data)
-  })
 
-  /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
-  .then(function(res){
-    console.log(res.data)
-  })
- */
-  // this.$axios.get(naverAuthURL)
-  // .then(function(res){
-  //   console.log(res.data)
-  // })
 
-  // this.$axios.get("http://localhost:8181/api/naver/oauth")
-  // .then(function(res){
-  //   console.log(res.data)
-    
-  //   let url = encodeURIComponent(res.data)
-  //   console.log(url)
-  //  
-  // })
 
-},
+
+
+      window.location.href = naverAuthURL
+
+
+
+      /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
+      .then(function(res){
+        console.log(res.data)
+      })
+     */
+      // this.$axios.get(naverAuthURL)
+      // .then(function(res){
+      //   console.log(res.data)
+      // })
+
+      // this.$axios.get("http://localhost:8181/api/naver/oauth")
+      // .then(function(res){
+      //   console.log(res.data)
+
+      //   let url = encodeURIComponent(res.data)
+      //   console.log(url)
+      //  
+      // })
+
+    },
+
+
+    executeNaverCode(code, state) {
+      let formData = new FormData()
+      formData.append('state', state)
+      formData.append('code', code)
+      this.$axios.get("http://localhost:8181/api/naver/callback", formData)
+        .then((res) => {
+          console.log(res.data)
+        }).catch((error) => {
+          console.log(error)
+        })
+
+    },
 
 // state 생성
 generateRandomState() {
@@ -1052,9 +1047,9 @@ objectType: 'feed',
 content: {
 title: '일정:   ' + self.kakaoShareTitle,
 description: '날짜:  ' + self.kakaoShareDescription + '   시간:  ' + self.kakaoShareTime,
-imageUrl: 'https://images.squarespace-cdn.com/content/v1/5ca4dc7716b6402eeb189bc0/48bb2da5-f85b-4b1a-a378-66a844509e46/Plantiful-Secondary2-Black.png?format=150w',
+imageUrl: 'https://previews.123rf.com/images/gustavofrazao/gustavofrazao1610/gustavofrazao161000313/64284988-%EB%85%B8%ED%8A%B8%EB%B6%81-%EB%B0%B0%EA%B2%BD%EC%9C%BC%EB%A1%9C-%EB%82%98%EB%AC%B4-%ED%81%90%EB%B8%8C%EC%97%90-%EC%93%B0%EC%97%AC%EC%A7%84-%EA%B3%84%ED%9A%8D.jpg',
 link: {
-webUrl: 'https://localhost:8081'
+webUrl: 'https://localhost:8182'
 }
 },
 // social: {
@@ -1073,6 +1068,8 @@ installTalk: true,
 });
 window.location.reload();
 },
+
+//url복사
 copyUrl() {
 const url = window.location.href;
 navigator.clipboard.writeText(url)
@@ -1087,9 +1084,12 @@ alert("URL이 복사되었습니다.");
 console.error("URL 복사에 실패했습니다.", error);
 });
     },
+
+
+
     //날짝 클릭하면 입력 폼 나옴
     handleDateClick(arg) {
-      
+      this.isReadOnly = true;
       this.showEventForm = true;
       this.isNewEvent = true,
         this.newEvent = {
@@ -1101,20 +1101,21 @@ console.error("URL 복사에 실패했습니다.", error);
           endTime: '',
           info: '',
           isLoop: 1,
-          day: 1
+          day: 1,
+          group_num: ''
         };
     },
 
 
-    //일정 추가
+     //일정 추가
     addEvent() {
       const self = this;
       const formData = new FormData();
       if (self.newEvent.end == 0) {
         self.newEvent.end = self.newEvent.start;
-  };
-  if (self.newEvent.isLoop === 1) {
-    self.newEvent.day = '';
+      };
+      if (self.newEvent.isLoop === 1) {
+        self.newEvent.day = '';
       }
 
       formData.append('email', sessionStorage.getItem('loginId'));
@@ -1129,10 +1130,7 @@ console.error("URL 복사에 실패했습니다.", error);
       formData.append('isLoop', self.newEvent.isLoop);
       formData.append('day', self.newEvent.day);
 
-      if (self.newEvent.group_num == null) {
-        alert("그룹 선택하세요")
-        return;
-      }
+
       // 데이터 전송
       self.$axios.post("http://localhost:8181/schedules", formData)
         .then(response => {
@@ -1151,6 +1149,8 @@ console.error("URL 복사에 실패했습니다.", error);
             display: 'block', // 시간 표시 설정
             // startEditable: true, // 시작 시간 편집 가능 설정
             // durationEditable: true, // 종료 시간 편집 가능 설정
+            // color: (item.group_num && item.group_num.group_num === item.schedulegroup_num) ? groupColor : '#7AC6FF',
+            group_num: savedEvent.group_num
           });
 
 
@@ -1164,7 +1164,90 @@ console.error("URL 복사에 실패했습니다.", error);
             // alert: '',
             info: '',
             isLoop: 1,
-            day: ''
+            day: '',
+          };
+          self.$refs.fullCalendar.getApi().refetchEvents();
+
+          // self.$router.go(0);
+          self.showEventForm = false;
+          location.reload();
+
+          // 네이버에 데이터 전송
+          // console.log(">>>>>>>>>>> naver")
+          // this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+          //   .then(function (res) {
+          //   })
+          //   console.log(">>>>>>>>>>> kakao")
+          //        //카카오에 데이터 전송
+          // this.$axios.post('http://localhost:8181/api/kakao/form', formData)
+          //   .then(function (res) {
+          //   })
+
+        })
+
+        .catch(error => {
+          console.error(error);
+        });
+
+    },
+
+    shareaddEvent() {
+      const self = this;
+      const formData = new FormData();
+      if (self.newEvent.end == 0) {
+        self.newEvent.end = self.newEvent.start;
+      };
+      if (self.newEvent.isLoop === 1) {
+        self.newEvent.day = '';
+      }
+
+      formData.append('email', sessionStorage.getItem('loginId'));
+      formData.append('group_num', self.newEvent.group_num);
+      formData.append('title', self.newEvent.title);
+      formData.append('start', self.newEvent.start);
+      formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
+      formData.append('startTime', self.newEvent.startTime);
+      formData.append('endTime', self.newEvent.endTime);
+      formData.append('info', self.newEvent.info);
+      formData.append('alert', self.newEvent.alert);
+      formData.append('isLoop', self.newEvent.isLoop);
+      formData.append('day', self.newEvent.day);
+
+
+      // 데이터 전송
+      self.$axios.post("http://localhost:8181/schedules", formData)
+        .then(response => {
+
+          // 저장된 이벤트 변수에 저장
+          const savedEvent = response.data.dto;
+          self.kakaoShareTitle = savedEvent.title;
+          self.kakaoShareDescription = savedEvent.start;
+          self.kakaoShareTime = savedEvent.startTime;
+          // 캘린더에 저장된 이벤트 추가
+          self.calendarOptions.events.push({
+            title: savedEvent.title,
+            start: savedEvent.start,
+            end: dayjs(savedEvent.end).format('YYYY-MM-DD'),
+            daysOfWeek: savedEvent.day,
+            display: 'block', // 시간 표시 설정
+            // startEditable: true, // 시작 시간 편집 가능 설정
+            // durationEditable: true, // 종료 시간 편집 가능 설정
+            // color: (item.group_num && item.group_num.group_num === item.schedulegroup_num) ? groupColor : '#7AC6FF',
+            group_num: savedEvent.group_num
+          });
+
+
+          // 입력된 값들 초기화
+          self.newEvent = {
+            title: '',
+            start: '',
+            end: '',
+            startTime: '',
+            endTime: '',
+            // alert: '',
+            info: '',
+            isLoop: 1,
+            day: '',
           };
           self.$refs.fullCalendar.getApi().refetchEvents();
 
@@ -1177,8 +1260,8 @@ console.error("URL 복사에 실패했습니다.", error);
           this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
             .then(function (res) {
             })
-            console.log(">>>>>>>>>>> kakao")
-                 //카카오에 데이터 전송
+          console.log(">>>>>>>>>>> kakao")
+          //카카오에 데이터 전송
           this.$axios.post('http://localhost:8181/api/kakao/form', formData)
             .then(function (res) {
             })
@@ -1188,7 +1271,6 @@ console.error("URL 복사에 실패했습니다.", error);
         .catch(error => {
           console.error(error);
         });
-
     },
 
 //폼 취소
@@ -1196,7 +1278,7 @@ cancel() {
 this.showEventForm = false;
 this.shareEvent = false;
 this.snsEvent = true;
-
+      location.reload();
 
 },
 
@@ -1215,8 +1297,9 @@ cancel2(){
       this.showOutForm = false;
     },
 
-    //일정 클릭 상세보기
+   //일정 클릭 상세보기
     handleEventClick(arg) {
+      this.isReadOnly = false;
       this.dayMaxEvents = false,
         this.showEventForm = true;
       this.isNewEvent = false;
@@ -1239,7 +1322,7 @@ cancel2(){
             info: scheduleData.info || '',
             isLoop: scheduleData.isLoop,
             day: scheduleData.day,
-            group_num: scheduleData.group_num
+            group_num: scheduleData.group_num ? scheduleData.group_num.schedulegroup_num : ''
           };
 
 
@@ -1257,7 +1340,6 @@ cancel2(){
         self.newEvent.end = self.newEvent.start;
       };
       formData.append('schedule_num', self.schedule_num);
-      formData.append('group_num', self.group_num);
       formData.append('title', self.newEvent.title);
       formData.append('start', self.newEvent.start);
       formData.append('end', dayjs(self.newEvent.end).format('YYYY-MM-DD'));
@@ -1283,7 +1365,6 @@ cancel2(){
           if (res.status == 200) {
             let dto = res.data.dto;
             if (dto != null) {
-              self.group_num = dto.group_num;
               self.title = dto.title;
               self.start = dto.start;
               self.end = dto.end;
@@ -1392,7 +1473,7 @@ alert("에러코드:" + res.status);
 
 
 .event-form {
-  background-color: #fff;
+  background-color: white;
   padding: 20px;
   width: 150%;
   height: 28rem;
@@ -1485,14 +1566,147 @@ alert("에러코드:" + res.status);
   position: absolute;
   background-color: white;
   border-radius: 10px;
-  width: 320px;
+  width: 43%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 100;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
   font-family: 'Pretendard-Regular';
 }
+
+.form-content {
+  width: 100%;
+  max-width: 800px;
+}
+
+.shareform-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.shareform-left,
+.shareform-right {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.shareform-divider {
+  width: 2px;
+  height: 100px;
+  background-color: #ccc;
+  margin: 0 20px;
+}
+
+.shareform-top {
+  display: flex;
+  justify-content: right;
+  margin-top: -40px;
+  font-size: 17px;
+  margin-right: 14px;
+}
+
+.shareform-title {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+  color: dimgray;
+}
+
+.share-btn {
+  margin: 0 5px;
+  padding: 8px 16px;
+  color: hsl(0, 0%, 0%);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: grid;
+  grid-auto-columns: max-content;
+  place-items: center;
+}
+
+/* Hover Shadow */
+@keyframes hover {
+  50% {
+    transform: translateY(-3px);
+  }
+
+  100% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes hover-shadow {
+  0% {
+    transform: translateY(6px);
+    opacity: .4;
+  }
+
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+
+
+  100% {
+    transform: translateY(6px);
+    opacity: .4;
+  }
+}
+
+.share-btn {
+  display: inline-block;
+  position: relative;
+  transition-duration: $defaultDuration;
+  transition-property: transform;
+
+  @include hideTapHighlightColor();
+  @include hardwareAccel();
+  @include improveAntiAlias();
+
+  &:before {
+    pointer-events: none;
+    position: absolute;
+    z-index: -1;
+    content: '';
+    top: 100%;
+    left: 5%;
+    height: 10px;
+    width: 90%;
+    opacity: 0;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, .35) 0%, rgba(0, 0, 0, 0) 80%);
+    /* W3C */
+    transition-duration: $defaultDuration;
+    transition-property: transform opacity;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    animation-name: hover;
+    animation-duration: 1.5s;
+    animation-delay: $defaultDuration;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+
+    &:before {
+      opacity: .4;
+      transform: translateY(6px);
+      animation-name: hover-shadow;
+      animation-duration: 1.5s;
+      animation-delay: .3s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+  }
+}
+
+
 
 .shareform {
   display: flex;
@@ -1504,14 +1718,6 @@ alert("에러코드:" + res.status);
   width: 30%;
 }
 
-.share-btn {
-  margin: 0 5px;
-  padding: 8px 16px;
-  color: hsl(0, 0%, 0%);
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
 
 
@@ -1574,14 +1780,26 @@ alert("에러코드:" + res.status);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 360px;
-  height: 200px;
+  width: 28%;
+  height: 30%;
   padding: 20px;
   border: 1px solid #ccc;
-  background-color: #eefffb;
+  background-color: white;
   z-index: 100;
   font-family: 'Pretendard-Regular';
+  border-radius: 10px;
+}
 
+.invite-msg {
+  border: 1px solid gray;
+  margin-top: 23px;
+  display: inline-block;
+  height: 36px;
+  border-radius: 6px;
+  background-color: #7AC6FF;
+  color: white;
+  border-color: #7AC6FF;
+  width: 60px;
 }
 
 .sidebar {
@@ -1610,14 +1828,14 @@ alert("에러코드:" + res.status);
 }
 
 .sidebar-groupinfo-name {
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding-top: 3%;
   display: flex;
   justify-content: space-evenly;
 }
 
 .sidebar-groupinfo-users {
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding-top: 3%;
   display: flex;
   justify-content: space-evenly;
@@ -1625,7 +1843,7 @@ alert("에러코드:" + res.status);
 
 .sidebar-grouplist {
   padding-top: 5%;
-  height: 30%;
+  height: 35%;
 }
 
 .sidebar-grouplist-title {
@@ -1648,12 +1866,13 @@ alert("에러코드:" + res.status);
 }
 
 .sidebar-list-group {
+  height: 85%;
+  overflow: scroll;
   list-style-type: none;
-  height: 70%;
 }
 
 .sidebar-list::-webkit-scrollbar-thumb {
-  background-color: #e6e6e6;
+  background-color: #f3f3f3;
   /* 스크롤바의 색상 설정 */
 }
 
@@ -1663,6 +1882,23 @@ alert("에러코드:" + res.status);
 }
 
 .sidebar-list::-webkit-scrollbar {
+  width: 10px;
+  height: auto;
+  background: transparent;
+}
+
+
+.sidebar-list-group::-webkit-scrollbar-thumb {
+  background-color: #f3f3f3;
+  /* 스크롤바의 색상 설정 */
+}
+
+.sidebar-list-group::-webkit-scrollbar-thumb:hover {
+  background-color: #cffefe;
+  /* 스크롤바에 마우스 호버 시 색상 설정 */
+}
+
+.sidebar-list-group::-webkit-scrollbar {
   width: 10px;
   background: transparent;
 }
@@ -1805,10 +2041,10 @@ alert("에러코드:" + res.status);
   cursor: pointer;
 }
 
-.fc-h-event{
-      background-color: #7AC6FF;
-    border: 1px solid #7AC6FF;
-    display: block;
+.fc-h-event {
+  background-color: white;
+  border: 1px solid white;
+  display: block;
 }
 
 .fc-icon {
