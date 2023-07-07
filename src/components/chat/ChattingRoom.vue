@@ -4,7 +4,7 @@
             <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
                 <v-icon icon="mdi-keyboard-backspace" /> 
             </b-button>
-            <h1>asd</h1>
+            <h1 style="margin-left: 80px; font-family: 'TheJamsil5Bold'; font-weight: 700;"> {{ roomOwner }}님의 구독 채팅방 </h1>
         </div>
         <div class="mx-auto rounded-lg elevation-3 overflow-y-auto overflow-x-hidden" 
             id="messages" ref="box" style="border-radius: 1px;">
@@ -74,7 +74,8 @@ export default {
             roomNum : this.$route.query.roomNum,
             id :sessionStorage.getItem("loginId"),
             message: '',
-            recvList:[]
+            recvList:[],
+            roomOwner : ''
         }
     },
     created : function() {
@@ -82,12 +83,14 @@ export default {
         let list = this.recvList
         self.$axios.get('http://localhost:8181/chat/joinroom', {params:{ roomNum : this.roomNum}})
         .then(function(ret) {
+            self.roomOwner = ret.data.list[0].room.subscribeNum.email.nickname
+            console.log(ret.data.list[0])
             for(let obj of ret.data.list) {
                 let date = new Date(obj.sendTime)
                 obj.sendTime = (date.getMonth() + 1) + "월 " 
-                    + (date.getDay() + 25)+ "일 " 
+                    + (date.getDay()+2)+ "일 " 
                     + date.getHours() + "시 " 
-                    + date.getSeconds() + "분" 
+                    + (date.getSeconds()-20) + "분" 
                 list.push(obj)
             }
         })
@@ -136,7 +139,7 @@ export default {
                         let obj = JSON.parse(res.body)
                         let date = new Date(obj.sendTime)
                         obj.sendTime = (date.getMonth() + 1) + "월 " 
-                        + (date.getDay() + 25) + "일 " 
+                        + (date.getDay()) + "일 " 
                         + date.getHours() + "시 " 
                         + date.getSeconds() + "분" 
                         this.recvList.push(obj)
