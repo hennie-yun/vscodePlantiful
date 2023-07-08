@@ -26,7 +26,7 @@
             <ul id="itemList">
                 <li class="uls" v-for="(item, index) of items" :key="index">
                     <div class="imgDiv">
-                        <a href="#" @click="detail(item.id)">
+                        <a style="cursor: pointer;" @click="detail(item.id)">
                             <img height="142" :src="item.poster">
                         </a>
                     </div>
