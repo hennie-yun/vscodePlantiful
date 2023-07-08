@@ -443,8 +443,9 @@ export default {
 
     let navercode = sessionStorage.getItem('navercode')
     let naverstate = sessionStorage.getItem('naverstate')
-    if(navercode == this.code && naverstate == this.state){
-      this.executeNaverCode()
+    if(navercode !== undefined && navercode === this.code){
+      if(naverstate !== undefined && naverstate === this.state)
+      this.executeNaverCode(navercode, naverstate)
       sessionStorage.removeItem('navercode')
       sessionStorage.removeItem('naverstate')
     }
@@ -1192,6 +1193,20 @@ console.error("URL 복사에 실패했습니다.", error);
       formData.append('day', self.newEvent.day);
 
 
+      
+          // 네이버에 데이터 전송
+          console.log(">>>>>>>>>>> naver")
+          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+            .then(function (res) {
+              console.log("naver에 전송"+res.data)
+            })
+          console.log(">>>>>>>>>>> kakao")
+          //카카오에 데이터 전송
+          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
+            .then(function (res) {
+              console.log("kakao에 전송" + res.data)
+            })
+
       // 데이터 전송
       self.$axios.post("http://localhost:8181/schedules", formData)
         .then(response => {
@@ -1318,16 +1333,6 @@ console.error("URL 복사에 실패했습니다.", error);
           self.shareEvent = true;
           location.reload();
 
-          // 네이버에 데이터 전송
-          console.log(">>>>>>>>>>> naver")
-          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
-            .then(function (res) {
-            })
-          console.log(">>>>>>>>>>> kakao")
-          //카카오에 데이터 전송
-          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
-            .then(function (res) {
-            })
 
         })
 
@@ -1339,7 +1344,7 @@ console.error("URL 복사에 실패했습니다.", error);
 //폼 취소
 cancel() {
 this.showEventForm = false;
-this.shareEvent = false;
+this.shareEvent = true;
 this.snsEvent = true;
       location.reload();
 },
