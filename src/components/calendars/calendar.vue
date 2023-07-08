@@ -490,7 +490,7 @@ export default {
 
                 self.reslist.forEach(function (item) {
                   const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || '#7AC6FF';
-                  const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
+                  const textColor = (item.group_num && item.group_num.schedulegroup_color === 0) ? 'black' : '';
                   const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
                   if (!existingEvent) {
                     if (item.isLoop === 2) {
@@ -556,7 +556,7 @@ export default {
               console.log(groupnums);
               groupnums.forEach(function (item) {
                 const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || 'blue';
-                const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
+                const textColor = (item.group_num && item.group_num.schedulegroup_color === 0) ? 'black' : '';
 
                 // 이미 추가된 일정인지 확인
                 const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
@@ -1546,7 +1546,7 @@ deleteEvent() {
 .title-input {
   width: 86.8%;
   border: 1px solid gray;
-  margin-left: 8.5%;
+  margin-left: 8.8%;
   height: 32px;
 }
 
