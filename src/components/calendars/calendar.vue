@@ -937,15 +937,19 @@ kakao(){
         .then((res) => {
           if(res.data.id == 1){
             console.log(res.data)
-            this.$axios.get("http://localhost:8181/api/kakao/add")
-            .then((res)=>{
-              console.log(res.data)
-            })
+            if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
+              const redirect_uri = 'http://localhost:8182/api/kakao/token'
+              const clientId = 'd54083f94196531e75d7de474142e52e';
+              const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
 
+
+             window.location.href = Auth_url;
+            }
           } else {
             window.location.href = '/login'
           }
         })
+      
       // let token = sessionStorage.getItem('token')
       // this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
       //   .then((res) => {
