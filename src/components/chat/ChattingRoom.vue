@@ -1,17 +1,17 @@
 <template>
-    <v-container class="" style="width:65%">
-        <div>
+    <v-container class="" style="width:50%">
+        <div style="padding:5px;">
             <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
                 <v-icon icon="mdi-keyboard-backspace" /> 
             </b-button>
-            <h1 style="margin-left: 80px; font-family: 'TheJamsil5Bold'; font-weight: 700;"> {{ roomOwner }}님의 구독 채팅방 </h1>
+            <h2 style="margin-left: 80px; font-family: 'Pretendard-Regular'; font-weight: 600;"> {{ roomOwner }}님의 구독 채팅방 </h2>
         </div>
-        <div class="mx-auto rounded-lg elevation-3 overflow-y-auto overflow-x-hidden" 
+        <div class="mx-auto rounded-lg elevation-0 overflow-y-auto overflow-x-hidden" 
             id="messages" ref="box" style="border-radius: 1px;">
             <v-card-text>
                 <v-container>
                     <div class="pt-5" v-for="(item, idx) in recvList" v-bind:key="idx">
-                        <div class="v-col-7 rounded-lg elevation-1 p-2" 
+                        <div class="v-col-7 rounded-lg elevation-1 pa-3" 
                             :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
                             <v-card-text>
                                 <v-row @click="remove(item, idx, $event)">
@@ -19,43 +19,44 @@
                                         <div class="pl-3 pt-3" 
                                             style="color : #737373; font-size: 16px;" >
                                             <div>
-                                                <div class="rounded-circle" style="background-color: white; width:44px; height: 44px;">
+                                                <div class="rounded-circle imgDiv">
                                                     <img class="rounded-circle" :src="'http://localhost:8181/chat/' + item.member.email"
-                                                    @error="replaceProfile" style="width:42px; height: 42px; margin:0px;"/>
+                                                    @error="replaceProfile" style="width:30px; height: 30px;"/>
                                                 </div>
                                             </div>
                                         </div>
                                     </v-col>
-                                    <v-col align-self="center" cols="auto">
+                                    <v-col align-self="center" cols="auto" style="padding: 0px">
                                         {{ item.member.nickname }}
-                                    </v-col>
-                                    <v-col align-self="end">
-                                        <div class="text-right pr-6" 
-                                            style="font-size: 14px; color:#737373"> 
-                                            {{ item.sendTime }} 
-                                        </div>
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col class="py-1" >
-                                        <div class="text-left pl-6 fs-4" > {{ item.message }}
+                                    <v-col class="py-1 my-1" >
+                                        <div class="text-left pl-6" style="font-size: 16px; font-family: Pretendard-Regular;"> {{ item.message }}
                                         </div>
                                     </v-col>
                                 </v-row>
-                                
                             </v-card-text>
                         </div>
+                        <v-row>
+                            <v-col align-self="end">
+                                <div class="text-right pr-6" 
+                                    style="font-size: 14px; color:#737373"> 
+                                    {{ item.sendTime }} 
+                                </div>
+                            </v-col>
+                        </v-row>
                     </div>
                 </v-container>
             </v-card-text>
         </div>
-        <v-container class="pa-5 mt-12 mx-auto rounded-lg" style="background-color: #7AC6FF;">
+        <div class="py-5 mt-12 mx-auto rounded-lg">
             <!-- <v-text-field label="id" variant="solo" v-model="id"/> -->
             <v-text-field class="ma-auto" v-model="message" label="메세지 보내기" append-icon="mdi-send" 
             clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
-            variant="solo" @click:append="sendMessage" v-on:keyup="sendMessage"/>
+            variant="outlined" @click:append="sendMessage" v-on:keyup="sendMessage"/>
 
-        </v-container>
+        </div>
     </v-container>
 </template>
 <script lang="js">
@@ -193,7 +194,7 @@ export default {
     }
 
     .mr-auto {
-        background-color: blanchedalmond;
+        background-color: #eaeaea;
     }
 
     #messages {
@@ -206,5 +207,14 @@ export default {
         width : 54px;
         height : 54px;
         border-radius: 16px;
+    }
+
+    .imgDiv {
+        background-color: white; 
+        width:36px; 
+        height: 36px; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
     }
 </style>

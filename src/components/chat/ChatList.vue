@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto;">
+        <div class="list-div elevation-1" style="">
             <div class="text-center head-title">
                 구독 파티 채팅방
             </div>
@@ -20,8 +20,6 @@
                                     {{ item.subscribeNum.email.nickname }} 님의 
                                     {{ item.subscribeNum.site }} 구독 채팅방
                                 </p>
-
-                                <p class="last-msg" style="font-size:13px;">{{ item.lastSender.nickname }}</p>
                                 <p class="last-msg" style="">{{ item.lastMsg }}</p>
                             </div>
                             <div>
@@ -82,6 +80,13 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         height : 100%;
+    }
+
+    .list-div {
+        width: 50%; 
+        margin: 8px;
+        height: 100%;
+        text-align: center;
     }
 
     .head-title {
