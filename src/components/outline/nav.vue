@@ -1,5 +1,6 @@
 <template>
-  <div>
+<keep-alive>
+<div>
     <nav class="navbar navbar-expand-custom navbar-mainbg">
       <a class="navbar-brand navbar-logo" href="/calendar">plan + tiful</a>
 
@@ -16,20 +17,24 @@
           </div>
 
           <li class="nav-item">
-            <router-link to="/mypage" class="nav-link">마이페이지</router-link>
+            <router-link to="/mypage" class="nav-link" @click="navigateTo('/mypage')">마이페이지</router-link>
           </li>
 
           <li class="nav-item active">
-            <router-link to="/calendar" class="nav-link">캘린더</router-link>
+            <router-link to="/calendar" class="nav-link" @click="navigateTo('/calendar')">캘린더</router-link>
           </li>
+
           <li class="nav-item">
-            <router-link to="/SubscribeBoardList" class="nav-link">구독</router-link>
+            <router-link to="/SubscribeBoardList" class="nav-link"
+              @click="navigateTo('/SubscribeBoardList')">구독</router-link>
           </li>
+
           <li class="nav-item">
-            <router-link to="/chatlist" class="nav-link">채팅</router-link>
+            <router-link to="/chatlist" class="nav-link" @click="navigateTo('/chatlist')">채팅</router-link>
           </li>
+
           <li class="nav-item">
-            <router-link to="/concertlist" class="nav-link">공모전</router-link>
+            <router-link to="/concertlist" class="nav-link" @click="navigateTo('/concertlist')">공모전</router-link>
           </li>
 
 
@@ -66,6 +71,7 @@
       </div>
     </div>
   </div>
+</keep-alive>
 </template>
 
 <script>
@@ -98,7 +104,12 @@ export default {
       // },
     }
   },
+  beforeRouteLeave(to, from, next) {
+    this.activeLink = to.path;
+    next();
+  },
   created() {
+    this.activeLink = this.$route.path;
     let token = sessionStorage.getItem('token');
     this.loginId = sessionStorage.getItem('loginId');
     this.img = 'http://localhost:8181/members/plantiful/' + this.loginId;
@@ -139,6 +150,10 @@ export default {
   },
 
   methods: {
+    navigateTo(route) {
+      this.activeLink = route;
+      this.$router.push(route);
+    },
     toggleNavigation() {
       const navbarCollapse = document.getElementById('navbarSupportedContent');
       navbarCollapse.classList.toggle('show');
@@ -149,9 +164,9 @@ export default {
 
     logout() {
       // if (this.dto.id === '0' || this.dto.id === null) {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('loginId');
-        location.href = '/login';
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('loginId');
+      location.href = '/login';
 
       // } else {
       //   location.href = '/login';
