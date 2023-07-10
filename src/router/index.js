@@ -15,10 +15,9 @@ import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
 import navercalendar from '../components/groups/navcalendar.vue'
 import naverlogin from '../components/groups/naverlogin.vue'
-import naveraccess from '../components/groups/naveraccess.vue'
 import payment from '../components/pay/payment.vue'
 import kakaojoin from '../components/members/kakaojoin.vue'
-import naverjoin from '../components/groups/naverjoin.vue'
+import naverjoin from '../components/members/naverjoin.vue'
 
 const routes = [
   {
@@ -128,11 +127,6 @@ const routes = [
         component: naverlogin
       },
       {
-        path: "/naveraccess",
-        name: "naveraccess",
-        component: naveraccess
-      },
-      {
         path : '/concertlist',
         name : 'concertlist',
         component : () => import('@/components/concert/concertList.vue'),
@@ -156,5 +150,15 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (from.name === null && sessionStorage.getItem('currentPage')) {
+    const currentPage = sessionStorage.getItem('currentPage')
+    next({ path: currentPage })
+  } else {
+    sessionStorage.setItem('currentPage', from.path)
+    next()
+  }
+});
 
 export default router

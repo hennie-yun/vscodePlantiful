@@ -22,12 +22,12 @@
         <div class="sidebar-groupinfo">
           <div style="display:flex; justify-content:center">
             <h4 style="position:absolute; color:gray;">그룹 정보</h4>
-            <div class="button-container" style="margin-right: -185px; margin-top: 0px;" v-if="selectedGroup">
+            <div class="group-buttons" style="margin-right: -185px; margin-top: 0px; display: flex;" v-if="selectedGroup">
               <button class="invite_btn" @click="toggleInviteForm" style="width:25px">
                 <img :src="require('@/assets/image/invite.png')" style="width:23px;" />
               </button>
-              <button class="delparty_btn" style="width:25px; margin-left:25%" v-if="selectedGroupEmails.length === 1"
-                @click="showDeleteForm = true">
+              <button class="delparty_btn" style="width:25px; margin-left:25%; margin-top: 2px;"
+                v-if="selectedGroupEmails.length === 1" @click="showDeleteForm = true">
                 <img :src="require('@/assets/image/delgroup.png')" style="width:20px;" />
               </button>
               <button class="outparty_btn" style="width:25px;  margin-left:25%" v-else @click="showOutForm = true">
@@ -39,8 +39,8 @@
           </div>
           <div v-if="selectedGroup">
             <div class="sidebar-groupinfo-name">
-              <span>그룹명</span>
-              <span>{{ selectedGroup.schedulegroup_num.schedulegroup_title }}</span>
+              <span style="position: absolute; margin-left: -95px;">그룹명</span>
+              <span style="margin-left: 90px;">{{ selectedGroup.schedulegroup_num.schedulegroup_title }}</span>
             </div>
             <div class="sidebar-groupinfo-users">
               <span>참여인원 {{ selectedGroupEmails.length }}명</span>
@@ -68,8 +68,9 @@
           <div class="sidebar-list-group">
             <ul style="list-style-type: none;">
               <li v-for="group in groups" :key="group.schedulegroup_num" style="margin-top:0px">
-                <div style="display:flex; justify-content:space-around; align-items: center; position: relative;">
-                  <span style="float: left; position: absolute; margin-left: -135px;">
+                <div
+                  style="display:flex; justify-content:space-around; align-items: center; position: relative; margin-left: 10px;">
+                  <span style="float: left; position: absolute; margin-left: -150px;">
                     <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
                       @change="toggleGroupSchedule(group)" /></span>
                   <span><label :for="group.schedulegroup_num" style="margin-right: -100px;">{{ group.schedulegroup_title
@@ -89,7 +90,7 @@
         <div class="delete-form" style="margin-top: 25px;">
           <p style="font-size: larger; font-weight: 600; display: flex; justify-content: center;">그룹을 삭제하시겠습니까?</p>
           <p style="font-size: 14px; text-align: center;"><img :src="require('@/assets/image/warn.gif')"
-              style="width:17px;" />
+              style="width:17px; margin-bottom: 3px;" />
             그룹을 삭제하면 그룹의 모든 일정이 삭제됩니다.</p>
           <div class="delete-buttons">
             <button class="delete-button delout" @click="delParty"
@@ -102,8 +103,8 @@
         <div class="delete-form" style="margin-top: 25px;">
           <p style="font-size: larger; font-weight: 600; display: flex; justify-content: center;">그룹을 나가시겠습니까?</p>
           <p style="font-size: 14px; text-align: center;"><img :src="require('@/assets/image/warn.gif')"
-              style="width:17px;" />
-            그룹을 나가면 본인이 작성한 그룹 일정이 삭제됩니다.</p>
+              style="width:17px; margin-bottom: 3px;" />
+            그룹을 나가면 본인이 작성한 해당 그룹의 일정이 삭제됩니다.</p>
           <div class="delete-buttons">
             <button class="delete-button delout" @click="outParty" style="width: 27px;">네</button>
             <button class="cancel-button delout" @click="xbtn" style="width: 55px;">아니오</button>
@@ -247,8 +248,13 @@
             @click="shareaddEvent" style="margin-right:90px">
             공유하기
           </button>
+          <!-- <button v-if="!isNewEvent" class="calendar_btn fixed-button"
+            @click="shareaddEvent2" style="margin-right: 85%; background-color: transparent; 
+            color: darkslategray; text-decoration: underline;">
+            공유
+          </button> -->
 
-          <button v-else-if="!isNewEvent" class="calendar_btn" @click="updateEvent" style="margin-right: 3px;">수정</button>
+          <button v-if="!isNewEvent" class="calendar_btn" @click="updateEvent" style="margin-right: 3px;">수정</button>
 
           <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
 
@@ -306,8 +312,7 @@
 
 
 
-<router-view />
-</template>
+  <router-view /></template>
 
 <script>
 import FullCalendar from '@fullcalendar/vue3'
@@ -434,13 +439,13 @@ export default {
     console.log(this.code)
     console.log(this.state)
 
-
+/*
     let kakaocode = sessionStorage.getItem('kakaocode')
     if (kakaocode == this.code) {
       this.getKakaoToken()
       sessionStorage.removeItem('kakaocode')
     }
-
+*/
    
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
@@ -931,27 +936,46 @@ kakao(){
       let token = sessionStorage.getItem('token')
       this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
         .then((res) => {
-          let id = res.data.id
-          if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서
+          if(res.data.id == 1){
+            console.log(res.data)
             if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
-              const redirect_uri = 'http://localhost:8182/calendar'
+              const redirect_uri = 'http://localhost:8182/api/kakao/token'
               const clientId = 'd54083f94196531e75d7de474142e52e';
               const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
 
 
-              window.location.href = Auth_url;
-
-            } else { // 받아온 this.code값이 있을때는
-              console.log(this.code)
-              // 세션에 KakaoToken()함수가 있는지 확인용
-
-              sessionStorage.setItem('kakaocode', this.code)
-
+             window.location.href = Auth_url;
             }
           } else {
-            location.href = '/login'
+            window.location.href = '/login'
           }
         })
+      
+      // let token = sessionStorage.getItem('token')
+      // this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+      //   .then((res) => {
+      //     let id = res.data.id
+      //     if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서`
+      //       if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
+      //         const redirect_uri = 'http://localhost:8182/api/kakao/token'
+      //         const clientId = 'd54083f94196531e75d7de474142e52e';
+      //         const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
+
+
+      //         window.location.href = Auth_url;
+
+      //       } else {
+      //         this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+      //           .then(function(res){
+      //             console.log("data"+res.data)
+      //           })
+      //       }
+            
+      //     } else {
+      //       location.href = '/login'
+          
+      //   }
+      // })
 
 
 
@@ -1327,6 +1351,7 @@ console.error("URL 복사에 실패했습니다.", error);
         });
     },
 
+
 //폼 취소
 cancel() {
 this.showEventForm = false;
@@ -1354,7 +1379,7 @@ xbtn() {
     handleEventClick(arg) {
       this.isReadOnly = false;
       this.dayMaxEvents = false,
-        this.showEventForm = true;
+      this.showEventForm = true;
       this.isNewEvent = false;
       const event = arg.event;
       const schedule_num = event.extendedProps.schedule_num;
@@ -1511,11 +1536,10 @@ deleteEvent() {
 }
 
 .calendar-con {
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
   font-family: 'Pretendard-Regular';
   width: 80%;
   padding: 2% 4% 4% 4%;
-  height: 100vh;
+  height: 97vh;
 }
 
 
@@ -1592,25 +1616,17 @@ deleteEvent() {
 }
 
 .delete-buttons {
-  margin-top: 35px;
+  margin-top: 25px;
   display: flex;
   justify-content: space-evenly;
+  height: 50px;
 }
 
-.head-event-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
-  /* box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; */
-  font-family: 'Pretendard-Regular';
-}
-
-.button-container {
+F .group-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 10px;
+
 
 }
 
@@ -1764,15 +1780,7 @@ deleteEvent() {
 
 
 
-.shareform {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center
-}
 
-.share-btn-div {
-  width: 30%;
-}
 
 
 
@@ -1862,10 +1870,11 @@ deleteEvent() {
   width: 20%;
   padding: 2%;
   border: none;
-  background-color: #f5ffff;
+  background-color: #ffffff;
   text-align: center;
   font-family: 'Pretendard-Regular';
   height: 100vh;
+  border-right: 1px solid #e2e2e2;
 }
 
 
@@ -1924,6 +1933,7 @@ deleteEvent() {
   height: 85%;
   overflow: scroll;
   list-style-type: none;
+  margin-top: 7px;
 }
 
 .sidebar-list::-webkit-scrollbar-thumb {
@@ -2023,7 +2033,7 @@ deleteEvent() {
 }
 
 .grouplist_btn {
-  margin-left: 10px;
+  margin-left: 15px;
   font-size: 20px;
   margin-top: 1px;
   display: inline-block;
@@ -2092,6 +2102,17 @@ deleteEvent() {
 
 
 <style>
+.head-event-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  /* box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; */
+  font-family: 'Pretendard-Regular';
+}
+
+
 .fc .fc-button-primary {
   background-color: #7AC6FF;
   border-color: #16212c61;
@@ -2146,6 +2167,9 @@ deleteEvent() {
 
 }
 
+.fc-event-title {
+  text-overflow: ellipsis;
+}
 
 .error-message {
   position: absolute;
@@ -2212,6 +2236,16 @@ deleteEvent() {
   height: 100%;
   border-top: 1px solid rgb(0, 139, 181);
   border-left: 1px solid rgb(0, 139, 181);
+}
+
+.shareform {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center
+}
+
+.share-btn-div {
+  width: 30%;
 }
 </style>
 

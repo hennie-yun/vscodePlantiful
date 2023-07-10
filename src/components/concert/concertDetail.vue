@@ -118,7 +118,7 @@
 </template>
 <script>
     import KakaoMap from "@/components/concert/KakaoMap"
-import { formatDate } from '@fullcalendar/core'
+    import { formatDate } from '@fullcalendar/core'
 
     export default {
         components: {

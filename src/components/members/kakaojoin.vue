@@ -5,7 +5,7 @@
     <div>
   </div>
     <div class="form-header">
-      <img :src="require('@/assets/image/KakaoTalk_logo.png')" style="width: 25%;  "/>
+      <img :src="require('@/assets/image/KakaoTalk_logo.png')" style="margin-top: 2%; width: 26%; height:21%; "/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
@@ -54,7 +54,8 @@ export default {
         nickname: '',
         phone: '',
         pwd: '',
-        kakaotoken: ''
+        kakaotoken: '',
+        message : ''
       },
       show: true,
       uploadButtonText: '프로필 사진 업로드',
@@ -106,22 +107,29 @@ export default {
       self.$axios.get('http://localhost:8181/kakaologin/' + self.code)
         .then((res) => {
           console.log(res)
+          if(res.status==200){
+            if(res.data.message){
+              alert(res.data.message);
+              location.href = "/"
+            } else {
           self.form.email = res.data.email;
           self.form.pwd = res.data.id;
           self.form.nickname = res.data.nickname;
           self.form.kakaotoken = res.data.accessToken;
+            }
           self.$axios.get('http://localhost:8181/members/getKakaomember/' + self.form.email)
             .then(function (res) {
               if (res.status == 200) {
                 console.log(res.data.flag)
                 if (res.data.flag == false) {
                   console.log(res.data.flag)
-                  alert('회원가입을하세요')
+                  alert('회원가입을 하세요')
                 } else {
                   self.klogin()
                 }
               }
             });
+          }
         });
     },
     onSubmit() {

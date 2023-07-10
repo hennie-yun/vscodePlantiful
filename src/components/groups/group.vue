@@ -7,6 +7,9 @@
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
                 <div class="card bg-white text-black" style="border-radius:1rem; font-family: 'Pretendard-Regular';">
                     <div class="card-body p-5 text-center">
+                        <div style="display: flex; justify-content: flex-end;">
+                        <h6 style="font-size:0.9rem; color:palevioletred;">* 그룹 색상 선택 필수</h6>
+                        </div>
                         <div class="md-md-5 mt-md-4 pb-5">
                             <h2 class="fw-bold mb-2">Group</h2>
                             <br/>
@@ -22,9 +25,7 @@
                                 <span :style="{backgroundColor: '#ffc0cb'}" class="dot" v-on:click="a(5)"></span>
                                 <span :style="{backgroundColor: '#98a6ff'}" class="dot" v-on:click="a(6)"></span>
                             </div>
-                            <button class="btn btn-primary btn-lg" style="border:none; background-color:#7AC6FF" v-on:click="register">그룹생성</button>
-                           
-                         
+                            <button v-if="title.trim() !== '' && color !== '' " class="btn btn-primary btn-lg create-group" v-on:click="register">그룹생성</button>
                         </div>
                     </div>
                 </div>
@@ -62,12 +63,20 @@ export default {
             let formData = new FormData();
             formData.append('schedulegroup_title', this.title)
             formData.append('schedulegroup_color', this.color)
+            if (this.color == '') {
+                alert("색깔을 정하십시오.");
+                return;
+           }
             let token = sessionStorage.getItem('token')
             self.$axios.post('http://localhost:8181/schedulegroup', formData, {headers:{'token':token}})
             .then(function(res){
                 if(res.status == 200){
                         location.href = "/calendar"
                 } else {
+                     if (this.color == " ") {
+                         alert('색깔을 정하십시오.');
+                         return;
+                        }
                     alert('그룹생성실패'+res.status)
                 }
             })
@@ -125,4 +134,16 @@ span {
     box-shadow: 0 0 0 4px #222;
 }
 
+.dot:hover{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.create-group{
+    border: none;
+    background-color: rgb(122, 198, 255);
+    margin-bottom: -60px;
+    width: 27%;
+    font-size: 18px;
+}
 </style>
