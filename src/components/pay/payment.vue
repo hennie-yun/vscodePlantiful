@@ -170,6 +170,7 @@
                     style="margin-top: -20px; margin-bottom:30px; width: 200px; border-radius: 50%; height: 200px;" />
             </div>
 
+
             <span class="info">{{ dto.nickname }}</span>
             <br />
 
@@ -204,6 +205,7 @@
 </template>
   
 <script>
+import img from '@/assets/image/user (2).png';
 
 
 const { IMP } = window;
@@ -272,6 +274,9 @@ export default {
                 });
     },
     methods: {
+        replaceImg(e) {
+      e.target.src = img;
+    },
         formatPrice() {
             const numericValue = this.formattedPrice.replace(/[^0-9]/g, '');
             const formattedValue = this.addCommas(numericValue);
@@ -310,17 +315,17 @@ export default {
                 }, function (rsp) {
                     var result = '';
                     if (rsp.success) {
-                        var msg = '결제가 완료되었습니다.';
-                        msg += '고유ID : ' + rsp.imp_uid;
-                        msg += '상점 거래ID : ' + rsp.merchant_uid;
-                        msg += '결제 금액 : ' + rsp.paid_amount;
-                        msg += '카드 승인번호 : ' + rsp.apply_num;
+                        // var msg = '결제가 완료되었습니다.';
+                        // msg += '고유ID : ' + rsp.imp_uid;
+                        // msg += '상점 거래ID : ' + rsp.merchant_uid;
+                        // msg += '결제 금액 : ' + rsp.paid_amount;
+                        // msg += '카드 승인번호 : ' + rsp.apply_num;
                         result = '0';
                         const form = new FormData();
-                        form.append('impuid', rsp.imp_uid)
-                        form.append('merchantuid', rsp.merchant_uid)
+                        // form.append('impuid', rsp.imp_uid)
+                        // form.append('merchantuid', rsp.merchant_uid)
                         form.append('paidamount', rsp.paid_amount)
-                        form.append('applynum', rsp.apply_num)
+                        // form.append('applynum', rsp.apply_num)
                         form.append('email', self.email)
                         console.log(form)
                         self.$axios.post('http://localhost:8181/payment/' + self.email, form)
@@ -333,7 +338,6 @@ export default {
                             });
                     } else {
                         var msg = '결제에 실패하였습니다.';
-                        msg += '에러내용 : ' + rsp.error_msg;
                         result = '1';
                         self.contractformcheck = false;
                         self.formattedPrice = '';
@@ -343,7 +347,7 @@ export default {
                     if (result == '0') {
                         alert('성공')
                     }
-                    alert(msg);
+                    // alert(msg);
                     self.contractformcheck = false
                 });
             }
@@ -384,7 +388,7 @@ export default {
                                     console.log(res.data)
                                     console.log(res.data.name);
                                     if (res.data.flag == false || res.data.name != self.name) {
-                                        alert('입력하신 정보와 일치하지 않습니다')
+                                        alert('등록 된 예금주 성함 및 전화번호가 본인인증 결과와 일치하지 않습니다.')
                                         self.outcontractformcheck = false;
                                         self.name = '';
                                         self.bankname = '';

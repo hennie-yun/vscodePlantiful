@@ -87,10 +87,10 @@
                 <input type="date" class="form-control" v-model="subscribe_enddate" required>
             </div> -->
         </div>
-        <div class="form-check form-check-inline checkbox">
+        <!-- <div class="form-check form-check-inline checkbox">
             <input class="form-check-input" type="checkbox" id="agree" v-model="agree">
             <label class="form-check-label" for="agree">모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.</label>
-        </div>
+        </div> -->
         <div class="row">
             <button class="btn custom-button" v-on:click="checkcash" style="background-color: #7AC6FF; color:white;">글 등록하기 </button>
         </div>
@@ -130,6 +130,7 @@ export default {
                 paidamount: 0
             },
             fflag: false,
+            // agree: [],
         }
     },
     watch: {
@@ -155,9 +156,9 @@ export default {
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },
-        agree(value) {
-            this.formValidated = !!value;
-        },
+        // agree(value) {
+        //     this.formValidated = !!value;
+        // },
 
     },
     methods: {
@@ -179,51 +180,53 @@ export default {
         },
         checkcash() {
             const self = this;
-            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-                .then(function (res) {
-                    if (res.status == 200) {
-                        if (res.data.paydto != null) {
-                            let dto = res.data.paydto
-                            if (dto != null) {
+            if (confirm('[자동취소 및 진행상태 변경안내] \n 모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 인원이 충족될 경우 모집일이 지나야 진행 상태로 변경됩니다.\n\n [모집자 입금 안내] \n 전체 금액은 구독 종료일에 모집자에게 포인트로 입금됩니다.\n\n [취소 및 환불 안내] \n 모집글 삭제는 참여자가 없을 경우에만 가능합니다. 참여자가 있을 경우 취소 및 환불은 불가능합니다.\n\n 위 내용에 동의하신다면 확인을 클릭해주세요.\n')) {
+                self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            if (res.data.paydto != null) {
+                                let dto = res.data.paydto
+                                if (dto != null) {
 
-                                //돈 있음
-                                // alert("true : " + self.fflag)
-                                self.add();
+                                    //돈 있음
+                                    // alert("true : " + self.fflag)
+                                    self.add();
+                                } else {
+                                    // alert("false : " + self.fflag)
+                                }
+                                if (self.fflag == true) {
+                                    self.paidamount = self.paydto.paidamount;
+                                    let form = new FormData();
+                                    form.append('paidamount', self.total_point / self.total_people)
+                                    self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+                                        .then(function (res) {
+                                            if (res.status == 200) {
+
+                                                alert(res.data.message)
+
+                                            } else {
+                                                alert(res.data.message)
+                                            }
+                                        })
+                                } else {
+                                    alert('등록이 취소되었습니다.')
+                                }
+
                             } else {
-                                // alert("false : " + self.fflag)
+                                alert(res.data.message);
                             }
-                            if (self.fflag == true) {
-                                self.paidamount = self.paydto.paidamount;
-                                let form = new FormData();
-                                form.append('paidamount', self.total_point / self.total_people)
-                                self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
-                                    .then(function (res) {
-                                        if (res.status == 200) {
-
-                                            alert(res.data.message)
-
-                                        } else {
-                                            alert(res.data.message)
-                                        }
-                                    })
-                            } else {
-                                alert('등록이 취소되었습니다.')
-                            }
-
-                        } else {
-                            alert(res.data.message);
+                        } else if (res.status == 500) {
+                            alert('현금없음');
                         }
-                    } else if (res.status == 500) {
-                        alert('현금없음');
-                    }
-                })
+                    })
+                }
 
         },
         add() {
             const self = this;
             this.formValidated = true;
 
-            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate || !this.agree) {
+            if (!this.site || !this.title || !this.total_point || !this.total_people || !this.recruit_endperiod || !this.subscribe_startdate) {
                 alert('필수 항목을 전부 입력해주세요.')
                 self.fflag = false;
                 return;
@@ -275,8 +278,7 @@ export default {
     }
 }
 </script>
-<style>
-
+<style scoped>
 @font-face {
     font-family: 'Pretendard-Regular';
     src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
@@ -288,7 +290,7 @@ export default {
     font-family: 'Pretendard-Regular';
 }
 
-.body {  
+.body {
     text-align: center;
     margin-left: 15%;
     margin-right: 15%;
@@ -298,23 +300,26 @@ export default {
     justify-content: center;
 }
 
-.body h1{
+.body h1 {
     margin: 50px;
     font-weight: 600;
     /* color: #7ac5ff; */
     color: black;
 }
 
-.bodycontent{
+.bodycontent {}
 
+img {
+    max-height: 30px;
+    margin-right: 11px;
 }
 
-.warnmsg{
+.warnmsg {
     color: red;
 }
 
 
-.radiocheck{
+.radiocheck {
     margin-left: 27px;
     margin-bottom: 2%;
 }
@@ -341,7 +346,7 @@ export default {
     margin-right: 10px;
 }
 
-.checkbox{
-    margin-left:50px;
+.checkbox {
+    margin-left: 50px;
 }
 </style>

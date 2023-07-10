@@ -1,11 +1,11 @@
 <template>
   <div class="form" :class="activeForm">
   
-    <br/>
+    <br />
     <div>
   </div>
     <div class="form-header">
-      <img :src="require('@/assets/image/KakaoTalk_logo.png')" style="width: 25%;  "/>
+      <img :src="require('@/assets/image/startwithnaver.png')" style="margin-top:20%; width: 97%; height:25%; "/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
@@ -25,7 +25,7 @@
         </label>
       </div>
 <div class="form-element">
-        <button id="submit-btn" @click="onSubmit()">카카오톡으로 회원가입 하기</button>
+        <button id="submit-btn" @click="onSubmit()">네이버로 회원가입 하기</button>
       </div>
     </div>
     <div class="button-wrapper">
@@ -39,10 +39,11 @@
 <script>
 
 export default {
-  name: 'kakaojoin',
+  name: 'naverjoin',
   data() {
     return {
       code: this.$route.query.code,
+      state: this.$route.query.state,
       email: '',
       pwd: '',
       nickname: '',
@@ -54,7 +55,7 @@ export default {
         nickname: '',
         phone: '',
         pwd: '',
-        kakaotoken: ''
+        navertoken: ''
       },
       show: true,
       uploadButtonText: '프로필 사진 업로드',
@@ -62,8 +63,10 @@ export default {
   },
   created() {
     this.code = this.$route.query.code;
+    this.state = this.$route.query.state;
     console.log(this.code)
-    this.getToken();
+    console.log(this.state)
+   this.getToken(this.code, this.state);
   },
   methods: {
     autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
@@ -88,9 +91,9 @@ export default {
               sessionStorage.setItem('loginId', res.data.loginId)             
           const addform = new FormData();
           addform.append('email', self.form.email)
-          addform.append('token', self.form.kakaotoken)
-          console.log(self.form.kakaotoken)
-          self.$axios.post('http://localhost:8181/tokensave', addform)
+          addform.append('token', self.form.navertoken)
+          console.log(self.form.navertoken)
+          self.$axios.post('http://localhost:8181/api/naver/token', addform)
             .then(function (rep) {
               if (rep.status == 200) {
                 location.href="/calendar"            
@@ -101,15 +104,19 @@ export default {
           }
           })
         },
-    getToken() { //토큰 냅다 받아~~ 
+    getToken(code, state) { //토큰 냅다 받아~~ 
       const self = this;
-      self.$axios.get('http://localhost:8181/kakaologin/' + self.code)
+      let formData = new FormData()
+      formData.append('code', self.code)
+      formData.append('state', self.state)
+      self.$axios.post('http://localhost:8181/api/naver/login', formData)
         .then((res) => {
-          console.log(res)
-          self.form.email = res.data.email;
-          self.form.pwd = res.data.id;
-          self.form.nickname = res.data.nickname;
-          self.form.kakaotoken = res.data.accessToken;
+          console.log(res.data)
+           self.form.email = res.data.userinfo.naverResponse.email;
+           self.form.pwd = res.data.userinfo.naverResponse.id;
+           self.form.nickname = res.data.userinfo.naverResponse.nickname;
+           self.form.navertoken = res.data.access_token;
+         
           self.$axios.get('http://localhost:8181/members/getKakaomember/' + self.form.email)
             .then(function (res) {
               if (res.status == 200) {
@@ -122,8 +129,10 @@ export default {
                 }
               }
             });
+            
         });
     },
+    
     onSubmit() {
       const self = this;
       const form = new FormData();
@@ -142,7 +151,7 @@ export default {
       form.append('email', self.form.email);
       form.append('nickname', self.form.nickname);
       form.append('pwd', self.form.pwd)
-      form.append('id', 1)
+      form.append('id', 2)
       if (document.getElementById('img-input-file').value !== '') {
         const file = document.getElementById('img-input-file').files[0];
         form.append('f', file);

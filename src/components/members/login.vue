@@ -53,10 +53,10 @@
         <p v-show="!AllFieldsFilled" style="margin-top :10px; text-align: center;">이메일 인증 후 가입이 가능합니다</p>
       </div>
       <br />
-      <div>
-        <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
+      <div class="image-container">
+        <img class="kakaoIdLogin" :src="require('@/assets/image/KakaoTalk_logo.png')" @click="kakaoLogin" />
+        <img class="naverIdLogin" :src="require('@/assets/image/naverlogin.jpg')" @click="naverlogin" />
       </div>
-
     </div>
   </div>
 </template>
@@ -190,7 +190,7 @@ export default {
       const form = new FormData();
 
       //전화번호 11자리로 고정 
-       if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
+      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
         alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
         return;
       } else if (!self.phone.startsWith('010')) {
@@ -201,6 +201,7 @@ export default {
       }
 
       form.append('email', self.email);
+      form.append('id', 0);
 
       // 비밀번호 정규식
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
@@ -285,6 +286,28 @@ export default {
       const clientId = 'd54083f94196531e75d7de474142e52e';
       const Auth_url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirect_uri}`;
       window.location.href = Auth_url;
+    },
+
+    //네이버 로그인 
+    naverlogin() {
+      let client_id = "IiiFJKBOyzL3qvfXasPq"
+      let redirect_uri = encodeURIComponent("http://localhost:8182/naverjoin", "UTF-8")
+      const state = this.generateRandomState()
+      const apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
+        + "&client_id=" + client_id
+        + "&redirect_uri=" + redirect_uri
+        + "&state=" + state
+      window.location.href = apiURL
+    },
+    // state 생성
+    generateRandomState() {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let state = "";
+      for (let i = 0; i < 16; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        state += characters.charAt(randomIndex);
+      }
+      return state;
     }
   }
 }
@@ -391,5 +414,16 @@ export default {
    outline: none !important;
    border-color: #7AC6FF;
 
+ }
+
+ .image-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+
+ .kakaoIdLogin {
+   height: 40px;
+   width: 40px;
  }
 </style>
