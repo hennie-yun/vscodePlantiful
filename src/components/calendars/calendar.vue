@@ -12,7 +12,8 @@
                 <span v-if="schedule.startTime !== null && schedule.startTime !== 'null'" style="position: absolute;">{{
                   schedule.startTime }}</span>
                 <span
-                  style="width: 120px; position: absolute; margin-left: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ schedule.title }}</span>
+                  style="width: 120px; position: absolute; margin-left: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{
+                    schedule.title }}</span>
               </div>
             </li>
           </ul>
@@ -21,12 +22,12 @@
         <div class="sidebar-groupinfo">
           <div style="display:flex; justify-content:center">
             <h4 style="position:absolute; color:gray;">그룹 정보</h4>
-            <div class="group-buttons" style="margin-right: -185px; margin-top: 0px;" v-if="selectedGroup">
+            <div class="group-buttons" style="margin-right: -185px; margin-top: 0px; display: flex;" v-if="selectedGroup">
               <button class="invite_btn" @click="toggleInviteForm" style="width:25px">
                 <img :src="require('@/assets/image/invite.png')" style="width:23px;" />
               </button>
-              <button class="delparty_btn" style="width:25px; margin-left:25%" v-if="selectedGroupEmails.length === 1"
-                @click="showDeleteForm = true">
+              <button class="delparty_btn" style="width:25px; margin-left:25%; margin-top: 2px;"
+                v-if="selectedGroupEmails.length === 1" @click="showDeleteForm = true">
                 <img :src="require('@/assets/image/delgroup.png')" style="width:20px;" />
               </button>
               <button class="outparty_btn" style="width:25px;  margin-left:25%" v-else @click="showOutForm = true">
@@ -67,7 +68,8 @@
           <div class="sidebar-list-group">
             <ul style="list-style-type: none;">
               <li v-for="group in groups" :key="group.schedulegroup_num" style="margin-top:0px">
-                <div style="display:flex; justify-content:space-around; align-items: center; position: relative;">
+                <div
+                  style="display:flex; justify-content:space-around; align-items: center; position: relative; margin-left: 10px;">
                   <span style="float: left; position: absolute; margin-left: -150px;">
                     <input type="checkbox" :id="group.schedulegroup_num" :value="group.schedulegroup_num" checked
                       @change="toggleGroupSchedule(group)" /></span>
@@ -246,11 +248,11 @@
             @click="shareaddEvent" style="margin-right:90px">
             공유하기
           </button>
-          <button v-if="!isNewEvent" class="calendar_btn fixed-button"
+          <!-- <button v-if="!isNewEvent" class="calendar_btn fixed-button"
             @click="shareaddEvent2" style="margin-right: 85%; background-color: transparent; 
             color: darkslategray; text-decoration: underline;">
             공유
-          </button>
+          </button> -->
 
           <button v-if="!isNewEvent" class="calendar_btn" @click="updateEvent" style="margin-right: 3px;">수정</button>
 
@@ -310,8 +312,7 @@
 
 
 
-<router-view />
-</template>
+  <router-view /></template>
 
 <script>
 import FullCalendar from '@fullcalendar/vue3'
@@ -1619,13 +1620,13 @@ deleteEvent() {
   display: flex;
   justify-content: space-evenly;
   height: 50px;
-}F
+}
 
-
-.group-buttons {
+F .group-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 10px;
+
 
 }
 
@@ -1932,6 +1933,7 @@ deleteEvent() {
   height: 85%;
   overflow: scroll;
   list-style-type: none;
+  margin-top: 7px;
 }
 
 .sidebar-list::-webkit-scrollbar-thumb {
@@ -2031,7 +2033,7 @@ deleteEvent() {
 }
 
 .grouplist_btn {
-  margin-left: 10px;
+  margin-left: 15px;
   font-size: 20px;
   margin-top: 1px;
   display: inline-block;
@@ -2164,6 +2166,7 @@ deleteEvent() {
   height: 107%;
 
 }
+
 .fc-event-title {
   text-overflow: ellipsis;
 }
