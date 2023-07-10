@@ -89,9 +89,15 @@
         <!-- 참여하기 버튼 -->
         <div v-if="dto.email && dto.email.email !== loginId" class="btn">
             <div v-if="this.currentDate < this.dto.recruit_endperiod">
+                <div class="warn">
+                    참여 후 취소 및 환불이 불가능합니다.
+                </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
             <div v-else-if="this.currentDate = this.dto.recruit_endperiod">
+                <div class="warn">
+                    참여 후 취소 및 환불이 불가능합니다.
+                </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
             <div v-else="this.currentDate > this.dto.recruit_endperiod">
@@ -100,7 +106,8 @@
         </div>
 
         <!-- 삭제하기 버튼 -->
-        <div v-else-if="dto.email && dto.email.email === loginId && (this.currentDate < this.dto.recruit_endperiod)" class="btn">
+        <div v-else-if="dto.email && dto.email.email === loginId && (this.currentDate < this.dto.recruit_endperiod)"
+            class="btn">
             <div>
                 <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
@@ -147,7 +154,7 @@ export default {
     },
     mounted() {
         this.currentDate = dayjs().format('YYYY-MM-DD');
-    
+
     },
     methods: {
         addparty() {
@@ -211,44 +218,46 @@ export default {
 
         checkcash() {
             const self = this;
-            self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
-                .then(function (res) {
-                    console.log(res)
-                    if (res.status == 200) {
-                        if (res.data.paydto != null) {
+            if (confirm('정말로 참여하시겠습니까?\n참여 후 취소 및 환불은 불가능합니다.')) {
+                self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
+                    .then(function (res) {
+                        console.log(res)
+                        if (res.status == 200) {
+                            if (res.data.paydto != null) {
 
-                            // self.paidamount = self.paydto.paidamount;
+                                // self.paidamount = self.paydto.paidamount;
 
 
-                            self.addparty();
+                                self.addparty();
 
-                            // let form = new FormData();
-                            // let divisionnum = parseInt(self.divisionResult)
-                            // form.append('paidamount', divisionnum)
-                            // form.append('email', self.email)
-                            // self.$nextTick(function () {
-                            //     alert('checkedjoined: ' + self.checkjoined)
+                                // let form = new FormData();
+                                // let divisionnum = parseInt(self.divisionResult)
+                                // form.append('paidamount', divisionnum)
+                                // form.append('email', self.email)
+                                // self.$nextTick(function () {
+                                //     alert('checkedjoined: ' + self.checkjoined)
 
-                            //     if (self.checkjoined == true) {
-                            //         self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
-                            //             .then(function (res) {
-                            //                 if (res.status == 200) {
-                            //                     alert(res.data.message)
-                            //                 } else {
-                            //                     alert(res.data.message)
-                            //                 }
-                            //             })
-                            //     } else {
+                                //     if (self.checkjoined == true) {
+                                //         self.$axios.post('http://localhost:8181/payment/withdraw/' + self.email, form)
+                                //             .then(function (res) {
+                                //                 if (res.status == 200) {
+                                //                     alert(res.data.message)
+                                //                 } else {
+                                //                     alert(res.data.message)
+                                //                 }
+                                //             })
+                                //     } else {
 
-                            //     }
-                            // })
-                        } else {
-                            alert(res.data.message);
+                                //     }
+                                // })
+                            } else {
+                                alert(res.data.message);
+                            }
+                        } else if (res.status == 500) {
+                            alert('현금없음');
                         }
-                    } else if (res.status == 500) {
-                        alert('현금없음');
-                    }
-                })
+                    })
+            }
 
         },
 
@@ -324,7 +333,7 @@ export default {
             .then(function (res) {
                 if (res.status == 200) {
                     self.dto = res.data.dto;
-                    
+
                     self.checkmember();
                     // 출금일 날짜 변환
                     self.paymentDate = dayjs(self.dto.payment_date).format('YYYY-MM-DD');
@@ -414,6 +423,9 @@ export default {
     /* 수직 축 정렬은 아래로 */
 }
 
+.warn {
+    color: red;
+}
 
 .bigtitle {
     position: relative;
@@ -471,5 +483,6 @@ img {
     padding: 10px;
     color: white;
     margin: 20px;
+    border: none;
 }
 </style>
