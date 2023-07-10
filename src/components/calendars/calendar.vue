@@ -8,9 +8,9 @@
           <ul class="sidebar-list">
             <li v-for="schedule in sortedSchedules" :key="schedule.schedule_num"
               style="display:flex; justify-content: space-evenly;">
-              <div style="display:flex">
-                <span v-if="schedule.startTime !== null && schedule.startTime !== 'null'">{{ schedule.startTime }}</span>
-                <span style="width:150px">{{ schedule.title }}</span>
+              <div style="display:flex; position:relative; margin-right: 191px; margin-bottom: 23px;">
+                <span v-if="schedule.startTime !== null && schedule.startTime !== 'null'" style="position: absolute;">{{ schedule.startTime }}</span>
+                <span style="width: 120px; position: absolute; margin-left: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ schedule.title }}</span>
               </div>
             </li>
           </ul>
@@ -86,8 +86,8 @@
         <div class="delete-form" style="margin-top: 25px;">
           <p style="font-size: larger; font-weight: 600;">그룹을 삭제하시겠습니까?</p>
           <div class="delete-buttons">
-            <button class="delete-button" @click="delParty">네</button>
-            <button class="cancel-button" @click="xbtn">아니오</button>
+            <button class="delete-button" @click="delParty" style="width: 27px;">네</button>
+            <button class="cancel-button" @click="xbtn" style="width: 55px;">아니오</button>
           </div>
         </div>
       </div>
@@ -95,8 +95,8 @@
         <div class="delete-form" style="margin-top: 25px;">
           <p style="font-size: larger; font-weight: 600;">그룹을 나가시겠습니까??</p>
           <div class="delete-buttons">
-            <button class="delete-button" @click="outParty">네</button>
-            <button class="cancel-button" @click="xbtn">아니오</button>
+            <button class="delete-button" @click="outParty"  style="width: 27px;">네</button>
+            <button class="cancel-button" @click="xbtn" style="width: 55px;">아니오</button>
           </div>
         </div>
       </div>
@@ -207,13 +207,13 @@
             <img :src="require('@/assets/image/formrepeat.png')" style="width:28px;" /></label>
           <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" class="radio-input" style="margin-left:18%;"
             checked />
-          <label for="isLoop">반복 안 함</label>
-          <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input" />
-          <label for="isLoop2">반복 설정</label>
+          <label for="isLoop">반복 없음</label>
+          <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input" style="margin-left: 8px;"/>
+          <label for="isLoop2" style="margin-left:0px">반복 설정</label>
           <div class="form-row" v-if="newEvent.isLoop === '2'">
             <label for="day"></label>
-            <select id="day" v-model="newEvent.day" class="select-input" style="width: 70px; margin-top: 10px; height: 30px; 
-            text-align: center; border-radius: 5px;">
+            <select id="day" v-model="newEvent.day" class="select-input" style="width: 70px; margin-top: 16px; height: 30px; 
+            text-align: center; border-radius: 5px; padding-top:2px">
               <option value="1">월요일</option>
               <option value="2">화요일</option>
               <option value="3">수요일</option>
@@ -227,13 +227,17 @@
 
 
 
-        <div class="form-row form-buttons">
+        <div class="form-row form-buttons" style="margin-top: 25px;">
           <button v-if="isNewEvent && newEvent.title.trim() !== ''" class="calendar_btn fixed-button" @click="addEvent"
             style="margin-right:17px">
             등록
           </button>
+          <button v-if="isNewEvent && newEvent.title.trim() !== ''" class="calendar_btn fixed-button" @click="shareaddEvent"
+            style="margin-right:90px">
+            공유하기
+          </button>
 
-          <button v-else-if="!isNewEvent" class="calendar_btn" @click="updateEvent">수정</button>
+          <button v-else-if="!isNewEvent" class="calendar_btn" @click="updateEvent" style="margin-right: 3px;">수정</button>
 
           <button v-if="!isNewEvent" class="calendar_btn" @click="deleteEvent">삭제</button>
 
@@ -291,21 +295,6 @@
 
 
 
-  <div v-if="showShareForm" class="centered-form">
-    <div class="delete-form" style="margin-top: 25px;">
-      <p style="font-size: larger; font-weight: 600;">그룹을 삭제하시겠습니까?</p>
-      <div class="delete-buttons">
-        <button class="delete-button" @click="delParty">네</button>
-        <button class="cancel-button" @click="xbtn">아니오</button>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
-
 <router-view />
 </template>
 
@@ -319,11 +308,9 @@ import axios from 'axios';
 
 export default {
   mounted() {
-   
   },
-
   computed: {
-
+    
     
 
     sortedSchedules() {
@@ -349,6 +336,7 @@ export default {
   },
   data() {
     return {
+      naverURL:'',
       state: this.$route.query.state,
       code: this.$route.query.code,
       access_token: '',
@@ -435,23 +423,14 @@ export default {
     console.log(this.code)
     console.log(this.state)
 
+
     let kakaocode = sessionStorage.getItem('kakaocode')
     if (kakaocode == this.code) {
       this.getKakaoToken()
       sessionStorage.removeItem('kakaocode')
     }
 
-    let navercode = sessionStorage.getItem('navercode')
-    let naverstate = sessionStorage.getItem('naverstate')
-    if(navercode == this.code && naverstate == this.state){
-      this.executeNaverCode()
-      sessionStorage.removeItem('navercode')
-      sessionStorage.removeItem('naverstate')
-    }
-
-
-
-    
+   
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
     const self = this;
@@ -501,7 +480,7 @@ export default {
 
                 self.reslist.forEach(function (item) {
                   const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || '#7AC6FF';
-                  const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
+                  const textColor = (item.group_num && item.group_num.schedulegroup_color === 0) ? 'black' : '';
                   const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
                   if (!existingEvent) {
                     if (item.isLoop === 2) {
@@ -567,7 +546,7 @@ export default {
               console.log(groupnums);
               groupnums.forEach(function (item) {
                 const groupColor = item.group_num && self.groupColors[item.group_num.schedulegroup_color] || 'blue';
-                const textColor = (item.group_num && item.group_num.schedulegroup_color === 2) ? 'black' : '';
+                const textColor = (item.group_num && item.group_num.schedulegroup_color === 0) ? 'black' : '';
 
                 // 이미 추가된 일정인지 확인
                 const existingEvent = self.calendarOptions.events.find(event => event.schedule_num === item.schedule_num);
@@ -1037,23 +1016,15 @@ formData.append('day', self.day);
 
     // 네이버 스케줄 일정 연동
     naver() {
-
-
       const clientId = "IiiFJKBOyzL3qvfXasPq"
-      const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
-
+      const redirectURI = encodeURIComponent("http://localhost:8181/api/naver/callback");
       const state = this.generateRandomState()
       const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectURI + '&state=' + state;
 
-  window.location.href = naverAuthURL
+    window.location.href = naverAuthURL
+  
 
-  let formData = new FormData()
-  formData.append('state', state)
-  formData.append('code', this.code)
-  this.$axios.get("http://localhost:8181/api/naver/callback", formData)
-  .then((res)=> {
-    console.log(res.data)
-  })
+  
 
       /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
       .then(function(res){
@@ -1075,6 +1046,10 @@ formData.append('day', self.day);
       // })
 
 },
+reloadPage(){
+  window.location.reload()
+},
+
    executeNaverCode(code, state) {
       let formData = new FormData()
       formData.append('state', state)
@@ -1087,6 +1062,7 @@ formData.append('day', self.day);
         })
 
     },
+    
 // state 생성
 generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -1276,6 +1252,20 @@ console.error("URL 복사에 실패했습니다.", error);
       formData.append('day', self.newEvent.day);
 
 
+      
+          // 네이버에 데이터 전송
+     
+          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+            .then(function (res) {
+              console.log(">>>>>>>>>>> naver" + res.data)
+            })
+            //카카오에 데이터 전송
+            this.$axios.post('http://localhost:8181/api/kakao/form', formData)
+            .then(function (res) {
+              console.log(">>>>>>>>>>> kakao" + res.data)
+            })
+
+
       // 데이터 전송
       self.$axios.post("http://localhost:8181/schedules", formData)
         .then(response => {
@@ -1316,18 +1306,6 @@ console.error("URL 복사에 실패했습니다.", error);
           // self.$router.go(0);
           self.showEventForm = false;
           self.shareEvent = true;
-          location.reload();
-
-          // 네이버에 데이터 전송
-          console.log(">>>>>>>>>>> naver")
-          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
-            .then(function (res) {
-            })
-          console.log(">>>>>>>>>>> kakao")
-          //카카오에 데이터 전송
-          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
-            .then(function (res) {
-            })
 
         })
 
@@ -1539,8 +1517,9 @@ deleteEvent() {
   background-color: white;
   padding: 20px;
   width: 150%;
-  height: 28rem;
+  height: 29rem;
   border-radius: 10px;
+  border: 0.5px solid #80808042;
 }
 
 .fixed-button {
@@ -1557,7 +1536,7 @@ deleteEvent() {
 .title-input {
   width: 86.8%;
   border: 1px solid gray;
-  margin-left: 8.5%;
+  margin-left: 8.8%;
   height: 32px;
 }
 
@@ -1925,7 +1904,7 @@ deleteEvent() {
 .sidebar-list {
   list-style-type: none;
   overflow: scroll;
-  height: 70%;
+  height: 75%;
 }
 
 .sidebar-list-group {

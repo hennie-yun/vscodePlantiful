@@ -1,8 +1,9 @@
 <template>
     <v-app>
         <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto;">
-            <!-- <div class="text-left" style="height: 10%; background-color: #7AC6FF;">
-            </div> -->
+            <div class="text-center head-title">
+                구독 파티 채팅방
+            </div>
             <v-container class="rounded-xl" id="messages" ref="box">
                 <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
                     <div class="wrapper" v-if="roomList.length == 0">
@@ -81,6 +82,14 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         height : 100%;
+    }
+
+    .head-title {
+        font-size: 48px; 
+        margin: 0 auto; 
+        color:white; 
+        height: 10%; 
+        background-color: #7AC6FF;
     }
 
     .wrapper {
