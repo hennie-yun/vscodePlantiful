@@ -54,7 +54,7 @@
         <br />
 
         <div class="fullcontainer">
-          <div v-if="dto.id != 1" class="input-container">
+          <div v-if="dto.id ==0" class="input-container">
             <label for="pwd">비밀번호</label>
             <input v-if="changepwd == false" type="password" v-model="pwd" @click="checkpwd" class="input-field">
             <input v-if="changepwd == true" v-model="pwd" type="text" placeholder="비밀번호" @focus="showPasswordMessage"
@@ -65,14 +65,6 @@
               style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
               특수문자를 포함한 8자리 이상만 가능합니다.</span>
           
-
-
-
-
-
-
-
-
 
           <div class="input-container">
             <label for="nickname"> 닉네임</label>
@@ -298,8 +290,9 @@ export default {
             });
         }
       } else {
-        alert('카카오톡을 이용한 탈퇴를 진행 합니다');
+        alert('간편 로그인 탈퇴를 진행 합니다');
         const self = this;
+        if (self.dto.id == 1 ){
       self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
         .then(function (res) {
           if (res.status == 200) {
@@ -310,7 +303,22 @@ export default {
             alert('에러')
           }
         });
+      } else {
+        self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+            .then(function (res) {
+              if (res.status == 200) {
+                if (res.data.flag) {
+                  alert('탈퇴완료')
+                  self.logout()
+                  location.href = '/'
+                }
+              } else {
+                alert('에러')
+              }
+            });
+
       }
+    }
     }else {
       alert ('탈퇴를 취소 합니다')
     }

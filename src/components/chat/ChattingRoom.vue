@@ -1,17 +1,17 @@
 <template>
     <v-container class="" style="width:50%">
-        <div style="padding:5px;">
+        <div style="padding:12px;">
             <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
                 <v-icon icon="mdi-keyboard-backspace" /> 
             </b-button>
-            <h2 style="margin-left: 80px; font-family: 'Pretendard-Regular'; font-weight: 600;"> {{ roomOwner }}님의 구독 채팅방 </h2>
+            <h2 style="margin-left: 60px; font-family: 'Pretendard-Regular'; font-weight: 600;"> {{ roomOwner }}님의 구독 채팅방 </h2>
         </div>
-        <div class="mx-auto rounded-lg elevation-0 overflow-y-auto overflow-x-hidden" 
-            id="messages" ref="box" style="border-radius: 1px;">
+        <div class="mx-auto rounded-lg overflow-y-auto overflow-x-hidden" 
+            id="messages" ref="box" style="">
             <v-card-text>
                 <v-container>
-                    <div class="pt-5" v-for="(item, idx) in recvList" v-bind:key="idx">
-                        <div class="v-col-7 rounded-lg elevation-1 pa-3" 
+                    <div class="pt-2" v-for="(item, idx) in recvList" v-bind:key="idx">
+                        <div class="v-col-7 rounded-lg pa-3" 
                             :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
                             <v-card-text>
                                 <v-row @click="remove(item, idx, $event)">
@@ -32,42 +32,36 @@
                                 </v-row>
                                 <v-row>
                                     <v-col class="py-1 my-1" >
-                                        <div class="text-left pl-6" style="font-size: 16px; font-family: Pretendard-Regular;"> {{ item.message }}
+                                        <div class="pl-6" 
+                                            style="font-size: 16px; font-family: Pretendard-Regular;"> 
+                                            {{ item.message }}
                                         </div>
                                     </v-col>
                                 </v-row>
                             </v-card-text>
                         </div>
-                        <v-row>
-                            <v-col align-self="end">
-                                <div class="text-right pr-6" 
-                                    style="font-size: 14px; color:#737373"> 
-                                    {{ item.sendTime }} 
-                                </div>
-                            </v-col>
-                        </v-row>
+                        <div class="v-col-7 pa-3" 
+                            :class="[item.member.email === id ? 'ml-auto' : 'mr-auto']">
+                            <v-row style="background-color: white;">
+                                <v-col>
+                                    <div class="text-right" 
+                                        style="font-size: 14px; color:#737373"> 
+                                        {{ item.sendTime }} 
+                                    </div>
+                                </v-col>
+                            </v-row>
+                        </div>
                     </div>
                 </v-container>
             </v-card-text>
         </div>
-        <div class="py-5 mt-12 mx-auto rounded-lg">
+        <div class="py-5 mt-5 mx-auto rounded-lg">
             <!-- <v-text-field label="id" variant="solo" v-model="id"/> -->
             <v-text-field class="ma-auto" v-model="message" label="메세지 보내기" append-icon="mdi-send" 
             clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
             variant="outlined" @click:append="sendMessage" v-on:keyup="sendMessage"/>
-
         </div>
     </v-container>
-
-        <container class="send_message" style="background-color: #7AC6FF;">
-
-         <v-text-field class="ma-auto" :value="message" label="메세지 보내기" append-icon="mdi-send" 
-            clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
-            variant="solo" @click:append="sendMessage" @input="message = $event"/>
-
-
-        </container>
-  
 </template>
 <script lang="js">
 import Stomp from 'webstomp-client'
@@ -215,6 +209,7 @@ export default {
         width: 100%; 
         height: 450px; 
         padding: 10px;
+        border: 1px solid #e8e8e8;
     }
 
     img {

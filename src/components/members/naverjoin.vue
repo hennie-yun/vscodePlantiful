@@ -5,7 +5,7 @@
     <div>
   </div>
     <div class="form-header">
-      <img :src="require('@/assets/image/startwithnaver.png')" style="margin-top:20%; width: 97%; height:25%; "/>
+      <img :src="require('@/assets/image/naverlogin.jpg')" style="width: 30%; height:25%;"/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
@@ -111,12 +111,17 @@ export default {
       formData.append('state', self.state)
       self.$axios.post('http://localhost:8181/api/naver/login', formData)
         .then((res) => {
+          if(res.status==200){
+            if(res.data.userinfo.message){
+              alert(res.data.userinfo.message);
+              location.href = "/"
+            } else {
           console.log(res.data)
            self.form.email = res.data.userinfo.naverResponse.email;
            self.form.pwd = res.data.userinfo.naverResponse.id;
            self.form.nickname = res.data.userinfo.naverResponse.nickname;
            self.form.navertoken = res.data.access_token;
-         
+            }
           self.$axios.get('http://localhost:8181/members/getKakaomember/' + self.form.email)
             .then(function (res) {
               if (res.status == 200) {
@@ -129,7 +134,7 @@ export default {
                 }
               }
             });
-            
+          }
         });
     },
     
@@ -199,13 +204,6 @@ export default {
   justify-content: center;
 }
 
-/* .form .form-header>div {
-  color: #7AC6FF;
-  font-size: 18px;
-  text-align: center;
-  font-weight: 600;
-  cursor: pointer;
-} */
 
 .form.signup .form-header div.show-signup {
   color: #7AC6FF;
