@@ -38,7 +38,7 @@ generateRandomState() {
   }
 
 </script>
-<style>
+<style scoped>
     img {
       height: 50px;
     }
