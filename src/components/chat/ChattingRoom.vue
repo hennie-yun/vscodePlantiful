@@ -58,6 +58,16 @@
 
         </div>
     </v-container>
+
+        <container class="send_message" style="background-color: #7AC6FF;">
+
+         <v-text-field class="ma-auto" :value="message" label="메세지 보내기" append-icon="mdi-send" 
+            clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
+            variant="solo" @click:append="sendMessage" @input="message = $event"/>
+
+
+        </container>
+  
 </template>
 <script lang="js">
 import Stomp from 'webstomp-client'
@@ -141,8 +151,8 @@ export default {
                         let date = new Date(obj.sendTime)
                         obj.sendTime = (date.getMonth() + 1) + "월 " 
                             + date.getDate()+ "일 "
-                            + date.getHours() + "시 " 
-                            + date.getMinutes() + "분" 
+                            + date.getHours() + ":" 
+                            + date.getMinutes() + " " 
                         // this.scrollToBottom()
                         this.recvList.push(obj)
                     })
@@ -188,9 +198,13 @@ export default {
 }
 </script>
 <style scoped>
+.send_message{
+    width : 50%;
+    
+}
+
     .ml-auto {  
-        background-color: #7AC6FF
-;
+        background-color: #7AC6FF;
     }
 
     .mr-auto {
