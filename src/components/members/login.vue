@@ -291,7 +291,9 @@ export default {
 }
 </script>
 
-<style scoped> .form {
+<style scoped> 
+
+.form {
    font-family: 'Pretendard-Regular';
    font-weight: 400;
    position: absolute;

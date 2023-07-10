@@ -157,4 +157,14 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  if (from.name === null && sessionStorage.getItem('currentPage')) {
+    const currentPage = sessionStorage.getItem('currentPage')
+    next({ path: currentPage })
+  } else {
+    sessionStorage.setItem('currentPage', from.path)
+    next()
+  }
+});
+
 export default router
