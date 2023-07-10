@@ -1,39 +1,45 @@
 <template lang="">
-  <div>
-    <div id="naver_id_login"></div>
-  </div>
+
+    <div>
+        <img id="naverIdLogin" :src="require('@/assets/image/naverlogin.png')" @click="naverlogin" />
+      </div>
+
 </template>
 <script>
 export default {
     name:'naveraccess',
     mounted(){
-     
-    // Load the Naver login script dynamically
-    const script = document.createElement('script');
-    script.src = 'https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js';
-    script.charset = 'utf-8';
-    document.head.appendChild(script);
-
-    // Initialize the Naver login button
-    script.onload = () => {
-      window.naverLogin = new naver.LoginWithNaverId({
-        clientId: 'IiiFJKBOyzL3qvfXasPq',
-        callbackUrl: 'http://localhost:8182/naverlogin',
-        isPopup: false,
-        callbackHandle: false,
-      });
-      window.naverLogin.init();
-    }
-},
-  methods: {
-    loginWithNaver() {
-      // Trigger the Naver login process
-      window.naverLogin.login();
+    
     },
+  methods: {
+  naverlogin(){
+    let client_id = "IiiFJKBOyzL3qvfXasPq"
+    let redirect_uri = encodeURIComponent("http://localhost:8182/naverjoin", "UTF-8")
+    const state = this.generateRandomState()
+    const apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code"
+    + "&client_id="+client_id
+    + "&redirect_uri="+redirect_uri
+    + "&state="+state
+    window.location.href=apiURL
   },
+  // state 생성
+generateRandomState() {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let state = "";
+
+      for (let i = 0; i < 16; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        state += characters.charAt(randomIndex);
+      }
+
+      return state;
     }
+    }
+  }
 
 </script>
-<style lang="">
-    
+<style>
+    img {
+      height: 50px;
+    }
 </style>

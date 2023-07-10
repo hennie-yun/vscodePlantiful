@@ -308,11 +308,9 @@ import axios from 'axios';
 
 export default {
   mounted() {
-   
   },
-
   computed: {
-
+    
     
 
     sortedSchedules() {
@@ -338,6 +336,7 @@ export default {
   },
   data() {
     return {
+      naverURL:'',
       state: this.$route.query.state,
       code: this.$route.query.code,
       access_token: '',
@@ -419,28 +418,19 @@ export default {
    created() {
    
 
-    // this.code = this.$route.query.code
-    // this.state = this.$route.query.state
-    // console.log(this.code)
-    // console.log(this.state)
-
-    // let kakaocode = sessionStorage.getItem('kakaocode')
-    // if (kakaocode == this.code) {
-    //   this.getKakaoToken()
-    //   sessionStorage.removeItem('kakaocode')
-    // }
-
-    // let navercode = sessionStorage.getItem('navercode')
-    // let naverstate = sessionStorage.getItem('naverstate')
-    // if(navercode == this.code && naverstate == this.state){
-    //   this.executeNaverCode()
-    //   sessionStorage.removeItem('navercode')
-    //   sessionStorage.removeItem('naverstate')
-    // }
+    this.code = this.$route.query.code
+    this.state = this.$route.query.state
+    console.log(this.code)
+    console.log(this.state)
 
 
+    let kakaocode = sessionStorage.getItem('kakaocode')
+    if (kakaocode == this.code) {
+      this.getKakaoToken()
+      sessionStorage.removeItem('kakaocode')
+    }
 
-    
+   
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
     const self = this;
@@ -1026,23 +1016,15 @@ formData.append('day', self.day);
 
     // 네이버 스케줄 일정 연동
     naver() {
-
-
       const clientId = "IiiFJKBOyzL3qvfXasPq"
-      const redirectURI = encodeURIComponent("http://localhost:8182/calendar");
-
+      const redirectURI = encodeURIComponent("http://localhost:8181/api/naver/callback");
       const state = this.generateRandomState()
       const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectURI + '&state=' + state;
 
-  window.location.href = naverAuthURL
+    window.location.href = naverAuthURL
+  
 
-  let formData = new FormData()
-  formData.append('state', state)
-  formData.append('code', this.code)
-  this.$axios.get("http://localhost:8181/api/naver/callback", formData)
-  .then((res)=> {
-    console.log(res.data)
-  })
+  
 
       /*this.$axios.get("http://localhost:8181/api/naver/tokenprovider/", {headers:{"token": token}})
       .then(function(res){
@@ -1064,6 +1046,10 @@ formData.append('day', self.day);
       // })
 
 },
+reloadPage(){
+  window.location.reload()
+},
+
    executeNaverCode(code, state) {
       let formData = new FormData()
       formData.append('state', state)
@@ -1076,6 +1062,7 @@ formData.append('day', self.day);
         })
 
     },
+    
 // state 생성
 generateRandomState() {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -1265,6 +1252,20 @@ console.error("URL 복사에 실패했습니다.", error);
       formData.append('day', self.newEvent.day);
 
 
+      
+          // 네이버에 데이터 전송
+     
+          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
+            .then(function (res) {
+              console.log(">>>>>>>>>>> naver" + res.data)
+            })
+            //카카오에 데이터 전송
+            this.$axios.post('http://localhost:8181/api/kakao/form', formData)
+            .then(function (res) {
+              console.log(">>>>>>>>>>> kakao" + res.data)
+            })
+
+
       // 데이터 전송
       self.$axios.post("http://localhost:8181/schedules", formData)
         .then(response => {
@@ -1305,17 +1306,6 @@ console.error("URL 복사에 실패했습니다.", error);
           // self.$router.go(0);
           self.showEventForm = false;
           self.shareEvent = true;
-
-          // 네이버에 데이터 전송
-          console.log(">>>>>>>>>>> naver")
-          this.$axios.post('http://localhost:8181/api/naver/calendar', formData)
-            .then(function (res) {
-            })
-          console.log(">>>>>>>>>>> kakao")
-          //카카오에 데이터 전송
-          this.$axios.post('http://localhost:8181/api/kakao/form', formData)
-            .then(function (res) {
-            })
 
         })
 
