@@ -1,18 +1,18 @@
 <template>
     <v-app>
-        <div class="list-div elevation-1" style="">
-            <div class="text-center head-title">
+        <div class="rounded-3" style="width: 50%; margin:12px auto; height: 85%;">
+            <div class="text-center rounded-t-lg head-title">
                 구독 파티 채팅방
             </div>
-            <v-container class="rounded-xl" id="messages" ref="box">
+            <div id="messages" ref="box">
                     <div class="wrapper" v-if="roomList.length == 0">
                         <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
                     </div>
                     <div class="msg-box rounded-3" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
-                        <div class="img-info-box" style="width:100%;" @click="goRoom(item.num)">
-                            <div class="img-box rounded-circle h-50">
+                        <div class="img-info-box" style="width:100%; padding-left: 15px;" @click="goRoom(item.num)">
+                            <div class="img-box rounded-circle">
                                 <img :src="'http://localhost:8181/chat/' + item.lastSender.email"
-                                @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:48px; height: 48px;"/>
+                                @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:36px; height: 36px;"/>
                             </div>
                             <div class="info-box text-left">
                                 <p class="last-msg" style="font-size: 14px;">
@@ -26,8 +26,8 @@
                             </div>
                         </div>
                     </div>
-
-            </v-container>
+                    
+            </div>
         </div>
     </v-app>
 </template>
@@ -75,30 +75,28 @@ export default {
 }
 </script>
 <style scoped>
+    #app {}
+
     #messages {
         overflow-x: hidden;
         overflow-y: auto;
         height : 100%;
-    }
-
-    .list-div {
-        width: 50%; 
-        margin: 8px;
-        height: 100%;
-        text-align: center;
+        border-right: 1px solid #e0e0e0;
+        border-left : 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
     }
 
     .head-title {
-  display: flex;
-  justify-content: center;
-  align-items: center; /* 수직 가운데 정렬을 위해 추가 */
-  font-size: 30px;
-  margin: 0 auto;
-  color: white;
-  height: 8%;
-  background-color: #7AC6FF;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        font-size: 30px;
+        margin: 0 auto;
+        color: white;
+        height: 12%;
+        background-color: #7AC6FF;
+    }
 
-}
     .wrapper {
         display: flex;
         justify-content: center;
