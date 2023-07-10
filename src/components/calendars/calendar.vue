@@ -9,8 +9,11 @@
             <li v-for="schedule in sortedSchedules" :key="schedule.schedule_num"
               style="display:flex; justify-content: space-evenly;">
               <div style="display:flex; position:relative; margin-right: 191px; margin-bottom: 23px;">
-                <span v-if="schedule.startTime !== null && schedule.startTime !== 'null'" style="position: absolute;">{{ schedule.startTime }}</span>
-                <span style="width: 120px; position: absolute; margin-left: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ schedule.title }}</span>
+                <span v-if="schedule.startTime !== null && schedule.startTime !== 'null'" style="position: absolute;">{{
+                  schedule.startTime }}</span>
+                <span
+                  style="width: 120px; position: absolute; margin-left: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{
+                    schedule.title }}</span>
               </div>
             </li>
           </ul>
@@ -84,19 +87,26 @@
       <!-- 그룹 삭제,나가기 확인 -->
       <div v-if="showDeleteForm" class="centered-form">
         <div class="delete-form" style="margin-top: 25px;">
-          <p style="font-size: larger; font-weight: 600;">그룹을 삭제하시겠습니까?</p>
+          <p style="font-size: larger; font-weight: 600; display: flex; justify-content: center;">그룹을 삭제하시겠습니까?</p>
+          <p style="font-size: 14px; text-align: center;"><img :src="require('@/assets/image/warn.gif')"
+              style="width:17px;" />
+            그룹을 삭제하면 그룹의 모든 일정이 삭제됩니다.</p>
           <div class="delete-buttons">
-            <button class="delete-button" @click="delParty" style="width: 27px;">네</button>
-            <button class="cancel-button" @click="xbtn" style="width: 55px;">아니오</button>
+            <button class="delete-button delout" @click="delParty"
+              style="width: 27px; :hover:font-weight: bold;">네</button>
+            <button class="cancel-button delout" @click="xbtn" style="width: 55px;">아니오</button>
           </div>
         </div>
       </div>
       <div v-if="showOutForm" class="centered-form">
         <div class="delete-form" style="margin-top: 25px;">
-          <p style="font-size: larger; font-weight: 600;">그룹을 나가시겠습니까??</p>
+          <p style="font-size: larger; font-weight: 600; display: flex; justify-content: center;">그룹을 나가시겠습니까?</p>
+          <p style="font-size: 14px; text-align: center;"><img :src="require('@/assets/image/warn.gif')"
+              style="width:17px;" />
+            그룹을 나가면 본인이 작성한 그룹 일정이 삭제됩니다.</p>
           <div class="delete-buttons">
-            <button class="delete-button" @click="outParty"  style="width: 27px;">네</button>
-            <button class="cancel-button" @click="xbtn" style="width: 55px;">아니오</button>
+            <button class="delete-button delout" @click="outParty" style="width: 27px;">네</button>
+            <button class="cancel-button delout" @click="xbtn" style="width: 55px;">아니오</button>
           </div>
         </div>
       </div>
@@ -208,7 +218,8 @@
           <input type="radio" id="isLoop" v-model="newEvent.isLoop" value="1" class="radio-input" style="margin-left:18%;"
             checked />
           <label for="isLoop">반복 없음</label>
-          <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input" style="margin-left: 8px;"/>
+          <input type="radio" id="isLoop2" v-model="newEvent.isLoop" value="2" class="radio-input"
+            style="margin-left: 8px;" />
           <label for="isLoop2" style="margin-left:0px">반복 설정</label>
           <div class="form-row" v-if="newEvent.isLoop === '2'">
             <label for="day"></label>
@@ -232,8 +243,8 @@
             style="margin-right:17px">
             등록
           </button>
-          <button v-if="isNewEvent && newEvent.title.trim() !== ''" class="calendar_btn fixed-button" @click="shareaddEvent"
-            style="margin-right:90px">
+          <button v-if="isNewEvent && newEvent.title.trim() !== ''" class="calendar_btn fixed-button"
+            @click="shareaddEvent" style="margin-right:90px">
             공유하기
           </button>
 
@@ -882,10 +893,11 @@ export default {
           }
         })
     },
-    //그룹 나가기
+     //그룹 나가기
     outParty() {
       this.showOutForm = true;
       const self = this;
+      self.eamil = sessionStorage.getItem('loginId');
       const selectedGroupSchedulegroupNum = this.selectedGroup.schedulegroup_num.schedulegroup_num;
       let grouppartyNum = null;
 
@@ -901,7 +913,7 @@ export default {
 
       console.log(grouppartyNum);
 
-      self.$axios.delete("http://localhost:8181/groupparty/outparty/" + grouppartyNum)
+      self.$axios.delete("http://localhost:8181/groupparty/outparty/" + grouppartyNum + '/' + self.email)
         .then(function (res) {
           if (res.status == 200) {
             location.reload();
@@ -910,6 +922,7 @@ export default {
           }
         })
     },
+
 
     
 // 카카오 스케줄 일정 연동
@@ -1514,7 +1527,7 @@ deleteEvent() {
 
 
 .event-form {
-  background-color: white;
+  background-color: #fdfdfd;
   padding: 20px;
   width: 150%;
   height: 29rem;
@@ -1571,7 +1584,7 @@ deleteEvent() {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   font-family: 'Pretendard-Regular';
   width: 25%;
-  height: 20%;
+  height: 24%;
   background-color: white;
   border-radius: 10px;
   display: flex;
@@ -1590,7 +1603,7 @@ deleteEvent() {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 100;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  /* box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; */
   font-family: 'Pretendard-Regular';
 }
 
@@ -1598,6 +1611,7 @@ deleteEvent() {
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
+
 }
 
 .share-event-form {
@@ -1848,12 +1862,11 @@ deleteEvent() {
   width: 20%;
   padding: 2%;
   border: none;
-  background-color: ivory;
+  background-color: #f5ffff;
   text-align: center;
   font-family: 'Pretendard-Regular';
   height: 100vh;
 }
-
 
 
 
@@ -2056,6 +2069,7 @@ deleteEvent() {
   }
 }
 
+
 .delete-button {
   display: inline-block;
   transition-duration: $defaultDuration;
@@ -2069,6 +2083,11 @@ deleteEvent() {
     transform: scale(.9);
   }
 }
+
+.delout:hover {
+  font-weight: bold;
+  font-size: 20px;
+}
 </style>
 
 
@@ -2078,6 +2097,12 @@ deleteEvent() {
   border-color: #16212c61;
   color: var(--fc-button-text-color);
 }
+
+
+.fc .fc-button-primary:disabled {
+  background-color: lightslategray;
+}
+
 
 .fc-event {
   cursor: pointer;
