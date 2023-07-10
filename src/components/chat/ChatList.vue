@@ -1,11 +1,10 @@
 <template>
     <v-app>
-        <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto;">
+        <div class="elevation-1 h-100 text-center" style="width: 65%; margin: 0 auto; padding-top:2%;">
             <div class="text-center head-title">
                 구독 파티 채팅방
             </div>
             <v-container class="rounded-xl" id="messages" ref="box">
-                <!-- <div class="rounded elevation-10" style="height: 100%;"> -->
                     <div class="wrapper" v-if="roomList.length == 0">
                         <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
                     </div>
@@ -29,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                <!-- </div> -->
+
             </v-container>
         </div>
     </v-app>
@@ -85,13 +84,16 @@ export default {
     }
 
     .head-title {
-        font-size: 48px; 
-        margin: 0 auto; 
-        color:white; 
-        height: 10%; 
-        background-color: #7AC6FF;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center; /* 수직 가운데 정렬을 위해 추가 */
+  font-size: 30px;
+  margin: 0 auto;
+  color: white;
+  height: 8%;
+  background-color: #7AC6FF;
 
+}
     .wrapper {
         display: flex;
         justify-content: center;

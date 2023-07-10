@@ -49,7 +49,7 @@
                     이름
                 </div>
 
-                <div class="col">
+                <div class="col-3">
                     작성자
                 </div>
                 <div class="col">
@@ -75,7 +75,7 @@
                         <div class="col">
                             {{ order.title }}
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             {{ order.email.email }}
                         </div>
                         <div class="col">
@@ -295,7 +295,7 @@ export default {
                         self.total_people = order.total_people
                         self.total_point = order.total_point
 
-                        if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod) {
+                        if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod && self.currentDate < self.subscribe_enddate) {
                             // 인원수 같음 & 모집일 지남
                             order.flag = 1;
 
@@ -336,24 +336,23 @@ export default {
                                 console.log('이미 실행됨');
                             }
 
-                        } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
+                        } else if (self.recruitpeople === self.total_people && self.currentDate > self.subscribe_enddate) {
                             // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
                             order.flag = 2;
                             if (currentTotalPointBasket != 0) {
                                 const self = this;
-                                const price = order.subscribe_num.total_point;
+                                const price = order.total_point;
                                 console.log('구독 종료일 지남:' + price);
-                                const email = order.subscribe_num.email.email(모집자);
-                                console.log('구독 종료일 지남:' + email);
+                                console.log('구독 종료일 지남:' + self.email);
                                 const form = new FormData();
-                                form.append('email', email);
+                                form.append('email', self.email);
                                 form.append('paidamount', price);
-                                self.$axios.post('http://localhost:8181/payment/' + self.subscribe_num.email.email, form)
+                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
                                             alert('구독 끝 - 모집자에게 돈 돌아감 ')
                                             self.$axios
-                                                .patch('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
+                                                .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                 .then(function (res) {
                                                     if (res.status === 200) {
                                                         console.log('구독 종료일 지나서 0으로 만들고 돌아감');
@@ -377,7 +376,7 @@ export default {
                             }
                         } else {
                             order.flag = 0;
-                            alert('빠져나옴 !! 다 해당안돼' + order.subscribe_num)
+                            // alert('빠져나옴 !! 다 해당안돼' + order.subscribe_num)
                         }
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
@@ -516,6 +515,7 @@ export default {
 img {
     border-style: none;
     margin: 5px;
+    max-height: 30px;
 }
 
 .listtitle {

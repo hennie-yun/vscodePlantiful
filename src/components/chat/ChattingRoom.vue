@@ -1,12 +1,12 @@
 <template>
-    <v-container class="" style="width:65%">
+    <v-container class="" style="width:50%">
         <div>
-            <b-button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
+            <button class="float-left" variant="outline-secondary" @click="$router.go(-1)">
                 <v-icon icon="mdi-keyboard-backspace" /> 
-            </b-button>
-            <h1 style="margin-left: 80px; font-family: 'TheJamsil5Bold'; font-weight: 700;"> {{ roomOwner }}님의 구독 채팅방 </h1>
+            </button>
+            <h4 style="margin-left: 50px; padding-bottom: 3%; font-family: 'Pretendard-Regular'; font-weight: 700;"> {{ roomOwner }}님의 구독 채팅방 </h4>
         </div>
-        <div class="mx-auto rounded-lg elevation-3 overflow-y-auto overflow-x-hidden" 
+        <div class="mx-auto rounded-md elevation-3 overflow-y-auto overflow-x-hidden" 
             id="messages" ref="box" style="border-radius: 1px;">
             <v-card-text>
                 <v-container>
@@ -49,14 +49,17 @@
                 </v-container>
             </v-card-text>
         </div>
-        <v-container class="pa-5 mt-12 mx-auto rounded-lg" style="background-color: #7AC6FF;">
-            <!-- <v-text-field label="id" variant="solo" v-model="id"/> -->
-            <v-text-field class="ma-auto" v-model="message" label="메세지 보내기" append-icon="mdi-send" 
-            clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
-            variant="solo" @click:append="sendMessage" v-on:keyup="sendMessage"/>
-
-        </v-container>
     </v-container>
+
+        <container class="send_message" style="background-color: #7AC6FF;">
+
+         <v-text-field class="ma-auto" :value="message" label="메세지 보내기" append-icon="mdi-send" 
+            clear-icon="mdi-close-circle" clearable @click:clear="clearMessage"
+            variant="solo" @click:append="sendMessage" @input="message = $event"/>
+
+
+        </container>
+  
 </template>
 <script lang="js">
 import Stomp from 'webstomp-client'
@@ -140,8 +143,8 @@ export default {
                         let date = new Date(obj.sendTime)
                         obj.sendTime = (date.getMonth() + 1) + "월 " 
                             + date.getDate()+ "일 "
-                            + date.getHours() + "시 " 
-                            + date.getMinutes() + "분" 
+                            + date.getHours() + ":" 
+                            + date.getMinutes() + " " 
                         // this.scrollToBottom()
                         this.recvList.push(obj)
                     })
@@ -187,13 +190,17 @@ export default {
 }
 </script>
 <style scoped>
+.send_message{
+    width : 50%;
+    
+}
+
     .ml-auto {  
-        background-color: #7AC6FF
-;
+        background-color: #7AC6FF;
     }
 
     .mr-auto {
-        background-color: blanchedalmond;
+        background-color: #eaeaea;
     }
 
     #messages {

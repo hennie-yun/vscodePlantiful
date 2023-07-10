@@ -7,11 +7,9 @@ import SubscribeBoardDetail from '../components/subscribeboard/SubscribeBoardDet
 import SubscribeBoardDetailR from '../components/subscribeboard/SubscribeBoardDetailR.vue'
 import SubscribePartyDetail from '../components/subscribeparty/SubscribePartyDetail.vue'
 import login from '../components/members/login.vue'
-import join from '../components/members/join.vue'
 import AfterLogin from '../components/AfterLogin.vue'
 import calendar from '../components/calendars/calendar.vue'
 import mypage from '../components/members/mypage.vue'
-import newpwd from '../components/members/newpwd.vue'
 import editinfo from '../components/members/editinfo.vue'
 import group from '../components/groups/group.vue'
 import naver from '../components/groups/naver.vue'
@@ -32,20 +30,11 @@ const routes = [
     name: 'login',
     component: login
   },
-  {
-    path: "/join",
-    name: 'join',
-    component: join
-  },
+
   {
     path: "/kakaojoin",
     name: 'kakaojoin',
     component: kakaojoin
-  },
-  {
-    path: '/newpwd',
-    name : 'newpwd',
-    component : newpwd
   },
   {
     path: "/afterlogin",
@@ -167,5 +156,15 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (from.name === null && sessionStorage.getItem('currentPage')) {
+    const currentPage = sessionStorage.getItem('currentPage')
+    next({ path: currentPage })
+  } else {
+    sessionStorage.setItem('currentPage', from.path)
+    next()
+  }
+});
 
 export default router

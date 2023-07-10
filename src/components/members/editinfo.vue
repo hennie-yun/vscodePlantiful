@@ -81,7 +81,9 @@
 
           <div class="input-container">
             <label for="phone">전화번호</label>
-            <input id="phone" type="text" v-model="phone" class="input-field">
+            <input class="input-field" type="text" @input="autoHyphen($event.target)" maxlength="13" v-model="phone" placeholder="phone number">
+
+
           </div>
         </div>
 
@@ -163,6 +165,12 @@ export default {
     cancelEdit() {
       this.isVisible = false;
     },
+    //전화번호 
+    autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
+      target.value = target.value
+        .replace(/[^0-9]/g, '')
+        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+    },
     editimg() {
       const self = this;
       const fileInput = document.getElementById('file');
@@ -175,7 +183,7 @@ export default {
             if (res.status == 200) {
               alert(res.data.message);
               self.isVisible = false;
-              window.location.reload(true);
+              self.img = 'http://localhost:8181/members/plantiful/' + self.email;
             }
           })
           .catch(function (error) {
@@ -235,12 +243,15 @@ export default {
         alert('전화번호 형식이 잘 못 되었습니다');
         return;
       }
+
+      if (this.dto.id == 0) {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
       if (!passwordRegex.test(self.pwd)) {
         alert('비밀번호는 대문자 1개와 특수문자 1개를 포함한 8자리 이상만 가능합니다. \n 다시 입력 해주세요');
         self.pwd = '';
         return;
       }
+    }
 
       const data = {
         phone: self.phone.replace(/[^0-9]/g, ''),
@@ -255,7 +266,7 @@ export default {
         .then(function (res) {
           if (res.status == 200) {
             alert(res.data.message);
-            location.href = "/mypage";
+            
           } else {
             alert('에러코드: ' + res.status);
           }
@@ -292,10 +303,9 @@ export default {
       self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
         .then(function (res) {
           if (res.status == 200) {
-            if (res.data.flag) {
-              alert('탈퇴완료')
-              location.href = '/'
-            }
+              alert('탈퇴완료') 
+              self.logout()
+              location.href = '/'             
           } else {
             alert('에러')
           }

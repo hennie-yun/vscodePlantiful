@@ -259,7 +259,7 @@ export default {
 
                     // addparty 호출
                     self.checkcash();
-                    alert('등록이 완료되었습니다.');
+                    // alert('등록이 완료되었습니다.');
                 } else {
                     alert('에러코드:' + res.status)
                 }
