@@ -3,7 +3,7 @@
         <div class="container text-center">
 
             <div class="grid text-center">
-                <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
+                <h2 class="sbtitle"> 구독 공유 시작하기 </h2>
             </div>
             <div class="row alllistsite">
                 <div class="col" v-on:click="search('all')"><img
@@ -165,6 +165,18 @@ export default {
     name: 'SubscribeBoardList',
     components: {
     },
+    computed : {
+        // rows() {
+        //     return this.items.length
+        // },
+
+        items() {
+            return this.items.slice(
+                (this.currentPage-1) * this.perPage,
+                this.currentPage * this.perPage
+            ) 
+        }, 
+    },
     data() {
         return {
             list: [],
@@ -183,9 +195,6 @@ export default {
     },
 
     mounted() {
-        // this.currentDate = new Date().toLocaleDateString();
-        // const currentDateFormatted = dayjs(this.currentDate, 'YYYY. MM. DD.').format('YYYY-MM-DD');
-        // this.currentDate = currentDateFormatted;
         this.currentDate = dayjs().format('YYYY-MM-DD');
 
     },

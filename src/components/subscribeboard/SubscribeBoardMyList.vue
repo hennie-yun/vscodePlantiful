@@ -1,7 +1,7 @@
 <!-- 내가 참여한 구독 목록. 내 구독 리스트 -> subscribeparty detail로 들어가기-->
 <template lang="">
     <div class="body">
-        <h1> {{loginId}} 님의 구독 목록</h1>
+        <h2> {{loginId}} 님의 구독 목록</h2>
 
         <!-- <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
             {{order.subscribe_num.subscribe_num}}
@@ -324,7 +324,7 @@ export default {
     margin-top: 3%
 }
 
-.body h1 {
+.body h2 {
     margin: 50px;
     font-weight: 600;
     /* color: #7ac5ff; */
