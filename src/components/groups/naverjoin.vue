@@ -66,7 +66,7 @@ export default {
     this.state = this.$route.query.state;
     console.log(this.code)
     console.log(this.state)
-    this.getToken();
+   this.getToken(this.code, this.state);
   },
   methods: {
     autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
@@ -104,18 +104,19 @@ export default {
           }
           })
         },
-    getToken() { //토큰 냅다 받아~~ 
+    getToken(code, state) { //토큰 냅다 받아~~ 
       const self = this;
       let formData = new FormData()
       formData.append('code', self.code)
       formData.append('state', self.state)
-      self.$axios.get('http://localhost:8181/api/naver/token' + formData)
+      self.$axios.post('http://localhost:8181/api/naver/login', formData)
         .then((res) => {
-          console.log(res)
-          self.form.email = res.data.email;
-          self.form.pwd = res.data.id;
-          self.form.nickname = res.data.nickname;
-          self.form.navertoken = res.data.accessToken;
+          console.log(res.data)
+           self.form.email = res.data.userinfo.naverResponse.email;
+           self.form.pwd = res.data.userinfo.naverResponse.id;
+           self.form.nickname = res.data.userinfo.naverResponse.nickname;
+           self.form.navertoken = res.data.access_token;
+         
           self.$axios.get('http://localhost:8181/members/getKakaomember/' + self.form.email)
             .then(function (res) {
               if (res.status == 200) {
@@ -128,8 +129,10 @@ export default {
                 }
               }
             });
+            
         });
     },
+    
     onSubmit() {
       const self = this;
       const form = new FormData();

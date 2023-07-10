@@ -57,7 +57,6 @@
         <img class="kakaoIdLogin" :src="require('@/assets/image/KakaoTalk_logo.png')" @click="kakaoLogin" />
         <img class="naverIdLogin" :src="require('@/assets/image/naverlogin.jpg')" @click="naverlogin" />
       </div>
-
     </div>
   </div>
 </template>
@@ -289,8 +288,8 @@ export default {
       window.location.href = Auth_url;
     },
 
-    //네이버 로그인 
-    naverlogin() {
+     //네이버 로그인 
+     naverlogin() {
       let client_id = "IiiFJKBOyzL3qvfXasPq"
       let redirect_uri = encodeURIComponent("http://localhost:8182/naverjoin", "UTF-8")
       const state = this.generateRandomState()

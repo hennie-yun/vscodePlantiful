@@ -438,13 +438,13 @@ export default {
     console.log(this.code)
     console.log(this.state)
 
-
+/*
     let kakaocode = sessionStorage.getItem('kakaocode')
     if (kakaocode == this.code) {
       this.getKakaoToken()
       sessionStorage.removeItem('kakaocode')
     }
-
+*/
    
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
@@ -945,16 +945,17 @@ kakao(){
 
               window.location.href = Auth_url;
 
-            } else { // 받아온 this.code값이 있을때는
-              console.log(this.code)
-              // 세션에 KakaoToken()함수가 있는지 확인용
-
-              sessionStorage.setItem('kakaocode', this.code)
-
+            } else {
+              this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+                .then(function(res){
+                  console.log("data"+res.data)
+                })
             }
+            
           } else {
             location.href = '/login'
-          }
+          
+        }
         })
 
 
