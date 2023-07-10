@@ -422,6 +422,10 @@ export default {
    align-items: center;
  }
 
+ .naverIdLogin{
+  height: 50px;
+   width: 50px;
+ }
  .kakaoIdLogin {
    height: 40px;
    width: 40px;

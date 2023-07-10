@@ -239,10 +239,12 @@ export default {
     .imgDiv {
         display: table-cell;
         width: 101px;
+        height: 130px;
         padding-left: 10px;
     }
 
     .imgDiv img {
+        max-height: 100%;
         max-width: 100%;
     }
 

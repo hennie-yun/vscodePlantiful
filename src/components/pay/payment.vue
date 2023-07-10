@@ -11,7 +11,7 @@
                         v-model="formattedPrice" @focus="isPlaceholderVisible = false" @blur="handleBlur"
                         @input="formatPrice">
                 </div>
-                <br /><span v-if="contractformcheck == false" @click="requestcontractform">이용약관 동의</span><br />
+                <br /><span v-if="contractformcheck == false" @click="requestcontractform" style="cursor: pointer;">이용약관 동의</span><br />
                 <div class="button-wrapper">
                     <button @click="KGpay">충전</button>
                     <button @click="close">닫기</button>
@@ -188,13 +188,13 @@
                 <span class="cash"> 보유 포인트 {{ paydto.paidamount }}</span>
             </div>
             <div v-show="Visible" style="margin-top: 45px; text-align: center;">
-                <div class="button-wrapper" style="display: flex; justify-content: center;">
+                <div class="button-wrapper1" style="display: flex; justify-content: center;">
                     <button @click="openModal = true">포인트 충전</button>
                     <button @click="[refundModal = true, Visible = false]">포인트 인출</button>
                 </div>
                 <br>
                 <div class="button-wrapper">
-                    <router-link to="/mypage" class="custom-link">돌아가기</router-link>
+                    <router-link to="/mypage" class="custom-link" style="font-weight: 300px;">돌아가기</router-link>
                 </div>
             </div>
 
@@ -552,11 +552,11 @@ export default {
     margin-top: 5px;
     width: 200px;
     height: 20px;
-    font-size: 17px;
+    font-size: 15px;
 }
 
 .inputbox {
-    margin-top: 7%;
+    margin-top: 4%;
     display: flex;
     justify-content: center;
     /* margin-left: 19%; */
@@ -611,9 +611,13 @@ p {
 .button-wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 5%;
-    gap: 5%;
+    margin-top: 4%;
+    gap: 6%;
 
+}
+
+.button-wrapper button{
+    font-weight: bold;
 }
 
 .button-wrapper button,
@@ -622,7 +626,6 @@ p {
     background-color: transparent;
     padding: 5px 10px;
     color: #000;
-    font-weight: bold;
     text-decoration: none;
     position: relative;
     overflow: hidden;
@@ -640,7 +643,7 @@ p {
     background-color: transparent;
     visibility: hidden;
     transform: scaleX(0);
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 .button-wrapper .custom-link:hover::before,
@@ -652,6 +655,52 @@ p {
 
 .button-wrapper .custom-link:hover,
 .button-wrapper button:hover {
+    color: #7AC6FF;
+}
+
+/* 첫페이지의 버튼들  */
+.button-wrapper1 {
+    display: flex;
+    justify-content: center;
+    margin-top: 4%;
+    gap: 6%;
+
+}
+
+.button-wrapper1 button{
+    border: none;
+    background-color: transparent;
+    padding: 5px 10px;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    width: 150px;
+}
+
+
+.button-wrapper1 button::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: transparent;
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+}
+
+.button-wrapper1 button:hover::before {
+    visibility: visible;
+    background-color: #7AC6FF;
+    transform: scaleX(1);
+}
+
+
+.button-wrapper1 button:hover {
     color: #7AC6FF;
 }
 
@@ -672,23 +721,23 @@ p {
 /* 포인트충전 배경 */
 .white-bg {
     width: 30%;
-    height: 30%;
+    height: 35%;
     margin: 80% auto;
     background: white;
     border: 2px solid #7AC6FF;
     color: black;
     border-radius: 5px;
     padding: 20px 0;
-    margin-top: 5%;
+    margin-top: 2%;
     text-align: center;
-    animation: modalPopIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    animation: modalPopIn-4720d382 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 
 }
 
 /* 환불 배경 */
 .refund-bg {
     width: 30%;
-    height: 60%;
+    height: 65%;
     margin: 80% auto;
     background: white;
     border: 2px solid #7AC6FF;
