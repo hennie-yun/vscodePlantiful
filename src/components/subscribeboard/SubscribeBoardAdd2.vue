@@ -130,6 +130,7 @@ export default {
                 paidamount: 0
             },
             fflag: false,
+            agree: [],
         }
     },
     watch: {
