@@ -1,11 +1,11 @@
 <template>
   <div class="form" :class="activeForm">
   
-    <br />
+    <br/>
     <div>
   </div>
     <div class="form-header">
-      <img :src="require('@/assets/image/startwithkakao.png')" style="margin-top:20%; width: 97%; height:25%; "/>
+      <img :src="require('@/assets/image/KakaoTalk_logo.png')" style="width: 25%;  "/>
       </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">

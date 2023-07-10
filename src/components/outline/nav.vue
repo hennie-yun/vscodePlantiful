@@ -50,7 +50,7 @@
 
               <div @click="logout">
                 <img :src="require('@/assets/image/logout.png')"
-                  style=" margin-left: 10px; margin-right: 5px;width: 40px; height: 40px;" />
+                  style="margin-left: 10px; margin-right: 5px; width: 40px; height: 40px;" />
               </div>
             </div>
           </div>
@@ -90,34 +90,39 @@ export default {
       activeLink: '',
       active: false,
       todoItems: [],
-      dto: {
-        nickname: '',
-        phone: '',
-        email: '',
-        id : ''
-      },
+      // dto: {
+      //   nickname: '',
+      //   phone: '',
+      //   email: '',
+      //   id: '',
+      // },
     }
   },
   created() {
     let token = sessionStorage.getItem('token');
     this.loginId = sessionStorage.getItem('loginId');
-    const self = this;
-    self.$axios.get('http://localhost:8181/members/getmember/' + self.email, { headers: { 'token': token } })
-      .then(function (res) {
-        if (res.status == 200) {
-          self.dto = res.data.dto
-          if (self.dto != null) {
-            self.email = self.dto.email
-            self.nickname = self.dto.nickname
-            self.phone = self.dto.phone
-            self.id = self.dto.id
-            if (self.dto.img) {
-              self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
-            }
-          }
-        }
-      });
-
+    this.img = 'http://localhost:8181/members/plantiful/' + this.loginId;
+    // const self = this;
+    // self.$axios
+    //   .get('http://localhost:8181/members/getmember/' + self.email, {
+    //     headers: { token: token },
+    //   })
+    //   .then(function (res) {
+    //     if (res.status === 200) {
+    //       self.dto = res.data.dto;
+    //       if (self.dto !== null) {
+    //         alert('여기')
+    //         self.email = self.dto.email;
+    //         self.nickname = self.dto.nickname;
+    //         self.phone = self.dto.phone;
+    //         self.id = self.dto.id;
+    //         alert(self.id);
+    //         if (self.dto.img) {
+    //           self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
+    //         }
+    //       }
+    //     }
+    //   });
     if (localStorage.length > 0) {
       for (var i = 0; i < localStorage.length; i++) {
         if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
@@ -132,6 +137,7 @@ export default {
   mounted() {
     this.initializeNavbar();
   },
+
   methods: {
     toggleNavigation() {
       const navbarCollapse = document.getElementById('navbarSupportedContent');
@@ -140,20 +146,26 @@ export default {
     replaceImg(e) {
       e.target.src = img;
     },
+
     logout() {
-      console.log("logout")
-      if (this.id ==0 || this.id == ''){
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('loginId')
-      location.href = '/';
-    }else {
-      console.log('카카오톡 로그아웃 시도 ')
-      const redirect_uri = 'http://localhost:8182/login';
-      const clientId = 'd54083f94196531e75d7de474142e52e';
-      const Auth_url = `https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirect_uri}`;
-      location.href = Auth_url;
-      }
-      
+      // if (this.dto.id === '0' || this.dto.id === null) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('loginId');
+        location.href = '/login';
+
+      // } else {
+      //   location.href = '/login';
+      // }
+
+      // } else {
+      //   console.log('카카오톡 로그아웃 시도 ')
+      //   const redirect_uri = 'http://localhost:8182/';
+      //   const clientId = 'd54083f94196531e75d7de474142e52e';
+      //   const Auth_url = `https://kauth.kakao.com/oauth/logout?client_id=${clientId}&logout_redirect_uri=${redirect_uri}`;
+      //   location.href = Auth_url;
+      //   logout()
+      //   }
+
     },
     openMenu(value) {
       if (typeof value === 'boolean') {
@@ -250,9 +262,10 @@ export default {
   font-size: 25px;
 }
 
-.navbar-logo:hover{
-  color : #ffe77a;
+.navbar-logo:hover {
+  color: #ffe77a;
 }
+
 .navbar-mainbg {
   background-color: #7AC6FF;
   padding: 0px;
