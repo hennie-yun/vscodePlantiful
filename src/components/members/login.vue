@@ -56,7 +56,6 @@
       <div>
         <img :src="require('@/assets/image/kakao.png')" @click="kakaoLogin" />
       </div>
-
     </div>
   </div>
 </template>
