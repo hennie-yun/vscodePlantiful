@@ -201,6 +201,7 @@ export default {
       }
 
       form.append('email', self.email);
+      form.append('id', 0);
 
       // 비밀번호 정규식
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
