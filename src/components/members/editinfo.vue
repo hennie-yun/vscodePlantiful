@@ -183,7 +183,7 @@ export default {
             if (res.status == 200) {
               alert(res.data.message);
               self.isVisible = false;
-              window.location.reload(true);
+              self.img = 'http://localhost:8181/members/plantiful/' + self.email;
             }
           })
           .catch(function (error) {
@@ -266,7 +266,7 @@ export default {
         .then(function (res) {
           if (res.status == 200) {
             alert(res.data.message);
-            location.href = "/mypage";
+            
           } else {
             alert('에러코드: ' + res.status);
           }
