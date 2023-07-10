@@ -430,4 +430,9 @@ export default {
    height: 40px;
    width: 40px;
  }
+
+ .naverIdLogin{
+  height: 50px;
+  width:  50px;
+ }
 </style>
