@@ -10,31 +10,31 @@
         </button>
   
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav ml-auto" id="navBar">
             <div class="hori-selector">
               <div class="left"></div>
               <div class="right"></div>
             </div>
   
             <li class="nav-item">
-              <router-link to="/mypage" class="nav-link" @click="navigateTo('/mypage')">마이페이지</router-link>
+              <router-link to="/mypage" class="nav-link" @click="navigateTo('/mypage', $event)">마이페이지</router-link>
             </li>
   
             <li class="nav-item active">
-              <router-link to="/calendar" class="nav-link" @click="navigateTo('/calendar')">캘린더</router-link>
+              <router-link to="/calendar" class="nav-link" @click="navigateTo('/calendar', $event)">캘린더</router-link>
             </li>
   
             <li class="nav-item">
               <router-link to="/SubscribeBoardList" class="nav-link"
-                @click="navigateTo('/SubscribeBoardList')">구독</router-link>
+                @click="navigateTo('/SubscribeBoardList', $event)">구독</router-link>
             </li>
   
             <li class="nav-item">
-              <router-link to="/chatlist" class="nav-link" @click="navigateTo('/chatlist')">채팅</router-link>
+              <router-link to="/chatlist" class="nav-link" @click="navigateTo('/chatlist', $event)">채팅</router-link>
             </li>
   
             <li class="nav-item">
-              <router-link to="/concertlist" class="nav-link" @click="navigateTo('/concertlist')">공모전</router-link>
+              <router-link to="/concertlist" class="nav-link" @click="navigateTo('/concertlist', $event)">공모전</router-link>
             </li>
   
   
@@ -80,7 +80,8 @@
   import TodoList from '../todolist/TodoList.vue'
   import TodoFooter from '../todolist/TodoFooter.vue'
   import img from '@/assets/image/profile-user.png';
-  
+  import {isProxy, toRaw} from 'vue';
+
   export default {
     components: {
       'TodoHeader': TodoHeader,
@@ -110,9 +111,11 @@
       if (localStorage.length > 0) {
         for (var i = 0; i < localStorage.length; i++) {
           if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
-            let getItem = localStorage.getItem(localStorage.key(i))
-            let obj = JSON.parse(getItem)
-            this.todoItems.push(obj)
+            if(localStorage.key(i) !== 'activeTab') {
+              let getItem = localStorage.getItem(localStorage.key(i))
+              let obj = JSON.parse(getItem)
+              this.todoItems.push(obj)
+            }
           }
         }
         this.todoItems = this.todoItems.sort((a, b) => a.index - b.index)
@@ -123,7 +126,10 @@
     },
   
     methods: {
-      navigateTo(route) {
+      navigateTo(route, event) {        
+        $(".active").removeClass("active");
+        $(event).addClass("active");
+        localStorage.setItem("activeTab", route)
         this.activeLink = route;
         this.$router.push(route);
       },
@@ -184,6 +190,20 @@
       },
   
       initializeNavbar() {
+        var activeTab = localStorage.getItem("activeTab")
+        console.log(activeTab)
+        let tags = document.getElementsByClassName("nav-item")
+        for(var i=0; i<tags.length; i++) {
+          var href = tags[i].firstChild.getAttribute("href")
+          if(href == activeTab) {
+            console.log(tags[i].firstChild.getAttribute("href"))
+            tags[i].classList.add("active")
+          } else {
+            tags[i].classList.remove("active")
+          }
+
+        }
+
         var tabsNewAnim = $('#navbarSupportedContent');
         // var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
         var activeItemNewAnim = tabsNewAnim.find('.active');
