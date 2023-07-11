@@ -102,7 +102,7 @@
                 </div>
                 <br />
                 <div class="account">
-                    <input class="inputaccount" id="accountnum" type="number" v-model="accountnum" placeholder="계좌번호">
+                    <input class="inputaccount" id="accountnum"  maxlength="14" :value="accountnum" @input="handleInput" placeholder="계좌번호">
                 </div>
 
                 <br /><span v-if="outcontractformcheck == false" @click="outcontractform">이용약관 동의</span><br />
@@ -215,6 +215,7 @@ export default {
     data() {
         return {
             email: this.$route.query.email,
+            accountnum: '',
             name: '',
             accountnum: '',
             bankname: '',
@@ -352,6 +353,13 @@ export default {
                 });
             }
         },
+        handleInput(event) {
+      if (event.target.value.length > event.target.maxLength) {
+        this.accountnum = event.target.value.slice(0, event.target.maxLength);
+      } else {
+        this.accountnum = event.target.value;
+      }
+    },
         checkmyinfo() {
             const self = this;
             const bankselect = document.getElementById('bankselect');
@@ -385,10 +393,11 @@ export default {
                         self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
                             .then(function (res) {
                                 if (res.status == 200) {
-                                    console.log(res.data)
-                                    console.log(res.data.name);
+                                    console.log('데이터임' + res.data)
+                                    console.log('이름만빼옴' + res.data.name);
+                                    console.log('입력한 이름' + self.name)
                                     if (res.data.flag == false || res.data.name != self.name) {
-                                        alert('등록 된 예금주 성함 및 전화번호가 본인인증 결과와 일치하지 않습니다.')
+                                        alert('plantiful에 등록 된 예금주 성함 및 전화번호가 본인인증 결과와 일치하지 않습니다.')
                                         self.outcontractformcheck = false;
                                         self.name = '';
                                         self.bankname = '';
@@ -556,7 +565,7 @@ export default {
 }
 
 .inputbox {
-    margin-top: 4%;
+    margin-top: 5%;
     display: flex;
     justify-content: center;
     /* margin-left: 19%; */
