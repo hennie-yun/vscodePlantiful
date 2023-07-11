@@ -111,6 +111,7 @@
                 <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
         </div>
+        <div class="warn" v-else-if="dif_day == 0">삭제가 불가능합니다.</div>
         <!-- 
         <div>
             <router-link to="/SubscribeBoardList" class="nav-link"><button>목록으로 돌아가기</button> </router-link>
