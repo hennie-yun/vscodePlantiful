@@ -1,7 +1,7 @@
 <template lang="">
     <div class="subboardadd needs-validation body">
         <!-- site 선택 -->
-        <h1> 모집 글 추가하기 </h1>
+        <h2> 모집 글 추가하기 </h2>
         <div class="text-center radiocheck">
         <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio1" value="넷플릭스" required> 
@@ -300,7 +300,7 @@ export default {
     justify-content: center;
 }
 
-.body h1 {
+.body h2 {
     margin: 50px;
     font-weight: 600;
     /* color: #7ac5ff; */

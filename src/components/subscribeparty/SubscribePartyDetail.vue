@@ -41,8 +41,8 @@
                     </div>
                 </div>
                 
-                <div v-if="order.start_check==1" class="row">
-                    <button v-on:click="addSchedule">캘린더에 일정 추가하기</button>
+                <div v-if="order.start_check==1" class="row ">
+                    <button class="btn" v-on:click="addSchedule">캘린더에 일정 추가하기</button>
                 </div>
                 <div class="row">
                     <div class="col subboardtitle">
@@ -137,11 +137,11 @@
                     <div class="col">
                         참여자 아이디
                     </div>
-                    <div class="col">
+                    <div class="col-3">
                         {{ order.email.email }}
                     </div>
                     <div class="col">
-                        지불한 포인트
+                        잔여 포인트
                     </div>
                     <div class="col">
                         {{ order.point_basket }}
@@ -200,13 +200,13 @@ export default {
             };
 
             createEvent(
-                this.list[0].subscribe_num.site + '구독 시작일',
+                this.list[0].subscribe_num.site + ' 구독 시작일',
                 this.list[0].subscribe_num.subscribe_startdate,
                 this.list[0].subscribe_num.subscribe_startdate
             );
 
             createEvent(
-                this.list[0].subscribe_num.site + '구독 종료일',
+                this.list[0].subscribe_num.site + ' 구독 종료일',
                 this.list[0].subscribe_num.subscribe_enddate,
                 this.list[0].subscribe_num.subscribe_enddate
             );
@@ -289,7 +289,7 @@ img {
 }
 
 .border{
-    border-style: dashed !important;
+    border-style: solid !important;
     border-color: #7ac5ff !important;
     margin-bottom: 30px;
     margin-top: 18px;
@@ -353,5 +353,13 @@ img {
 }
 .partyinfo .content{
 
+}
+
+.btn{
+    /* background-color:#7ac5ff; */
+    color: #7ac5ff;
+    font-weight: 800;
+    margin-bottom: 30px;
+    border: lightgray 1px solid;
 }
 </style>
