@@ -3,11 +3,6 @@
     <div class="body">
         <h2> {{loginId}} 님의 구독 목록</h2>
 
-        <!-- <div v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)">
-            {{order.subscribe_num.subscribe_num}}
-            {{order.subscribe_num.site}}
-        </div> -->
-
         <div class="row row-cols-1 row-cols-md-3 g-4 cardblock">
             <div class="row" v-for="order in list" :key="order.party" v-on:click="detail(order.subscribe_num.subscribeNum)" >
                 <div class="col mylistbody">
@@ -49,7 +44,6 @@
                             
                             <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
                             <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
-                            <p class="care-text end" v-if="order.start_check==2">종료</p>
                         </div>
                     </div>
 
@@ -60,9 +54,7 @@
                             <p class="card-text"> {{order.email.email}} (모집자)</p>
                             <p class="card-text"> 남은 포인트 {{order.point_basket}}</p>
                             <p class="card-text"> 종료일 {{subenddate}}</p>
-                            
-                            <p class="care-text recruit" v-if="order.start_check==0">모집 중</p>
-                            <p class="care-text ing" v-if="order.start_check==1">진행 중</p>
+                    
                             <p class="care-text end" v-if="order.start_check==2">종료</p>
                         </div>
                     </div>
@@ -109,176 +101,7 @@ export default {
                 return '';
             }
         },
-        // getStartCheckText(start_check) {
-        //     if (start_check === '1') {
-        //         return '서비스 시작';
-        //     } else if (start_check === '0') {
-        //         return '서비스 미시작';
-        //     } else if (start_check === '2') {
-        //         return '서비스 종료';
-        //     } else {
-        //         return '';
-        //     }
-        // },
-
-
-        // checkmember() {
-        //     const self = this;
-        //     const promises = [];
-        //     alert(order.subscribe_num.subscribeNum)
-        //     self.list.forEach(function (order) {
-        //         const promise = self.$axios.get('http://localhost:8181/subscribeparty/party/' + order.subscribe_num.subscribeNum)
-        //             .then(function (res) {
-        //                 if (res.status === 200) {
-        //                     self.partylist = res.data.list
-        //                     order.recruitpeople = self.countRecruitPeople(res.data.list);
-        //                     const item = res.data.list[0]; // 첫 번째 항목 선택
-        //                     order.start_check = item.start_check; // start_check 값 확인
-        //                     // console.log(order.start_check); // start_check 값 출력
-        //                     // let AllPointbasket = 0;
-        //                     // self.partylist.forEach(function (item) {
-        //                     order.point_basket = item.point_basket;
-        //                     // });
-        //                     // self.AllPointbasket = AllPointbasket;
-        //                     // self.partylist.forEach(function (item) {
-        //                     //     self.point_basket = item.point_basket
-        //                     // });
-        //                     const recruitEndPeriodFormatted = dayjs(order.recruit_endperiod).format('YYYY-MM-DD');
-        //                     self.recruit_endperiod = recruitEndPeriodFormatted;
-        //                     order.recruit_endperiod = recruitEndPeriodFormatted;
-
-        //                 } else {
-        //                     alert('에러코드:' + res.status);
-        //                 }
-        //             })
-        //             .catch(function (error) {
-        //                 alert('에러코드:' + error.response.status);
-        //             });
-
-        //         promises.push(promise);
-        //     });
-
-        //     Promise.all(promises)
-        //         .then(() => {
-        //             this.list.forEach((order) => {
-        //                 const self = this;
-        //                 // // console.log('모든 비동기 요청 완료');
-        //                 const currentTotalPointBasket = order.point_basket;
-
-        //                 // self.list.forEach(function (order) {
-        //                 // console.log(self.list);
-
-        //                 const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
-        //                 self.subscribe_enddate = subEnddateFormatted;
-        //                 self.recruitpeople = order.recruitpeople
-        //                 self.total_people = order.total_people
-        //                 self.total_point = order.total_point
-
-        //                 if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod) {
-        //                     // 인원수 같음 & 모집일 지남
-        //                     order.flag = 1;
-
-        //                 } else if (order.recruitpeople !== order.total_people && self.currentDate > self.recruit_endperiod) {
-        //                     // 인원수 다름 & 모집일 지남
-        //                     order.flag = 2;
-        //                     //한구독의 전체금액 
-        //                     // point basket & cash 관리 
-        //                     // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-        //                     // alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
-        //                     if (currentTotalPointBasket != 0) {
-        //                         const price = order.total_point / self.total_people
-        //                         console.log('subscribenum:' + Z.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
-        //                         const form = new FormData();
-        //                         form.append('paidamount', price)
-        //                         form.append('email', self.email)
-        //                         self.$axios.post('http://localhost:8181/payment/' + self.email, form)
-        //                             .then(function (res) {
-        //                                 if (res.status == 200) {
-        //                                     console.log(order.subscribe_num + ' 모집 종료로 금액 반환 되었음 ' + price)
-        //                                     if (currentTotalPointBasket != 0) {
-        //                                         self.$axios.post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
-        //                                             .then(function (res) {
-        //                                                 if (res.status === 200) {
-        //                                                     console.log('취소돼서 0으로 만들고 돌아감');
-        //                                                 }
-        //                                             })
-        //                                             .catch(function (error) {
-        //                                                 // 에러 처리
-        //                                                 console.error('에러 발생:', error);
-        //                                             });
-        //                                     }
-        //                                 } else {
-        //                                     alert('오류')
-        //                                 }
-        //                             });
-        //                     } else {
-        //                         console.log('이미 실행됨');
-        //                     }
-
-        //                 } else if (self.recruitpeople == self.total_people && self.currentDate > self.subscribe_enddate) {
-        //                     // 구독 종료일 지남 (모두의 예치금 전부 빼기, 모집자에게 돈 이동)
-        //                     order.flag = 2;
-        //                     if (currentTotalPointBasket != 0) {
-        //                         const self = this;
-        //                         const price = order.subscribe_num.total_point;
-        //                         console.log('구독 종료일 지남:' + price);
-        //                         const email = order.subscribe_num.email.email(모집자);
-        //                         console.log('구독 종료일 지남:' + email);
-        //                         const form = new FormData();
-        //                         form.append('email', email);
-        //                         form.append('paidamount', price);
-        //                         self.$axios.post('http://localhost:8181/payment/' + self.subscribe_num.email.email, form)
-        //                             .then(function (res) {
-        //                                 if (res.status == 200) {
-        //                                     alert('구독 끝 - 모집자에게 돈 돌아감 ')
-        //                                     self.$axios
-        //                                         .patch('http://localhost:8181/subscribeparty/money/' + self.subscribe_num)
-        //                                         .then(function (res) {
-        //                                             if (res.status === 200) {
-        //                                                 console.log('구독 종료일 지나서 0으로 만들고 돌아감');
-        //                                             } else {
-        //                                                 alert(res.status + 'money 오류')
-        //                                             }
-        //                                         })
-        //                                         .catch(function (error) {
-        //                                             // 에러 처리
-        //                                             console.error('에러 발생:', error);
-        //                                         });
-        //                                 } else {
-        //                                     console.log('실패 ; ')
-        //                                 }
-        //                             })
-        //                             .catch(function (error) {
-        //                                 alert('에러코드:' + error.response.status);
-        //                             });
-        //                     } else {
-        //                         console.log('이미 실행됨');
-        //                     }
-        //                 } else {
-        //                     order.flag = 0;
-        //                     // alert('빠져나옴 !! 다 해당안돼' + order.subscribe_num)
-        //                 }
-        //                 self.$axios.patch('http://localhost:8181/subscribeparty/' + self.subscribe_num + '/' + order.flag)
-        //                     .then(function (res) {
-        //                         // alert(res.data);
-        //                         console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check);
-        //                     })
-        //                     .catch(function (error) {
-        //                         alert('에러코드:' + error.response.status);
-        //                     });
-        //             });
-
-
-        //         })
-        //         // .then(function () {
-        //         //     console.log('모든 비동기 요청 완료');
-        //         //     self.checkEnd(); // 다른 메소드 호출
-        //         // })
-        //         .catch(function (error) {
-        //             console.log('에러 발생:', error);
-        //         });
-        // },
-
+        
 
     },
     created: function () {
@@ -380,6 +203,12 @@ export default {
 .ingcardlist .card-text {
     padding: 3px;
     background-color: rgb(246, 246, 246);
+    border-radius: 10px;
+}
+
+.ingcardlist .recruit {
+    padding: 3px;
+    background-color: white;
     border-radius: 10px;
 }
 
