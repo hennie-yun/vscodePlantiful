@@ -304,7 +304,7 @@ export default {
                         self.total_point = order.total_point
 
                         // alert(self.currentDate + '오늘날짜 ')
-                        if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod && self.currentDate === order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate)) {
+                        if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod || self.currentDate == order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate) ) {
                             // 인원수 같음 & 모집일 지남
                             // console.log(order.recruit_endperiod + order.subscribe_num)
                             order.flag = 1;
