@@ -174,7 +174,7 @@ export default {
             partylist: [],
             email: sessionStorage.getItem('loginId'),
             subscribe_enddate: null,
-            recruit_endperiod: null,
+            // recruit_endperiod: null,
             recruitpeople: 0,
             total_people: 0,
             subscribe_num: 0,
@@ -293,17 +293,23 @@ export default {
                         self.total_people = order.total_people
                         self.total_point = order.total_point
 
-                        if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod && self.currentDate < self.subscribe_enddate) {
+                        // alert(self.currentDate + '오늘날짜 ')
+                        if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod && self.currentDate === order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate)) {
                             // 인원수 같음 & 모집일 지남
+                            // alert('오늘 flag 1 '+ self.currentDate)
+                            // alert('모집 마감일 flag 1 '+ order.recruit_endperiod + order.subscribe_num)
+                            console.log(order.recruit_endperiod + order.subscribe_num)
                             order.flag = 1;
 
-                        } else if (order.recruitpeople !== order.total_people && self.currentDate > self.recruit_endperiod) {
+                        } else if (order.recruitpeople !== order.total_people && (self.currentDate > order.recruit_endperiod) && (self.currentDate !== order.recruit_endperiod)) {
+                            alert('2 '+order.subscribe_num+self.currentDate + order.recruit_endperiod)
+                            // alert('모집 마감일 flag2 '+ order.recruit_endperiod + order.subscribe_num)
+                            console.log('2'+order.recruit_endperiod + order.subscribe_num)
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-                            // alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
                             if (currentTotalPointBasket != 0) {
                                 const price = order.total_point / self.total_people
                                 console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
@@ -379,7 +385,7 @@ export default {
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
                                 // alert(res.data);
-                                console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check);
+                                console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check + '모집마감일: '+order.recruit_endperiod);
                             })
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);

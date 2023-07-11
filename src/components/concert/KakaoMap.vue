@@ -15,7 +15,8 @@ export default {
             markerPosition : {},
             markers : [],
             location : {},
-            place : {}
+            place : {},
+            locByAddressName : {}
         }
     }, 
 
@@ -63,6 +64,15 @@ export default {
                         console.log("error : "+err)
                     });
 
+                    self.$axios('https://dapi.kakao.com/v2/local/search/address.json?autoload=false&query='+self.location.address_name, {
+                        headers : {
+                            'Authorization' : 'KakaoAK '+`${process.env.VUE_APP_RESTAPI_KEY}`
+                        }
+                    }).then((result) => {
+                        self.locByAddressName = result.data.documents[0]
+                    }).catch((err) => {
+                        console.log("error : "+err)
+                    }) 
                     
                 } else {
 
@@ -78,6 +88,14 @@ export default {
         },
 
         initMap() {
+            console.log(this.locByAddressName)
+            console.log(this.place)
+            var str = ''
+            if(this.locByAddressName.address.address_name == this.place.address_name) {
+                str = this.place.place_url
+            } else {
+                str = 'https://map.kakao.com/link/search/'+this.locByAddressName.address_name
+            }
             var x = this.location.x
             var y = this.location.y
             var infoPosition = new kakao.maps.LatLng(y, x) 
@@ -87,8 +105,10 @@ export default {
                 level : 3,
             }
             
+            
+
             var infoContent =   '<div class="overlay">' +
-                                '  <a href="' + this.place.place_url + '" target="_blank" class="">' +
+                                '  <a href="' + str + '" target="_blank" class="">' +
                                 '    <span class="title">'+this.place.place_name+'</span>' +
                                 '  </a>' +
                                 '</div>';
