@@ -80,7 +80,6 @@
   import TodoList from '../todolist/TodoList.vue'
   import TodoFooter from '../todolist/TodoFooter.vue'
   import img from '@/assets/image/profile-user.png';
-  import {isProxy, toRaw} from 'vue';
 
   export default {
     components: {
@@ -187,16 +186,15 @@
       clearAllItem: function () {
         localStorage.clear()
         this.todoItems = []
+        localStorage.setItem("activeTab", route)
       },
   
       initializeNavbar() {
         var activeTab = localStorage.getItem("activeTab")
-        console.log(activeTab)
         let tags = document.getElementsByClassName("nav-item")
         for(var i=0; i<tags.length; i++) {
           var href = tags[i].firstChild.getAttribute("href")
           if(href == activeTab) {
-            console.log(tags[i].firstChild.getAttribute("href"))
             tags[i].classList.add("active")
           } else {
             tags[i].classList.remove("active")
