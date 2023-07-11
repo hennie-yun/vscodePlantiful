@@ -146,6 +146,7 @@
       logout() {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('loginId');
+        localStorage.setItem('activeTab', '/calendar')
         location.href = '/login';
   
       },
