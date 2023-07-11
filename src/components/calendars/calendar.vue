@@ -323,8 +323,7 @@ import axios from 'axios';
 
 
 export default {
-  mounted() {
-  },
+ 
   computed: {
     
     
@@ -439,13 +438,7 @@ export default {
     console.log(this.code)
     console.log(this.state)
 
-/*
-    let kakaocode = sessionStorage.getItem('kakaocode')
-    if (kakaocode == this.code) {
-      this.getKakaoToken()
-      sessionStorage.removeItem('kakaocode')
-    }
-*/
+    //this.getKakaoToken()
    
     // 전부 체크된 상태로 시작하도록 checkedGroups 배열 초기화
     this.checkedGroups = this.groups.map(group => group.schedulegroup_num);
@@ -742,16 +735,39 @@ export default {
       let token = sessionStorage.getItem('token')
       this.$axios.get("http://localhost:8181/api/kakao/member", {headers:{"token":token}})
       .then((res)=>{
+    //   let access_token = ''
         let id = res.data.id
         console.log(id)
         if(id==1){
           console.log("코드 확인:"+this.code)
-          this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{"authorization_code":this.code}})
+          this.$axios.get("http://localhost:8181/api/kakao/oauth", {headers:{"authorization_code":this.code}})
           .then(function(res){
-            console.log(res.data)
-          })
-      } 
+         console.log(res.data)
+         /*
+            if(res.data.access_token !== undefined){
+              this.$axios.get('http://localhost:8181/api/kakao/add', {headers:{"access_token":res.data.access_token}})
+    .then((res)=>{
+      console.log(res.data)
     })
+            }
+*/
+/*
+         this.$axios.get("http://localhost:8181/api/kakao/add", {headers:{"access_token":access_token}})
+        .then(function(res){
+          console.log(res.data)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+          */
+
+        })
+      }
+    
+     
+    })
+
+
     },
     
     
@@ -931,30 +947,26 @@ export default {
 
     
 // 카카오 스케줄 일정 연동
+// 시간 안 넣으면 알림 오류
 kakao(){
 
-      let token = sessionStorage.getItem('token')
-      this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
-        .then((res) => {
-          if(res.data.id == 1){
-            console.log(res.data)
-            if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
-              const redirect_uri = 'http://localhost:8182/api/kakao/token'
+      
+          
+/*
+              const redirect_uri = 'http://localhost:8182/calendar'
               const clientId = 'd54083f94196531e75d7de474142e52e';
               const Auth_url = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirect_uri}&response_type=code&scope=talk_calendar`; // 코드값
 
 
-             window.location.href = Auth_url;
-            }
-          } else {
-            window.location.href = '/login'
-          }
-        })
+              window.location.href = Auth_url;
+*/
+    
       
-      // let token = sessionStorage.getItem('token')
-      // this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
-      //   .then((res) => {
-      //     let id = res.data.id
+      let token = sessionStorage.getItem('token')
+       this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
+        .then((res) => {
+          console.log(res.data)
+        })
       //     if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서`
       //       if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
       //         const redirect_uri = 'http://localhost:8182/api/kakao/token'
@@ -1030,24 +1042,6 @@ this.$axios.get("http://localhost:8181/api/kakao/add",)
 })
 */
 
-  /*
-  let formData = new FormData();
-formData.append('email', sessionStorage.getItem('loginId'));
-formData.append('group_num', self.newEvent.group_num);
-formData.append('title', self.newEvent.title);
-formData.append('start', self.newEvent.start);
-formData.append('end', dayjs(self.end).format('YYYY-MM-DD'));
-formData.append('startTime', self.startTime);
-formData.append('endTime', self.endTime);
-formData.append('info', self.info);
-formData.append('alert', self.alert);
-formData.append('isLoop', self.isLoop);
-formData.append('day', self.day);
-*/
-
-
-  //location.href = "/login"
- // res.data null이면 카카오 로그인하러 가기로 이동 
 
 },
 
@@ -1058,7 +1052,10 @@ formData.append('day', self.day);
       const state = this.generateRandomState()
       const naverAuthURL = 'https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=' + clientId + '&redirect_uri=' + redirectURI + '&state=' + state;
 
-    window.location.href = naverAuthURL
+      sessionStorage.setItem('callbackMethod', 'token')    
+  
+    
+      window.location.href = naverAuthURL
   
 
   
@@ -1083,8 +1080,11 @@ formData.append('day', self.day);
       // })
 
 },
-reloadPage(){
-  window.location.reload()
+token(){
+  this.$axios.get("http://localhost:8181/api/kakao/token", {headers:{'authorization_code':this.code}})
+  .then((res)=>{
+    console.log(res.data)
+  })
 },
 
    executeNaverCode(code, state) {
