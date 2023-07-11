@@ -104,7 +104,7 @@
                         <div class="col">
                             {{ order.title }}
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             {{ order.email.email }}
                         </div>
                         <div class="col">
@@ -133,7 +133,7 @@
                         <div class="col">
                             {{ order.title }}
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             {{ order.email.email }}
                         </div>
                         <div class="col">
@@ -165,18 +165,7 @@ export default {
     name: 'SubscribeBoardList',
     components: {
     },
-    computed : {
-        // rows() {
-        //     return this.items.length
-        // },
-
-        items() {
-            return this.items.slice(
-                (this.currentPage-1) * this.perPage,
-                this.currentPage * this.perPage
-            ) 
-        }, 
-    },
+    
     data() {
         return {
             list: [],

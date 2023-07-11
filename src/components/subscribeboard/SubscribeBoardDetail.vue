@@ -94,7 +94,7 @@
                 </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-else-if="this.currentDate = this.dto.recruit_endperiod">
+            <div v-else-if="this.currentDate == this.dto.recruit_endperiod">
                 <div class="warn">
                     참여 후 취소 및 환불이 불가능합니다.
                 </div>
