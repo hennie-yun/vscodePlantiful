@@ -1,33 +1,36 @@
 <template lang="">
     <div class="subboardadd needs-validation body">
+
         <!-- site 선택 -->
         <h2> 모집 글 추가하기 </h2>
         <div class="text-center radiocheck">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio1" value="넷플릭스" required> 
-            <label class="form-check-label" for="inlineRadio1"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914"/></label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio1" value="넷플릭스" required> 
+                <label class="form-check-label" for="inlineRadio1"><img src="https://img.shields.io/badge/NETFLIX-black?style=for-the-badge&logo=netflix&logoColor=E50914"/></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio2" value="왓챠" required>
+                <label class="form-check-label" for="inlineRadio2"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B"/></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio3" value="티빙" required>
+                <label class="form-check-label" for="inlineRadio3"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100"/></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio4" value="웨이브" required>
+                <label class="form-check-label" for="inlineRadio4"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio5" value="디즈니플러스" required>
+                <label class="form-check-label" for="inlineRadio5"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white"/></label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio6" value="아마존프라임비디오" required>
+                <label class="form-check-label" for="inlineRadio6"><img src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></label>
+            </div>
         </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio2" value="왓챠" required>
-            <label class="form-check-label" for="inlineRadio2"><img src="https://img.shields.io/badge/WATCHA-black?style=for-the-badge&logo=wattpad&logoColor=FF4F8B"/></label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio3" value="티빙" required>
-            <label class="form-check-label" for="inlineRadio3"><img src="https://img.shields.io/badge/TVING-black?style=for-the-badge&logo=tvtime&logoColor=DD1100"/></label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio4" value="웨이브" required>
-            <label class="form-check-label" for="inlineRadio4"><img src="https://img.shields.io/badge/WAVE-004DB4?style=for-the-badge&logo=wish&logoColor=white"/></label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio5" value="디즈니플러스" required>
-            <label class="form-check-label" for="inlineRadio5"><img src="https://img.shields.io/badge/DISNEY+-1B365D?style=for-the-badge&logo=disroot&logoColor=white"/></label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" v-model="site" name="inlineRadioOptions" id="inlineRadio6" value="아마존프라임비디오" required>
-            <label class="form-check-label" for="inlineRadio6"><img src="https://img.shields.io/badge/AMAZON-01A4FF?style=for-the-badge&logo=amazon&logoColor=black"/></label>
-        </div>
-        </div>
+
+        <!-- 구독 글 올리는 폼 -->
         <div class="row bodycontent">
             <div class="col">
                 <label for="title"  class="form-label text-start">제목</label>
@@ -41,16 +44,6 @@
             </div>
             
         </div>
-        <!-- <div class="row bodycontent">
-            <div class="col-4">
-                <label for="floatingInputValue" class="form-label">작성자</label>
-                <input type="text" class="form-control" id="floatingInputValue" name="email" v-model="email" required readonly>
-            </div>
-        </div> -->
-        <div class="row bodycontent">
-            
-        </div>
-
         <div class="row align-items-center">
             <div class="col">
                 <label for="total_point" class="form-label">전체 금액 입력</label>
@@ -64,7 +57,6 @@
         <div class="col warnmsg">
             지불한 총 금액, 본인을 포함한 인원을 입력해주세요.
         </div>
-
         <div class="row align-items-center ">
             <div class="col">
                 <label for="subscribe_startdate" class="form-label">구독 시작일</label>
@@ -81,20 +73,12 @@
                     <option value="12">12개월</option>
                 </select>
             </div>
-            <!-- ~
-            <div class="col">
-                <label for="floatingInputValue" class="form-label">구독 마감일</label>
-                <input type="date" class="form-control" v-model="subscribe_enddate" required>
-            </div> -->
         </div>
-        <!-- <div class="form-check form-check-inline checkbox">
-            <input class="form-check-input" type="checkbox" id="agree" v-model="agree">
-            <label class="form-check-label" for="agree">모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 매달 구독 시작일에 한달 분 금액이 자동으로 차감됩니다.</label>
-        </div> -->
+
+        <!-- 글 등록 버튼 -->
         <div class="row">
             <button class="btn custom-button" v-on:click="checkcash" style="background-color: #7AC6FF; color:white;">글 등록하기 </button>
         </div>
-
     </div>
 </template>
 <script>
@@ -102,6 +86,7 @@ import dayjs from 'dayjs'
 export default {
     name: 'SubscribeBoardAdd',
     computed: {
+        // 모집 마감일 최소 날짜 선택 
         minDate() {
             // return dayjs().add(2, 'day').format('YYYY-MM-DD')
             return dayjs().subtract(2, 'day').format('YYYY-MM-DD')
@@ -130,7 +115,6 @@ export default {
                 paidamount: 0
             },
             fflag: false,
-            // agree: [],
         }
     },
     watch: {
@@ -156,9 +140,6 @@ export default {
         subscribe_startdate(value) {
             this.formValidated = !!value;
         },
-        // agree(value) {
-        //     this.formValidated = !!value;
-        // },
 
     },
     methods: {
@@ -180,7 +161,7 @@ export default {
         },
         checkcash() {
             const self = this;
-            if (confirm('[자동취소 및 진행상태 변경안내] \n 모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 인원이 충족될 경우 모집일이 지나야 진행 상태로 변경됩니다.\n\n [모집자 입금 안내] \n 전체 금액은 구독 종료일에 모집자에게 포인트로 입금됩니다.\n\n [취소 및 환불 안내] \n 모집글 삭제는 참여자가 없을 경우에만 가능합니다. 참여자가 있을 경우 취소 및 환불은 불가능합니다.\n\n 위 내용에 동의하신다면 확인을 클릭해주세요.\n')) {
+            if (confirm('[자동취소 및 진행상태 변경안내] \n 모집일까지 인원이 모집되지 않을 경우, 자동취소됩니다. 인원이 충족될 경우 모집일이 지나야 진행 상태로 변경됩니다.\n\n [모집자 입금 안내] \n 전체 금액은 구독 종료일에 모집자에게 포인트로 입금됩니다.\n\n [취소 및 환불 안내] \n 모집글 삭제는 참여자가 없을 경우에만 가능합니다. 참여자가 있을 경우 취소 및 환불은 불가능합니다. 모집글 삭제는 모집 마감일 전날까지만 가능합니다.\n\n 위 내용에 동의하신다면 확인을 클릭해주세요.\n')) {
                 self.$axios.get('http://localhost:8181/payment/getcash/' + this.email)
                     .then(function (res) {
                         if (res.status == 200) {
