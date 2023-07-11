@@ -176,6 +176,7 @@ export default {
               alert(res.data.message);
               self.isVisible = false;
               self.img = 'http://localhost:8181/members/plantiful/' + self.email;
+              window.location.reload(true);
             }
           })
           .catch(function (error) {
