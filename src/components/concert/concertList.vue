@@ -3,8 +3,12 @@
         <div class="inputBox" style="">
             <input class="my-6 w-75" v-model="keyword" type="text" placeholder="검색어 입력" 
             @keyup.enter="search">
-            <v-btn class="searchBtn" @click="search">검색</v-btn>
-            <v-btn class="searchBtn" @click="rollback">되돌리기</v-btn>
+            <v-btn class="searchBtn" @click="search">
+                <img style="max-width: 100%; max-height: 100%;" :src="require('@/assets/image/search.png')">
+            </v-btn>
+            <v-btn class="searchBtn" @click="rollback">
+                <img style="max-width: 100%; max-height: 100%;" :src="require('@/assets/image/undo.png')">
+            </v-btn>
         </div>
         <div class="text-center">
             <v-progress-circular
@@ -124,6 +128,7 @@ export default {
 
         rollback() {
             this.items = this.originalItems
+            this.keyword = ''
         }
     }, 
 
@@ -191,9 +196,11 @@ export default {
         width: 5rem;
         height: 2.5rem;
         border-radius: 5px 5px 5px 5px;
+        margin : 5px;
     }
 
     #itemList {
+        width:100%;
         display:inline-block;
         list-style-type : none;
         padding-left: 0;
