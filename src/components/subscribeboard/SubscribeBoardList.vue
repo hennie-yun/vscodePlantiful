@@ -283,8 +283,8 @@ export default {
                         if (error.response && error.response.status) {
                             alert('에러코드:' + error.response.status);
                         } else {
-                            alert('checkmember 에러가 발생했습니다.');
-                            console.log(self.partylist)
+                            // alert('checkmember 에러가 발생했습니다.');
+                            console.log('checkmember'+self.partylist)
                         }
                     });
 
@@ -295,11 +295,7 @@ export default {
                 .then(() => {
                     this.list.forEach((order) => {
                         const self = this;
-                        // // console.log('모든 비동기 요청 완료');
                         const currentTotalPointBasket = order.point_basket;
-
-                        // self.list.forEach(function (order) {
-                        // console.log(self.list);
 
                         const subEnddateFormatted = dayjs(order.subscribe_enddate).format('YYYY-MM-DD');
                         self.subscribe_enddate = subEnddateFormatted;
@@ -310,18 +306,18 @@ export default {
                         // alert(self.currentDate + '오늘날짜 ')
                         if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod && self.currentDate === order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate)) {
                             // 인원수 같음 & 모집일 지남
-                            console.log(order.recruit_endperiod + order.subscribe_num)
+                            // console.log(order.recruit_endperiod + order.subscribe_num)
                             order.flag = 1;
 
                         } else if (order.recruitpeople !== order.total_people && (self.currentDate > order.recruit_endperiod) && (self.currentDate !== order.recruit_endperiod)) {
-                            console.log('2' + order.recruit_endperiod + order.subscribe_num)
+                            // console.log('2' + order.recruit_endperiod + order.subscribe_num)
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
                             if (currentTotalPointBasket != 0) {
-                                const price = order.total_point / self.total_people
+                                const price = parseInt(order.total_point / self.total_people)
                                 console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
                                 const form = new FormData();
                                 form.append('paidamount', price)
@@ -347,7 +343,7 @@ export default {
                                         }
                                     });
                             } else {
-                                console.log('이미 실행됨');
+                                console.log('이미 출금 실행됨');
                             }
 
                             // 구독 종료일 이후 모집자에게 돈 이동 
