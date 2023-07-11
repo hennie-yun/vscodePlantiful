@@ -85,29 +85,28 @@
 
         </div>
         <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
-
         <!-- 참여하기 버튼 -->
-        <div v-if="dto.email && dto.email.email !== loginId" class="btn">
-            <div v-if="this.currentDate < this.dto.recruit_endperiod">
+        <div v-if="dto.email && dto.email.email !== loginId">
+            <div v-if="currentDate < this.dto.recruit_endperiod">
                 <div class="warn">
                     참여 후 취소 및 환불이 불가능합니다.
                 </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-else-if="this.currentDate = this.dto.recruit_endperiod">
+            <div v-if="dif_day === 0">
                 <div class="warn">
                     참여 후 취소 및 환불이 불가능합니다.
                 </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
             </div>
-            <div v-else="this.currentDate > this.dto.recruit_endperiod">
-                모집이 종료되었습니다.<div class=""></div>
+            <!--  -->
+            <div class="recruitend" v-if="currentDate > convertedEndDate">
+                모집이 종료되었습니다.
             </div>
         </div>
 
         <!-- 삭제하기 버튼 -->
-        <div v-else-if="dto.email && dto.email.email === loginId && (this.currentDate < this.dto.recruit_endperiod)"
-            class="btn">
+        <div v-else-if="(dto.email && dto.email.email === loginId) && (dif_day > 0)" class="btn">
             <div>
                 <button v-on:click="deleteBoard" class="btn btn-danger">삭제하기</button>
             </div>
@@ -149,7 +148,7 @@ export default {
             refundprice: 0,
             refundemail: null,
             left_day: 0,
-
+            convertedEndDate: null,
         }
     },
     mounted() {
@@ -288,7 +287,7 @@ export default {
                                         self.$axios.post('http://localhost:8181/payment/' + self.refundemail, delform)
                                             .then(function (res) {
                                                 if (res.status == 200) {
-                                                    alert('구독 삭제, 작성자에게 환불됨 ')
+                                                    alert('포인트가 환불되었습니다.')
                                                     location.href = "/SubscribeBoardList"
                                                 } else {
                                                     alert('구독 삭제 오류')
@@ -333,6 +332,7 @@ export default {
             .then(function (res) {
                 if (res.status == 200) {
                     self.dto = res.data.dto;
+                    self.convertedEndDate = dayjs(self.dto.recruit_endperiod).format('YYYY-MM-DD');
 
                     self.checkmember();
                     // 출금일 날짜 변환
@@ -354,13 +354,16 @@ export default {
                     // 값 나누기
                     self.divisionResult = value1 / value2;
 
+
+
                     // 날짜 차이 계산
                     // const registerDate = dayjs(self.dto.register_date);
                     const recruitEndDate = dayjs(self.dto.recruit_endperiod);
                     self.dif_day = recruitEndDate.diff(self.currentDate, 'day', true); // 'true'를 추가하여 시간까지 고려한 차이 계산
-                    console.log(self.currentDate)
-                    console.log(recruitEndDate)
-                    console.log(self.dif_day)
+                    console.log('오늘날짜' + self.currentDate)
+                    console.log('모집마감일' + recruitEndDate)
+                    console.log('날짜차이' + self.dif_day)
+
                     if (self.dif_day > 0) {
                         self.diff_day = self.dif_day
                     } else if (self.dif_day === 0) {
@@ -368,6 +371,9 @@ export default {
                     } else {
                         self.diff_day = '종료'
                     }
+
+
+                    
                 } else {
                     alert('에러코드:' + res.status)
 
@@ -425,6 +431,7 @@ export default {
 
 .warn {
     color: red;
+    margin-top: 30px;
 }
 
 .bigtitle {
@@ -473,6 +480,10 @@ img {
     margin: 30px 50px 30px;
     justify-content: center;
 
+}
+
+.recruitend {
+    margin: 30px;
 }
 
 .stress {

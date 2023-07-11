@@ -3,13 +3,10 @@
         <div class="inputBox" style="">
             <input class="my-6 w-75" v-model="keyword" type="text" placeholder="검색어 입력" 
             @keyup.enter="search">
-            <v-btn class="searchBtn" style="background-color: #7AC6FF;" @click="search">검색</v-btn>
-            <v-btn class="searchBtn" style="background-color: #7AC6FF;" @click="rollback">되돌리기</v-btn>
+            <v-btn class="searchBtn" @click="search">검색</v-btn>
+            <v-btn class="searchBtn" @click="rollback">되돌리기</v-btn>
         </div>
         <div class="text-center">
-            <!-- <b-pagination v-model="currentPage" :total-rows="count" align="center"
-                :per-page="perPage" pills size="lg" class="my-3"
-            ></b-pagination> -->
             <v-progress-circular
                 color="blue-lighten-3"
                 indeterminate
@@ -27,7 +24,7 @@
                 <li class="uls" v-for="(item, index) of items" :key="index">
                     <div class="imgDiv">
                         <a style="cursor: pointer;" @click="detail(item.id)">
-                            <img height="142" :src="item.poster">
+                            <img :src="item.poster">
                         </a>
                     </div>
                     <div class="zi">
@@ -58,9 +55,6 @@
             </div>
         </div>
     </div>
-    <!-- <div class="concert-footer">
-        <concertFooter v-bind:propsdata="count" v-on:pageChanging="pageChange"></concertFooter>
-    </div> -->
 </template>
 <script>
 
@@ -193,7 +187,7 @@ export default {
         /* background: linear-gradient(to right, #40aef7, #5d8bff); */
         color: white;
         font-weight: 700;
-        
+        background-color: #7AC6FF;
         width: 5rem;
         height: 2.5rem;
         border-radius: 5px 5px 5px 5px;

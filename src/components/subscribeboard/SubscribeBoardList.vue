@@ -3,7 +3,7 @@
         <div class="container text-center">
 
             <div class="grid text-center">
-                <h1 class="sbtitle"> 구독 공유 시작하기 </h1>
+                <h2 class="sbtitle"> 구독 공유 시작하기 </h2>
             </div>
             <div class="row alllistsite">
                 <div class="col" v-on:click="search('all')"><img
@@ -104,7 +104,7 @@
                         <div class="col">
                             {{ order.title }}
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             {{ order.email.email }}
                         </div>
                         <div class="col">
@@ -133,7 +133,7 @@
                         <div class="col">
                             {{ order.title }}
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             {{ order.email.email }}
                         </div>
                         <div class="col">
@@ -165,6 +165,7 @@ export default {
     name: 'SubscribeBoardList',
     components: {
     },
+    
     data() {
         return {
             list: [],
@@ -173,7 +174,7 @@ export default {
             partylist: [],
             email: sessionStorage.getItem('loginId'),
             subscribe_enddate: null,
-            recruit_endperiod: null,
+            // recruit_endperiod: null,
             recruitpeople: 0,
             total_people: 0,
             subscribe_num: 0,
@@ -183,9 +184,6 @@ export default {
     },
 
     mounted() {
-        // this.currentDate = new Date().toLocaleDateString();
-        // const currentDateFormatted = dayjs(this.currentDate, 'YYYY. MM. DD.').format('YYYY-MM-DD');
-        // this.currentDate = currentDateFormatted;
         this.currentDate = dayjs().format('YYYY-MM-DD');
 
     },
@@ -295,17 +293,19 @@ export default {
                         self.total_people = order.total_people
                         self.total_point = order.total_point
 
-                        if (order.recruitpeople === order.total_people && self.currentDate > self.recruit_endperiod && self.currentDate < self.subscribe_enddate) {
+                        // alert(self.currentDate + '오늘날짜 ')
+                        if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod && self.currentDate === order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate)) {
                             // 인원수 같음 & 모집일 지남
+                            console.log(order.recruit_endperiod + order.subscribe_num)
                             order.flag = 1;
 
-                        } else if (order.recruitpeople !== order.total_people && self.currentDate > self.recruit_endperiod) {
+                        } else if (order.recruitpeople !== order.total_people && (self.currentDate > order.recruit_endperiod) && (self.currentDate !== order.recruit_endperiod)) {
+                            console.log('2'+order.recruit_endperiod + order.subscribe_num)
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
                             //한구독의 전체금액 
                             // point basket & cash 관리 
                             // 취소된 사항 ( 모두의 예치금 전부 빼고, 각자에게 돈 돌아가기 )
-                            // alert('num:' + order.subscribe_num + ' pb;' + currentTotalPointBasket)
                             if (currentTotalPointBasket != 0) {
                                 const price = order.total_point / self.total_people
                                 console.log('subscribenum:' + order.subscribe_num + ' price:' + price + ' id:' + self.email + ' pb:' + self.point_basket)
@@ -343,14 +343,14 @@ export default {
                                 const self = this;
                                 const price = order.total_point;
                                 console.log('구독 종료일 지남:' + price);
-                                console.log('구독 종료일 지남:' + self.email);
+                                console.log('구독 종료일 지남:' + order.email.email);
                                 const form = new FormData();
-                                form.append('email', self.email);
+                                form.append('email', order.email.email);
                                 form.append('paidamount', price);
-                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                self.$axios.post('http://localhost:8181/payment/' + order.email.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
-                                            alert('구독 끝 - 모집자에게 돈 돌아감 ')
+                                            console.log(order.subscribe_num+' 구독 끝 - 모집자에게 돈 돌아감 ')
                                             self.$axios
                                                 .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                 .then(function (res) {
@@ -381,7 +381,7 @@ export default {
                         self.$axios.patch('http://localhost:8181/subscribeparty/' + order.subscribe_num + '/' + order.flag)
                             .then(function (res) {
                                 // alert(res.data);
-                                console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check);
+                                console.log('subscribenum:' + order.subscribe_num + ', start_check:' + order.start_check + '모집마감일: '+order.recruit_endperiod);
                             })
                             .catch(function (error) {
                                 alert('에러코드:' + error.response.status);
