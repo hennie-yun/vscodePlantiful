@@ -284,16 +284,25 @@ export default {
                   alert('탈퇴완료')
                   self.logout()
                   location.href = '/'
+                } else if (res.data.message){
+                  alert(res.data.message);
                 }
               } else {
                 alert('에러')
               }
             });
         }
-      } else {
+      } 
+      
+      
+      
+      else {
         alert('간편 로그인 탈퇴를 진행 합니다');
-        const self = this;
-        if (self.dto.id == 1 ){
+        self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+            .then(function (res) {
+              if (res.status == 200) {
+                if (res.data.id) {
+                  if (res.data.id == 1 ){ //카카오톡이라면 
       self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
         .then(function (res) {
           if (res.status == 200) {
@@ -304,7 +313,8 @@ export default {
             alert('에러')
           }
         });
-      } else {
+      } 
+      else { //네이버라면 
         self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
             .then(function (res) {
               if (res.status == 200) {
@@ -312,16 +322,18 @@ export default {
                   alert('탈퇴완료')
                   self.logout()
                   location.href = '/'
+                } else if (res.data.message){
+                  alert(res.data.message);
                 }
               } else {
                 alert('에러')
               }
             });
-
+          }
+        }
       }
-    }
-    }else {
-      alert ('탈퇴를 취소 합니다')
+      });
+      }
     }
     }
   }
