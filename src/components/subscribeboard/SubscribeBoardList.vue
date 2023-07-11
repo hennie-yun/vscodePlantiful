@@ -296,14 +296,10 @@ export default {
                         // alert(self.currentDate + '오늘날짜 ')
                         if (order.recruitpeople === order.total_people && (self.currentDate > order.recruit_endperiod && self.currentDate === order.recruit_endperiod) && (self.currentDate < self.subscribe_enddate)) {
                             // 인원수 같음 & 모집일 지남
-                            // alert('오늘 flag 1 '+ self.currentDate)
-                            // alert('모집 마감일 flag 1 '+ order.recruit_endperiod + order.subscribe_num)
                             console.log(order.recruit_endperiod + order.subscribe_num)
                             order.flag = 1;
 
                         } else if (order.recruitpeople !== order.total_people && (self.currentDate > order.recruit_endperiod) && (self.currentDate !== order.recruit_endperiod)) {
-                            alert('2 '+order.subscribe_num+self.currentDate + order.recruit_endperiod)
-                            // alert('모집 마감일 flag2 '+ order.recruit_endperiod + order.subscribe_num)
                             console.log('2'+order.recruit_endperiod + order.subscribe_num)
                             // 인원수 다름 & 모집일 지남
                             order.flag = 2;
@@ -347,14 +343,14 @@ export default {
                                 const self = this;
                                 const price = order.total_point;
                                 console.log('구독 종료일 지남:' + price);
-                                console.log('구독 종료일 지남:' + self.email);
+                                console.log('구독 종료일 지남:' + order.email.email);
                                 const form = new FormData();
-                                form.append('email', self.email);
+                                form.append('email', order.email.email);
                                 form.append('paidamount', price);
-                                self.$axios.post('http://localhost:8181/payment/' + self.email, form)
+                                self.$axios.post('http://localhost:8181/payment/' + order.email.email, form)
                                     .then(function (res) {
                                         if (res.status == 200) {
-                                            alert('구독 끝 - 모집자에게 돈 돌아감 ')
+                                            console.log(order.subscribe_num+' 구독 끝 - 모집자에게 돈 돌아감 ')
                                             self.$axios
                                                 .post('http://localhost:8181/subscribeparty/money/' + order.subscribe_num)
                                                 .then(function (res) {

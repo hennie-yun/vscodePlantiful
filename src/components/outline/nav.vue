@@ -50,7 +50,7 @@
   
                 <div class="nav-bar-profile" style="margin-left: 5px;">
                   <img :src="'http://localhost:8181/members/plantiful/' + loginId" @error="replaceImg" @click="mypage"
-                    style="width: 40px; border-radius: 50%; height: 40px;" />
+                    style="width: 40px; border-radius: 50%; height: 40px;"  />
                 </div>
   
                 <div @click="logout">
@@ -125,6 +125,9 @@
     },
   
     methods: {
+      mypage(){
+        location.href ="/mypage"
+      },
       navigateTo(route, event) {        
         $(".active").removeClass("active");
         $(event).addClass("active");
