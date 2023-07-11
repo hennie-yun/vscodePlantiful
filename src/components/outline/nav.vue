@@ -184,6 +184,7 @@
       },
   
       clearAllItem: function () {
+        var route = localStorage.getItem("activeTab")
         localStorage.clear()
         this.todoItems = []
         localStorage.setItem("activeTab", route)
