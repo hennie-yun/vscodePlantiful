@@ -966,6 +966,8 @@ kakao(){
        this.$axios.get("http://localhost:8181/api/kakao/member", { headers: { "token": token } })
         .then((res) => {
           console.log(res.data)
+          this.shareEvent = false;
+          location.reload();
         })
       //     if (id == 1) { // 비동기 함수를 callback 새 페이지에 하고 다시 캘린더로 돌아와서`
       //       if (this.code === undefined) { // 받아온 this.code값이 없을때는 코드 요청
