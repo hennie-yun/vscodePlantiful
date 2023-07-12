@@ -2,7 +2,7 @@
   <keep-alive>
   <div>
       <nav class="navbar navbar-expand-custom navbar-mainbg">
-        <a class="navbar-brand navbar-logo" href="/calendar">plan + tiful</a>
+        <a class="navbar-brand navbar-logo" href="/calendar" @click="toCalendar">plan + tiful</a>
   
         <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false"
           aria-label="Toggle navigation" @click="toggleNavigation">
@@ -127,6 +127,7 @@
     methods: {
       mypage(){
         location.href ="/mypage"
+        localStorage.setItem("activeTab", '/mypage')
       },
       navigateTo(route, event) {        
         $(".active").removeClass("active");
@@ -235,6 +236,10 @@
             "width": activeWidthNewAnimWidth + "px"
           });
         });
+      },
+
+      toCalendar() {
+        localStorage.setItem("activeTab", "/calendar")
       }
     },
   };

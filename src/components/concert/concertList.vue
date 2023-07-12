@@ -115,12 +115,15 @@ export default {
         }, 
 
         search() {
+            console.log(this.keyword)
+
             for(let item of this.originalItems) {
                 if(item.name.includes(this.keyword)) {
                     this.tempItems.push(item)
                 }
             }
 
+            console.log(this.tempItems)
             this.items = this.tempItems
             this.count = this.tempItems.length
             this.tempItems = []
@@ -128,6 +131,7 @@ export default {
 
         rollback() {
             this.items = this.originalItems
+            this.count = this.items.length
             this.keyword = ''
         }
     }, 

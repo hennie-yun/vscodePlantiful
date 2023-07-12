@@ -109,11 +109,10 @@ export default {
       formData.append('state', self.state);
       self.$axios.post('http://localhost:8181/api/naver/login', formData)
         .then((res) => {
-          if (res.status == 200) {
-            const message = res.data.userinfo.message;
-            if (message) {
-              alert(message);
-              location.href = "/";
+          if(res.status==200){
+            if(res.data.userinfo.message){
+              alert(res.data.userinfo.message);
+              location.href = "/"
             } else {
               console.log(res.data);
               self.form.email = res.data.userinfo.naverResponse.email;

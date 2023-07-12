@@ -87,12 +87,12 @@
         <!-- {{ dto.email && dto.email.email }} dto.email 객체 존재 여부를 확인하고 email 속성이 있으면 뽑아오기 -->
         <!-- 참여하기 버튼 -->
         <div v-if="dto.email && dto.email.email !== loginId">
-            <!-- <div v-if="currentDate < this.dto.recruit_endperiod"> -->
+            <div v-if="currentDate < this.dto.recruit_endperiod">
                 <div class="warn">
                     참여 후 취소 및 환불이 불가능합니다.
                 </div>
                 <button v-on:click="checkcash" class="btn btn-primary">참여하기</button>
-            <!-- </div> -->
+            </div>
             <div v-if="dif_day === 0">
                 <div class="warn">
                     참여 후 취소 및 환불이 불가능합니다.

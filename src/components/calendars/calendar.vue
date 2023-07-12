@@ -51,7 +51,7 @@
               </span>
             </div>
             <transition name="fade">
-              <ul class="sidebar-list" v-if="showEmailList" style="height: 110px; font-size: 1rem;">
+              <ul class="sidebar-list" v-if="showEmailList" style="height: 110px; font-size: 1rem; margin-top: 5px;">
                 <li v-for="email in selectedGroupEmails" :key="email">
                   {{ email }}
                 </li>
@@ -1124,7 +1124,7 @@ title: '일정:   ' + self.kakaoShareTitle,
 description: '날짜:  ' + self.kakaoShareDescription + '   시간:  ' + self.kakaoShareTime,
 imageUrl: 'https://previews.123rf.com/images/gustavofrazao/gustavofrazao1610/gustavofrazao161000313/64284988-%EB%85%B8%ED%8A%B8%EB%B6%81-%EB%B0%B0%EA%B2%BD%EC%9C%BC%EB%A1%9C-%EB%82%98%EB%AC%B4-%ED%81%90%EB%B8%8C%EC%97%90-%EC%93%B0%EC%97%AC%EC%A7%84-%EA%B3%84%ED%9A%8D.jpg',
 link: {
-webUrl: 'https://localhost:8081'
+webUrl: 'https://localhost:8182'
 }
 },
 // social: {
@@ -1132,13 +1132,14 @@ webUrl: 'https://localhost:8081'
 //   commentCount: 257,
 //   sharedCount: 257,
 // },
-// buttons: [{
-//   title: 'KOSTA로 이동',
-//   link: {
-//     mobileWebUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993',
-//     webUrl: 'https://edu.kosta.or.kr/lectures/courseInfo/993'
-//   }
-// }]
+        buttons: [{
+          title: 'KOSTA로 이동',
+          link: {
+            mobileWebUrl: 'http://192.168.0.143:8182/',
+            webUrl: 'http://localhost:8182/'
+          }
+        }],
+
 installTalk: true,
 });
 window.location.reload();

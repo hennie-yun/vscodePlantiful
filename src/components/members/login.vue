@@ -244,6 +244,7 @@ export default {
             if (res.data.flag) {
               sessionStorage.setItem('token', res.data.token)
               sessionStorage.setItem('loginId', res.data.loginId)
+              localStorage.setItem("activeTab", "/calendar")
               location.href = "/calendar"
             } else {
               alert('로그인 실패')

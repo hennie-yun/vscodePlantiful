@@ -5,28 +5,27 @@
                 구독 파티 채팅방
             </div>
             <div id="messages" ref="box">
-                    <div class="wrapper" v-if="roomList.length == 0">
-                        <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
-                    </div>
-                    <div class="msg-box rounded-3" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
-                        <div class="img-info-box" style="width:100%; padding-left: 15px;" @click="goRoom(item.num)">
-                            <div class="img-box rounded-circle">
-                                <img :src="'http://localhost:8181/chat/' + item.lastSender.email"
-                                @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:36px; height: 36px;"/>
-                            </div>
-                            <div class="info-box text-left">
-                                <p class="last-msg" style="font-size: 14px;">
-                                    {{ item.subscribeNum.email.nickname }} 님의 
-                                    {{ item.subscribeNum.site }} 구독 채팅방
-                                </p>
-                                <p class="last-msg" style="">{{ item.lastMsg }}</p>
-                            </div>
-                            <div>
-                                
-                            </div>
+                <div class="wrapper" v-if="roomList.length == 0">
+                    <h2 style="font-family:'TheJamsil5Bold';">아직 참여한 구독 파티가 없습니다</h2>
+                </div>
+                <div class="msg-box rounded-3" v-for="(item, idx) in roomList" v-bind:key="idx" style="margin:25px">
+                    <div class="img-info-box" style="width:100%; padding-left: 15px;" @click="goRoom(item.num)">
+                        <div class="img-box rounded-circle">
+                            <img :src="'http://localhost:8181/chat/' + item.lastSender.email"
+                            @error="replaceProfile" class="rounded-circle" style="margin:0 auto; width:36px; height: 36px;"/>
+                        </div>
+                        <div class="info-box text-left">
+                            <p class="last-msg" style="font-size: 14px;">
+                                {{ item.subscribeNum.email.nickname }} 님의 
+                                {{ item.subscribeNum.site }} 구독 채팅방
+                            </p>
+                            <p class="last-msg" style="">{{ item.lastMsg }}</p>
+                        </div>
+                        <div>
+                            
                         </div>
                     </div>
-                    
+                </div>
             </div>
         </div>
     </v-app>
