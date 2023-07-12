@@ -206,7 +206,7 @@ export default {
     border-radius: 10px;
 }
 
-.ingcardlist .recruit {
+.ingcardlist .recruit, .ing {
     padding: 3px;
     background-color: white;
     border-radius: 10px;
