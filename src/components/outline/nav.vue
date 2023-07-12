@@ -127,6 +127,7 @@
     methods: {
       mypage(){
         location.href ="/mypage"
+        localStorage.setItem("activeTab", '/mypage')
       },
       navigateTo(route, event) {        
         $(".active").removeClass("active");
