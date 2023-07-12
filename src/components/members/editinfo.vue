@@ -106,6 +106,10 @@ export default {
         email: '',
         id: ''
       },
+      paydto: {
+        paidamount: 0
+      },
+
       isVisible: false,
       changeimg: null,
       pwd: '',
@@ -141,6 +145,17 @@ export default {
         alert('에러');
       }
     });
+    self.$axios.get('http://localhost:8181/payment/getcash/' + self.email)
+  .then((res) => {
+    if (res.status == 200) {
+      if (res.data.paydto != null) {
+        this.paydto = res.data.paydto;
+        this.paidamount = this.paydto.paidamount;
+      } else {
+        
+      }
+    }
+  });
   },
   methods: {
     // 비밀번호 정규식
@@ -273,7 +288,10 @@ export default {
     out() {
       const self = this;
       let token = sessionStorage.getItem('token')
-      if(confirm("정말 탈퇴 하시겠습니까?")){    
+      if(self.paidamount != 0) {
+        alert('충전금이 있어 탈퇴가 불가능합니다')
+      }
+      else if(confirm("정말 탈퇴 하시겠습니까?")){    
       if (this.dto.id == 0) {
         const existingPwd = prompt("비밀번호를 입력하세요");
         if (existingPwd === self.dto.pwd) {
