@@ -397,7 +397,7 @@ export default {
                                     console.log('이름만빼옴' + res.data.name);
                                     console.log('입력한 이름' + self.name)
                                     if (res.data.flag == false || res.data.name != self.name) {
-                                        alert('plantiful에 등록 된 예금주 성함 및 전화번호가 본인인증 결과와 일치하지 않습니다.')
+                                        alert('plantiful에 등록 된 예금주 성함 및 전화번호가 \n 본인인증 결과와 일치하지 않습니다.')
                                         self.outcontractformcheck = false;
                                         self.name = '';
                                         self.bankname = '';
@@ -425,7 +425,7 @@ export default {
 
                     } else {
                         // 인증취소 또는 인증실패
-                        var msg = '인증에 실패하였습니다.';
+                        var msg = '인증에 실패하였습니다. \n';
                         msg += '에러내용 : ' + rsp.error_msg;
                         alert(msg);
                         self.accountnum = '';
