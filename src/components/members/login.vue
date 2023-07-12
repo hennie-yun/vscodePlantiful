@@ -133,7 +133,6 @@ export default {
                 alert('이메일이 발송되었습니다');
                 self.isVisible = true;
                 const key = res.data.key;
-                alert(key);
                 self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
               }
             } else {
@@ -272,7 +271,6 @@ export default {
               alert('전달 드린 임시비밀번호로 로그인 하세요')
               self.showSignin();
               const key = res.data.key;
-              alert(key);
               self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
             } else {
               alert('잘못된 이메일입니다');
