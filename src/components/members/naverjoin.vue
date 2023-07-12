@@ -112,8 +112,9 @@ export default {
       self.$axios.post('http://localhost:8181/api/naver/login', formData)
         .then((res) => {
           if(res.status==200){
-            if(res.data.userinfo.message){
-              alert(res.data.userinfo.message);
+            alert('성공')
+            if(res.data.message){
+              alert(res.data.message);
               location.href = "/"
             } else {
           console.log(res.data)
