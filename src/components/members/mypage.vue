@@ -40,30 +40,6 @@
         </div>
       </div>
     </div>
-
-
-    <!-- <section class="container1">
-      <button data-hover="내 정보 수정">
-        <div> <img :src="require('@/assets/image/edit-info.png')" class="iconset" /></div>
-      </button>
-    </section>
-    <section class="container1">
-      <button data-hover="내 구독 목록">
-        <div> <img :src="require('@/assets/image/press-button.png')" class="iconset" /></div>
-      </button>
-    </section>
-    <section class="container1">
-      <button data-hover="그룹만들기">
-        <div> <img :src="require('@/assets/image/networking.png')" class="iconset" /></div>
-      </button>
-    </section>
-    <section class="container1">
-      <button data-hover="내 포인트">
-        <div> <img :src="require('@/assets/image/cash-flow.png')" class="iconset" /></div>
-      </button>
-    </section> -->
-
-
     <div class="icon-container">
       <div class="icon-wrapper">
         <router-link to="/editinfo" class="link-style">
@@ -134,7 +110,7 @@ export default {
               self.img = 'http://localhost:8181/members/plantiful/' + self.dto.email;
             }
           } else {
-            alert('없는 아이디 혹은 만료된 세션 아이디입니다')
+            alert('만료된 세션 아이디입니다')
           }
         } else {
           alert('에러코드')
@@ -160,54 +136,18 @@ export default {
 }
 </script>
 
-<style scoped> /* section.container1 {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   margin: 10% auto;
-   text-align: center;
- }
-
- button:hover {
-   cursor: pointer;
- }
-
- button {
-   background: transparent;
-   outline: none;
-   position: relative;
-   padding: 15px 50px;
+<style scoped> 
+ .container {
+   width: 350px;
+   height: 500px;
+   border: 2px solid #7AC6FF;
+   margin: 50px 20px;
+   /* 수정된 부분 */
+   border-radius: 12px;
    overflow: hidden;
+   margin-left: 33%;
+   margin-top: 7%;
  }
-
- button:before {
-   content: attr(data-hover);
-   position: absolute;
-   top: 1.1em;
-   left: 0;
-   width: 100%;
-   text-transform: uppercase;
-   letter-spacing: 3px;
-   font-weight: 800;
-   font-size: 0.8em;
-   opacity: 0;
-   transform: translate(-100%, 0);
-   transition: all 0.3s ease-in-out;
- }
-
- button:hover:before {
-   opacity: 1;
-   transform: translate(0, 0);
- }
-
- button div {
-   text-transform: uppercase;
-   letter-spacing: 3px;
-   font-weight: 800;
-   font-size: 0.8em;
-   transition: all 0.3s ease-in-out;
- } */
-
  .iconset {
    width: 30px;
    height: 30px;
@@ -237,35 +177,15 @@ export default {
  }
 
  .icon-container {
-   margin-top: 5%;
+   margin-top: 4%;
  }
 
  .iconset {
-   width: 30px;
-   height: 30px;
+   width: 50px;
+   height: 50px;
    display: block;
    margin-left: auto;
    margin-right: auto;
- }
-
- .icon-wrapper {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   margin: 50px 0;
-   /* 수정된 부분 */
- }
-
- .container {
-   width: 350px;
-   height: 500px;
-   border: 2px solid #7AC6FF;
-   margin: 50px 20px;
-   /* 수정된 부분 */
-   border-radius: 12px;
-   overflow: hidden;
-   margin-left: 33%;
-   margin-top: 7%;
  }
 
  div.middle {
@@ -274,28 +194,49 @@ export default {
    top: 70px;
  }
 
- .link-style {
-   text-decoration: none;
- }
+.icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 70px 0;
+  }
 
- .link-style:hover,
- .link-style:focus {
-   text-decoration: none;
- }
+  .icon-wrapper .link-style {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
 
- .router-link-active .link-text {
-   text-decoration: none;
- }
+  .icon-wrapper .link-style .link-text {
+    margin-top: 10px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    white-space: nowrap;
+  }
 
- .link-text {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   text-align: center;
-   color: black;
-   font-family: 'Pretendard-Regular';
-   font-weight: 400;
-   margin-top: 5px;
+  .icon-wrapper .link-style .iconset {
+    transition: transform 0.3s;
+    text-decoration: none;
+  }
 
- }
+  .icon-wrapper .link-style:hover .iconset {
+    transform: scale(0);
+    text-decoration: none;
+  }
+
+  .icon-wrapper .link-style:hover .link-text {
+    visibility: visible;
+    opacity: 1;
+    color :#7AC6FF;
+    font-weight: bold;
+    font-family: 'Pretendard-Regular';
+    font-size : 18px;
+  }
 </style>  
