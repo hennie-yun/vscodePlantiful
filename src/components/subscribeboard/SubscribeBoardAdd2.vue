@@ -88,8 +88,8 @@ export default {
     computed: {
         // 모집 마감일 최소 날짜 선택 
         minDate() {
-            // return dayjs().add(2, 'day').format('YYYY-MM-DD')
-            return dayjs().subtract(2, 'day').format('YYYY-MM-DD')
+            return dayjs().add(2, 'day').format('YYYY-MM-DD')
+            // return dayjs().subtract(2, 'day').format('YYYY-MM-DD')
         },
         minStartDate() {
             return dayjs(this.recruit_endperiod).add(1, 'day').format('YYYY-MM-DD');
