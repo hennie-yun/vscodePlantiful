@@ -123,7 +123,6 @@ export default {
                 console.log(res.data.flag)
                 if (res.data.flag == false) {
                   console.log(res.data.flag)
-                  alert('회원가입을 하세요')
                 } else {
                   self.klogin()
                 }
