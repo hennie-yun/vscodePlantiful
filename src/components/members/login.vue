@@ -9,9 +9,7 @@
     </div>
     <div class="form-elements">
       <div class="form-element" style="display: flex;">
-        <input v-model="email" type="text" placeholder="email" style="flex: 1; margin-right: 5px;" :disabled="Visible">
-        <button @click="joinsendEmail" style="font-size : 13px; width: 80px; height:40px;" v-show="loginmailcheck">메일
-          인증</button>
+        <input v-model="email" type="text" placeholder="email" style="flex: 1; margin-right: 5px;">
       </div>
 
 
@@ -22,14 +20,17 @@
       <span v-if="!passwordValid && showPasswordMsg" style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
         특수문자를 포함한 8자리 이상만 가능합니다.</span>
 
-
       <div v-if="activeForm == 'signin'" class="form-element">
         <input v-model="pwd" type="password" placeholder="비밀번호">
       </div>
 
 
-      <div v-if="activeForm == 'signup'" class="form-element">
-        <input type="text" @input="autoHyphen($event.target)" maxlength="13" v-model="phone" placeholder="phone number">
+      <div v-if="activeForm == 'signup'" style="display: flex;" class="form-element" :disabled="Visible">
+        <input type="text" style="flex: 1; margin-right: 5px;" maxlength="11" v-model="phone"
+          placeholder="전화번호( - 빼고 입력)">
+        <button v-show="phonenumcheck" @click="checkinfo"
+          style="font-size : 13px; width: 80px; height:40px;">본인인증</button>
+
       </div>
 
       <div v-if="activeForm == 'signup'" class="form-element">
@@ -43,14 +44,9 @@
         </label>
       </div>
 
-      <div class="form-element" v-show="isVisible" style="display: flex;">
-        <input type="text" placeholder="인증번호를 입력하세요" @input="updateEmailCheck" style="flex: 1; margin-right: 5px;">
-        <button @click="emailcheck" style="width: 65px; height:40px;">확인</button>
-      </div>
-
       <div class="form-element">
         <button id="submit-btn" v-show="AllFieldsFilled" @click="handleButtonClick">{{ submitText }}</button>
-        <p v-show="!AllFieldsFilled" style="margin-top :10px; text-align: center;">이메일 인증 후 가입이 가능합니다</p>
+        <p v-show="!AllFieldsFilled" style="margin-top :10px; text-align: center;"> 본인 인증 후 가입이 가능합니다</p>
       </div>
       <br />
       <div class="image-container">
@@ -62,6 +58,8 @@
 </template>
  
 <script>
+const { IMP } = window;
+
 export default {
   name: 'login',
   data() {
@@ -81,7 +79,9 @@ export default {
       activeForm: "signup",
       submitText: "가입",
       passwordValid: false,
-      showPasswordMsg: false
+      showPasswordMsg: false,
+      phonenumcheck: true
+
     }
   },
 
@@ -114,58 +114,41 @@ export default {
         this.findpwdsendEmail();
       }
     },
-    //회원가입을 위한 이메일 전송 메서드 
-    joinsendEmail() {
+
+    //본인인증 
+    checkinfo() {
       const self = this;
-      if (this.email == '') {
-        alert('이메일을 입력해주세요')
-      } else {
-        const form = new FormData();
-        form.append('email', self.email);
-        self.$axios.post('http://localhost:8181/members/email', form)
-          .then(function (res) {
-            if (res.data.exist) {
-              alert(res.data.exist)
-            } else if (res.status == 200) {
-              if (res.data.message) {
-                alert(res.data.message)
-              } else {
-                alert('이메일이 발송되었습니다');
-                self.isVisible = true;
-                const key = res.data.key;
-                self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+      IMP.init("imp66001065");
+      IMP.certification({
+        pg: 'MIIiasTest',
+        merchant_uid: 'merchant_' + new Date().getTime(),
+        m_redirect_url: "http://localhost:8182/login"
+      }, function (rsp) {
+        if (rsp.success) {
+          console.log(rsp.imp_uid);
+          console.log(rsp.merchant_uid);
+          const data = {
+            imp_uid: rsp.imp_uid,
+            email: self.email
+          };
+          self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
+            .then(function (res) {
+              console.log('전화번호빼옴' + res.data.phone);
+              console.log('입력한 이름' + self.phone)
+              self.Visible = true; //전화번호 수정 못하게 막고 
+              self.AllFieldsFilled = true; //가입버튼 보이게 하고 
+              self.phonenumcheck = false; //본인인증 버튼 없애고 
+
+              if (res.data.flag == false || res.data.phone != self.phone) {
+                alert('입력하신 전화번호와 다릅니다');
               }
-            } else {
-              alert('오류');
-            }
-          })
-      }
+            });
+        }
+      })
     },
-    //인증번호 체크하는거 
-    updateEmailCheck(event) {
-      this.echeck = event.target.value;
-    },
-    //이메일 인증 완료 되면 
-    emailcheck() {
-      const self = this;
-      if (self.echeck === self.emailKey) {
-        alert('확인 완료');
-        self.Visible = true; //입력한 이메일 수정 못하게 막고 
-        self.isVisible = false; //인증번호 입력하는 칸도 없애고 
-        self.loginmailcheck = false; //메일 전송 버튼도 없애고 
-        self.AllFieldsFilled = true; // 이제서야 가입 버튼 보이게 하기
-      } else {
-        alert('인증번호가 일치하지 않습니다.');
-      }
-    },
+
+
     //회원가입 하는 메서드들  
-
-    autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
-      target.value = target.value
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-    },
-
     //사진 완료 시 업로드 완료 되었다 표시해 줌 
     handleFileUpload() {
       this.uploadButtonText = '사진 업로드 완료';
@@ -183,23 +166,21 @@ export default {
       this.showPasswordMsg = false;
     },
 
-    //이메일 인증이 끝난 뒤 이제 진짜 가입 진행 
+    //본인 인증이 끝난 뒤 이제 진짜 가입 진행 
     join() {
       const self = this;
       const form = new FormData();
 
-      //전화번호 11자리로 고정 
-      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
-        alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
-        return;
-      } else if (!self.phone.startsWith('010')) {
-        alert('전화번호 형식이 잘 못 되었습니다');
-        return;
+      //이메일 입력했나 확인
+      if (self.email == null || self.email == "") {
+        alert('이메일을 입력해주세요');
       } else {
-        form.append('phone', self.phone.replace(/[^0-9]/g, ''));
+        form.append('email', self.email);
       }
+      //전화번호 등록 
+      form.append('phone', self.phone);
 
-      form.append('email', self.email);
+      //일반회원가입
       form.append('id', 0);
 
       // 비밀번호 정규식
@@ -211,7 +192,11 @@ export default {
       } else {
         form.append('pwd', self.pwd);
       }
-      form.append('nickname', self.nickname);
+      if (self.nickname == null || self.nickname == "") {
+        alert('닉네임을 입력해주세요');
+      } else {
+        form.append('nickname', self.nickname);
+      }
       if (document.getElementById('img-input-file').value !== '') {
         const file = document.getElementById('img-input-file').files[0];
         form.append('f', file);
@@ -219,9 +204,14 @@ export default {
       self.$axios.post('http://localhost:8181/members', form, { headers: { "Content-Type": "multipart/form-data" } })
         .then(function (res) {
           if (res.status === 200) {
-            let dto = res.data.dto;
-            console.log(dto);
-            self.showSignin();
+            if (res.data.msg) {
+              alert(res.data.msg);
+              window.location.reload(true);
+            } else {
+              let dto = res.data.dto;
+              console.log(dto);
+              self.showSignin();
+            }
           } else {
             alert('에러코드 :' + res.status);
           }
@@ -287,8 +277,8 @@ export default {
       window.location.href = Auth_url;
     },
 
-     //네이버 로그인 
-     naverlogin() {
+    //네이버 로그인 
+    naverlogin() {
       let client_id = "IiiFJKBOyzL3qvfXasPq"
       let redirect_uri = encodeURIComponent("http://localhost:8182/naverjoin", "UTF-8")
       const state = this.generateRandomState()
@@ -421,17 +411,18 @@ export default {
    align-items: center;
  }
 
- .naverIdLogin{
-  height: 50px;
+ .naverIdLogin {
+   height: 50px;
    width: 50px;
  }
+
  .kakaoIdLogin {
    height: 40px;
    width: 40px;
  }
 
- .naverIdLogin{
-  height: 50px;
-  width:  50px;
+ .naverIdLogin {
+   height: 50px;
+   width: 50px;
  }
 </style>

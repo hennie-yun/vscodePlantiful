@@ -54,17 +54,16 @@
         <br />
 
         <div class="fullcontainer">
-          <div v-if="dto.id ==0" class="input-container">
+          <div v-if="dto.id == 0" class="input-container">
             <label for="pwd">비밀번호</label>
             <input v-if="changepwd == false" type="password" v-model="pwd" @click="checkpwd" class="input-field">
             <input v-if="changepwd == true" v-model="pwd" type="text" placeholder="비밀번호" @focus="showPasswordMessage"
               @blur="hidePasswordMessage" @input="checkPassword" class="input-field">
-            </div>
-           
-              <span v-if="!passwordValid && showPasswordMsg"
-              style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
-              특수문자를 포함한 8자리 이상만 가능합니다.</span>
-          
+          </div>
+
+          <span v-if="!passwordValid && showPasswordMsg" style="font-size: 13px; color :#7AC6FF;  font-weight: bold;">대문자와
+            특수문자를 포함한 8자리 이상만 가능합니다.</span>
+
 
           <div class="input-container">
             <label for="nickname"> 닉네임</label>
@@ -73,9 +72,10 @@
 
           <div class="input-container">
             <label for="phone">전화번호</label>
-            <input class="input-field" type="text" @input="autoHyphen($event.target)" maxlength="13" v-model="phone" placeholder="phone number">
-
-
+            <input class="input-field" type="text" maxlength="11" v-model="phone" placeholder="phone number"
+              @click="checkphonenum" v-show="phonecheck">
+            <input class="input-field" type="text" maxlength="11" v-model="phone" placeholder="phone number"
+              @click="checkphonenum" v-show="!phonecheck">
           </div>
         </div>
 
@@ -109,13 +109,14 @@ export default {
       paydto: {
         paidamount: 0
       },
-
+      phonke : '',
       isVisible: false,
       changeimg: null,
       pwd: '',
       changepwd: false,
       passwordValid: false,
-      showPasswordMsg: false
+      showPasswordMsg: false,
+      phonecheck: true
     };
   },
 
@@ -146,16 +147,16 @@ export default {
       }
     });
     self.$axios.get('http://localhost:8181/payment/getcash/' + self.email)
-  .then((res) => {
-    if (res.status == 200) {
-      if (res.data.paydto != null) {
-        this.paydto = res.data.paydto;
-        this.paidamount = this.paydto.paidamount;
-      } else {
-        
-      }
-    }
-  });
+      .then((res) => {
+        if (res.status == 200) {
+          if (res.data.paydto != null) {
+            this.paydto = res.data.paydto;
+            this.paidamount = this.paydto.paidamount;
+          } else {
+
+          }
+        }
+      });
   },
   methods: {
     // 비밀번호 정규식
@@ -172,12 +173,7 @@ export default {
     cancelEdit() {
       this.isVisible = false;
     },
-    //전화번호 
-    autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
-      target.value = target.value
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-    },
+
     editimg() {
       const self = this;
       const fileInput = document.getElementById('file');
@@ -241,6 +237,37 @@ export default {
         alert('기존 비밀번호가 일치하지 않습니다.');
       }
     },
+    checkphonenum() {
+      const self = this;
+      IMP.init("imp66001065");
+      IMP.certification({
+        pg: 'MIIiasTest',
+        merchant_uid: 'merchant_' + new Date().getTime(),
+        m_redirect_url: "http://localhost:8182/editinfo"
+      }, function (rsp) {
+        if (rsp.success) {
+          console.log(rsp.imp_uid);
+          console.log(rsp.merchant_uid);
+          const data = {
+            imp_uid: rsp.imp_uid,
+            email: self.email
+          };
+          self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
+            .then(function (res) {
+              console.log('전화번호빼옴' + res.data.phone);
+              self.phone = res.data.phone;
+              self.phonecheck = false;
+              self.$nextTick(() => {
+                const secondInput = document.querySelector('.input-container input:last-child');
+                if (secondInput) {
+                  secondInput.value = res.data.phone;
+                }
+              });
+            });
+        }
+      })
+    },
+
     edit() {
       const self = this;
 
@@ -253,13 +280,13 @@ export default {
       }
 
       if (this.dto.id == 0) {
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
-      if (!passwordRegex.test(self.pwd)) {
-        alert('비밀번호는 대문자 1개와 특수문자 1개를 포함한 8자리 이상만 가능합니다. \n 다시 입력 해주세요');
-        self.pwd = '';
-        return;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
+        if (!passwordRegex.test(self.pwd)) {
+          alert('비밀번호는 대문자 1개와 특수문자 1개를 포함한 8자리 이상만 가능합니다. \n 다시 입력 해주세요');
+          self.pwd = '';
+          return;
+        }
       }
-    }
 
       const data = {
         phone: self.phone.replace(/[^0-9]/g, ''),
@@ -274,7 +301,7 @@ export default {
         .then(function (res) {
           if (res.status == 200) {
             alert(res.data.message);
-            
+
           } else {
             alert('에러코드: ' + res.status);
           }
@@ -288,71 +315,68 @@ export default {
     out() {
       const self = this;
       let token = sessionStorage.getItem('token')
-      if(self.paidamount != 0) {
+      if (self.paidamount != 0) {
         alert('충전금이 있어 탈퇴가 불가능합니다')
       }
-      else if(confirm("정말 탈퇴 하시겠습니까?")){    
-      if (this.dto.id == 0) {
-        const existingPwd = prompt("비밀번호를 입력하세요");
-        if (existingPwd === self.dto.pwd) {
+      else if (confirm("정말 탈퇴 하시겠습니까?")) {
+        if (this.dto.id == 0) {
+          const existingPwd = prompt("비밀번호를 입력하세요");
+          if (existingPwd === self.dto.pwd) {
+            self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+              .then(function (res) {
+                if (res.status == 200) {
+                  if (res.data.flag) {
+                    alert('탈퇴완료')
+                    self.logout()
+                    location.href = '/'
+                  } else if (res.data.message) {
+                    alert(res.data.message);
+                  }
+                } else {
+                  alert('에러')
+                }
+              });
+          }
+        }
+        else {
+          alert('간편 로그인 탈퇴를 진행 합니다');
           self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
             .then(function (res) {
               if (res.status == 200) {
-                if (res.data.flag) {
-                  alert('탈퇴완료')
-                  self.logout()
-                  location.href = '/'
-                } else if (res.data.message){
-                  alert(res.data.message);
-                }
-              } else {
-                alert('에러')
-              }
-            });
-        }
-      } 
-      
-      
-      
-      else {
-        alert('간편 로그인 탈퇴를 진행 합니다');
-        self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
-            .then(function (res) {
-              if (res.status == 200) {
                 if (res.data.id) {
-                  if (res.data.id == 1 ){ //카카오톡이라면 
-      self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
-        .then(function (res) {
-          if (res.status == 200) {
-              alert('탈퇴완료') 
-              self.logout()
-              location.href = '/'             
-          } else {
-            alert('에러')
-          }
-        });
-      } 
-      else { //네이버라면 
-        self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
-            .then(function (res) {
-              if (res.status == 200) {
-                if (res.data.flag) {
-                  alert('탈퇴완료')
-                  self.logout()
-                  location.href = '/'
-                } else if (res.data.message){
-                  alert(res.data.message);
+                  if (res.data.id == 1) { //카카오톡이라면 
+                    self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
+                      .then(function (res) {
+                        if (res.status == 200) {
+                          alert('탈퇴완료')
+                          self.logout()
+                          location.href = '/'
+                        } else {
+                          alert('에러')
+                        }
+                      });
+                  }
+                  else { //네이버라면 
+                    self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
+                      .then(function (res) {
+                        if (res.status == 200) {
+                          if (res.data.flag) {
+                            alert('탈퇴완료')
+                            self.logout()
+                            location.href = '/'
+                          } else if (res.data.message) {
+                            alert(res.data.message);
+                          }
+                        } else {
+                          alert('에러')
+                        }
+                      });
+                  }
                 }
-              } else {
-                alert('에러')
               }
             });
-          }
         }
       }
-      });
-      }
-    }
     }
   }
 }

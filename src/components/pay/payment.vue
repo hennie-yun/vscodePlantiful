@@ -11,7 +11,8 @@
                         v-model="formattedPrice" @focus="isPlaceholderVisible = false" @blur="handleBlur"
                         @input="formatPrice">
                 </div>
-                <br /><span v-if="contractformcheck == false" @click="requestcontractform" style="cursor: pointer;">이용약관 동의</span><br />
+                <br /><span v-if="contractformcheck == false" @click="requestcontractform" style="cursor: pointer;">이용약관
+                    동의</span><br />
                 <div class="button-wrapper">
                     <button @click="KGpay">충전</button>
                     <button @click="close">닫기</button>
@@ -80,8 +81,8 @@
                 <div class="bankselect">
                     <select class="form-select" id="bankselect" v-model="bankname" aria-label="Default select example">
                         <option value="">은행선택</option>
-                        <option value="1">국민은행</option>
-                        <option value="2">우리은행</option>
+                        <option value="004">국민은행</option>
+                        <!-- <option value="2">우리은행</option>
                         <option value="3">신한은행</option>
                         <option value="4">기업은행</option>
                         <option value="5">하나은행</option>
@@ -95,14 +96,15 @@
                         <option value="13">제주은행</option>
                         <option value="14">수협은행</option>
                         <option value="15">씨티은행</option>
-                        <option value="16">경남은행</option>
+                        <option value="16">경남은행</option> -->
                     </select>
                     <input class="inputname" id="accountname" type="text" v-model="name" placeholder="예금주명">
                     <br />
                 </div>
                 <br />
                 <div class="account">
-                    <input class="inputaccount" id="accountnum"  maxlength="14" :value="accountnum" @input="handleInput" placeholder="계좌번호">
+                    <input class="inputaccount" id="accountnum" maxlength="14" :value="accountnum" @input="handleInput"
+                        placeholder="계좌번호">
                 </div>
 
                 <br /><span v-if="outcontractformcheck == false" @click="outcontractform">이용약관 동의</span><br />
@@ -269,15 +271,15 @@ export default {
                             this.paydto = res.data.paydto;
                             this.paidamount = this.paydto.paidamount;
                         } else {
-                            
+
                         }
                     }
                 });
     },
     methods: {
         replaceImg(e) {
-      e.target.src = img;
-    },
+            e.target.src = img;
+        },
         formatPrice() {
             const numericValue = this.formattedPrice.replace(/[^0-9]/g, '');
             const formattedValue = this.addCommas(numericValue);
@@ -354,12 +356,13 @@ export default {
             }
         },
         handleInput(event) {
-      if (event.target.value.length > event.target.maxLength) {
-        this.accountnum = event.target.value.slice(0, event.target.maxLength);
-      } else {
-        this.accountnum = event.target.value;
-      }
-    },
+            if (event.target.value.length > event.target.maxLength) {
+                this.accountnum = event.target.value.slice(0, event.target.maxLength);
+            } else {
+                this.accountnum = event.target.value;
+            }
+        },
+
         checkmyinfo() {
             const self = this;
             const bankselect = document.getElementById('bankselect');
@@ -377,65 +380,49 @@ export default {
             } else if (self.outcontractformcheck == false) {
                 alert('이용약관에 동의 해주세요')
             } else {
-                IMP.init("imp66001065");
-                IMP.certification({
-                    pg: 'MIIiasTest',
-                    merchant_uid: 'merchant_' + new Date().getTime(),
-                    m_redirect_url: "http://localhost:8181/members/checkmyinfo"
-                }, function (rsp) {
-                    if (rsp.success) {
-                        console.log(rsp.imp_uid);
-                        console.log(rsp.merchant_uid);
-                        const data = {
-                            imp_uid: rsp.imp_uid,
-                            email: self.email
-                        };
-                        self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
-                            .then(function (res) {
-                                if (res.status == 200) {
-                                    console.log('데이터임' + res.data)
-                                    console.log('이름만빼옴' + res.data.name);
-                                    console.log('입력한 이름' + self.name)
-                                    if (res.data.flag == false || res.data.name != self.name) {
-                                        alert('plantiful에 등록 된 예금주 성함 및 전화번호가 \n 본인인증 결과와 일치하지 않습니다.')
-                                        self.outcontractformcheck = false;
-                                        self.name = '';
-                                        self.bankname = '';
-                                        self.accountnum = '';
-                                    } else {
-                                        console.log(self.price)
-                                        const form = new FormData();
-                                        form.append("email", self.email);
-                                        form.append("paidamount", self.price);
-                                        self.$axios.post("http://localhost:8181/payment/withdraw/" + self.email, form)
-                                            .then(function (res) {
-                                                if (res.status == 200) {
-                                                    alert('인출이 성공적으로 이루어졌습니다')
-                                                    self.refundModal = false;
-                                                    window.location.reload(true);
-                                                } else {
-                                                    alert(res.data.message)
-                                                    self.refundModal = false;
-                                                    window.location.reload(true);
-                                                }
-                                            });
-                                    }
-                                }
-                            });
+                const data = {
+                    bank_code: this.bankname,
+                    bank_num: this.accountnum
+                };
+                self.$axios.get("http://localhost:8181/members/certifications/checkAccount", { params: data })
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            console.log(res.data.bankHolderInfo)
+                            console.log(self.name);
+                            if (res.data.bankHolderInfo == self.name) {
+                                console.log(self.price)
+                                const form = new FormData();
+                                form.append("email", self.email);
+                                form.append("paidamount", self.price);
+                                self.$axios.post("http://localhost:8181/payment/withdraw/" + self.email, form)
+                                    .then(function (res) {
+                                        if (res.status == 200) {
+                                            alert('계좌인증이 확인 되어 인출이 성공적으로 이루어졌습니다')
+                                            self.refundModal = false;
+                                            window.location.reload(true);
+                                        } else {
+                                            alert(res.data.message)
+                                            self.refundModal = false;
+                                            window.location.reload(true);
+                                        }
+                                    });
+                            }
+                            else {
+                                alert("계좌본인인증에 실패하셨습니다. 올바른 본인 계좌를 입력해주세요");
+                                self.outcontractformcheck = false;
+                                self.name = '';
+                                self.bankname = '';
+                                self.accountnum = '';
+                            }
+                        }
+                    });
 
-                    } else {
-                        // 인증취소 또는 인증실패
-                        var msg = '인증에 실패하였습니다. \n';
-                        msg += '에러내용 : ' + rsp.error_msg;
-                        alert(msg);
-                        self.accountnum = '';
-                        self.name = '';
-                        self.bankname = '';
-                        self.outcontractformcheck = false;
-                    }
-                });
             }
         },
+
+
+
+        
         close() {
             this.openModal = false;
             this.refundModal = false;
@@ -625,7 +612,7 @@ p {
 
 }
 
-.button-wrapper button{
+.button-wrapper button {
     font-weight: bold;
 }
 
@@ -676,7 +663,7 @@ p {
 
 }
 
-.button-wrapper1 button{
+.button-wrapper1 button {
     border: none;
     background-color: transparent;
     padding: 5px 10px;
