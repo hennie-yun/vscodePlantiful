@@ -82,21 +82,21 @@
                     <select class="form-select" id="bankselect" v-model="bankname" aria-label="Default select example">
                         <option value="">은행선택</option>
                         <option value="004">국민은행</option>
-                        <!-- <option value="2">우리은행</option>
-                        <option value="3">신한은행</option>
-                        <option value="4">기업은행</option>
-                        <option value="5">하나은행</option>
-                        <option value="6">농협은행</option>
-                        <option value="7">외환은행</option>
-                        <option value="8">카카오뱅크</option>
-                        <option value="9">부산은행</option>
-                        <option value="10">우체국</option>
-                        <option value="11">대구은행</option>
-                        <option value="12">전북은행</option>
-                        <option value="13">제주은행</option>
-                        <option value="14">수협은행</option>
-                        <option value="15">씨티은행</option>
-                        <option value="16">경남은행</option> -->
+                        <option value="020">우리은행</option>
+                        <option value="088">신한은행</option>
+                        <option value="003">기업은행</option>
+                        <option value="023">SC제일은행</option>
+                        <option value="011">농협은행</option>
+                        <option value="005">외환은행</option>
+                        <option value="090">카카오뱅크</option>
+                        <option value="032">부산은행</option>
+                        <option value="071">우체국</option>
+                        <option value="031">대구은행</option>
+                        <option value="037">전북은행</option>
+                        <option value="035">제주은행</option>
+                        <option value="007">수협은행</option>
+                        <option value="027">씨티은행</option>
+                        <option value="039">경남은행</option>
                     </select>
                     <input class="inputname" id="accountname" type="text" v-model="name" placeholder="예금주명">
                     <br />
@@ -414,6 +414,8 @@ export default {
                                 self.bankname = '';
                                 self.accountnum = '';
                             }
+                        } else {
+                            alert('입력하신 정보가 올바르지 않습니다. 다시 확인 해주세요')
                         }
                     });
 

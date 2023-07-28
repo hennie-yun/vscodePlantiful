@@ -135,12 +135,13 @@ export default {
             .then(function (res) {
               console.log('전화번호빼옴' + res.data.phone);
               console.log('입력한 이름' + self.phone)
-              self.Visible = true; //전화번호 수정 못하게 막고 
-              self.AllFieldsFilled = true; //가입버튼 보이게 하고 
-              self.phonenumcheck = false; //본인인증 버튼 없애고 
-
-              if (res.data.flag == false || res.data.phone != self.phone) {
+              if (res.data.phone != self.phone) {
                 alert('입력하신 전화번호와 다릅니다');
+                self.phone = '';
+              } else {
+                self.Visible = true; //전화번호 수정 못하게 막고 
+                self.AllFieldsFilled = true; //가입버튼 보이게 하고 
+                self.phonenumcheck = false; //본인인증 버튼 없애고 
               }
             });
         }
@@ -250,22 +251,36 @@ export default {
         alert('이메일을 입력해주세요')
       } else {
         const self = this;
-        const form = new FormData();
-        form.append('email', self.email);
-        self.$axios.post('http://localhost:8181/members/emailpwdcheck', form)
+        console.log("여기")
+        console.log(self.email)
+        self.$axios.get("http://localhost:8181/members/getmember/" + self.email)
           .then(function (res) {
-            if (res.data.exist) {
-              alert(res.data.exist)
-            } else if (res.status == 200) {
-              alert('이메일이 발송되었습니다');
-              alert('전달 드린 임시비밀번호로 로그인 하세요')
-              self.showSignin();
-              const key = res.data.key;
-              self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
-            } else {
-              alert('잘못된 이메일입니다');
+            if (res.status == 200) {
+              if (res.data.id == 1 || res.data.id == 2) {
+                console.log(res.data.dto.id);
+                console.log(res.data.id);
+                alert("간편로그인 한 아이디 입니다. 간편로그인으로 로그인 해주세요")
+              }
+              else {
+                const form = new FormData();
+                form.append('email', self.email);
+                self.$axios.post('http://localhost:8181/members/emailpwdcheck', form)
+                  .then(function (res) {
+                    if (res.data.exist) {
+                      alert(res.data.exist)
+                    } else if (res.status == 200) {
+                      alert('이메일이 발송되었습니다');
+                      alert('전달 드린 임시비밀번호로 로그인 하세요')
+                      self.showSignin();
+                      const key = res.data.key;
+                      self.emailKey = key; // 서버에서 받은 인증 키 값을 저장
+                    } else {
+                      alert('잘못된 이메일입니다');
+                    }
+                  })
+              }
             }
-          })
+          });
       }
     },
 

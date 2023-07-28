@@ -12,9 +12,14 @@
         <input v-model="form.email" type="text" style="flex: 1; margin-right: 5px;"
           required disabled />
       </div>
-      <div  class="form-element">
-        <input type="text" @input="autoHyphen($event.target)" maxlength="13" v-model="phone" placeholder="phone number">
+
+           <div style="display: flex;" class="form-element" :disabled="Visible">
+        <input type="text" style="flex: 1; margin-right: 5px;" maxlength="11" v-model="phone"
+          placeholder="전화번호( - 빼고 입력)">
+        <button v-show="phonenumcheck" @click="checkinfo"
+          style="font-size : 13px; width: 80px; height:40px;">본인인증</button>
       </div>
+
       <div class="form-element">
         <input type="text" v-model="form.nickname" required disabled />
       </div>
@@ -59,6 +64,7 @@ export default {
       },
       show: true,
       uploadButtonText: '프로필 사진 업로드',
+      phonenumcheck :true
     };
   },
   created() {
@@ -67,11 +73,7 @@ export default {
     this.getToken();
   },
   methods: {
-    autoHyphen(target) { //전화 번호 입력시 자동 하이픈 (-) 부여 
-      target.value = target.value
-        .replace(/[^0-9]/g, '')
-        .replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-    },
+    
 
     handleFileUpload() {
       this.uploadButtonText = '사진이 업로드 되었습니다';
@@ -131,21 +133,48 @@ export default {
           }
         });
     },
+     //본인인증 
+     checkinfo() {
+      const self = this;
+      IMP.init("imp66001065");
+      IMP.certification({
+        pg: 'MIIiasTest',
+        merchant_uid: 'merchant_' + new Date().getTime(),
+        m_redirect_url: "http://localhost:8182/kakaojoin"
+      }, function (rsp) {
+        if (rsp.success) {
+          console.log(rsp.imp_uid);
+          console.log(rsp.merchant_uid);
+          const data = {
+            imp_uid: rsp.imp_uid,
+            email: self.email
+          };
+          self.$axios.get("http://localhost:8181/members/certifications/redirect", { params: data })
+          .then(function (res) {
+              console.log('전화번호빼옴' + res.data.phone);
+              console.log('입력한 이름' + self.phone)         
+              if (res.data.phone != self.phone) {
+                alert('입력하신 전화번호와 다릅니다');
+                self.phone = '';
+              } else {
+                self.Visible = true; //전화번호 수정 못하게 막고 
+              self.phonenumcheck = false; //본인인증 버튼 없애고 
+              }
+            });
+        }
+      })
+    },
     onSubmit() {
       const self = this;
       const form = new FormData();
-      //전화번호 11자리로 고정 
-      //전화번호 11자리로 고정 
-      if (self.phone.replace(/[^0-9]/g, '').length !== 11) {
-        alert('전화번호는 11자리의 숫자로만 입력해야 합니다.');
-        return;
-      } else if (!self.phone.startsWith('010')) {
-        alert('전화번호 형식이 잘 못 되었습니다');
-        return;
-      } else {
-        form.append('phone', self.phone.replace(/[^0-9]/g, ''));
-      }
+      
+     if(self.phone == null || self.phone ==""){
+      alert("휴대폰 본인 인증을 해주세요");
+      return;
 
+     } else {
+        form.append('phone', self.phone);
+      }
       form.append('email', self.form.email);
       form.append('nickname', self.form.nickname);
       form.append('pwd', self.form.pwd)

@@ -109,7 +109,7 @@ export default {
       paydto: {
         paidamount: 0
       },
-      phonke : '',
+      phonke: '',
       isVisible: false,
       changeimg: null,
       pwd: '',
@@ -315,10 +315,10 @@ export default {
     out() {
       const self = this;
       let token = sessionStorage.getItem('token')
-      if (self.paidamount != 0) {
+      if (self.paidamount > 0) {
+        alert(self.paidamount);
         alert('충전금이 있어 탈퇴가 불가능합니다')
-      }
-      else if (confirm("정말 탈퇴 하시겠습니까?")) {
+      } else if (confirm("정말 탈퇴 하시겠습니까?")) {
         if (this.dto.id == 0) {
           const existingPwd = prompt("비밀번호를 입력하세요");
           if (existingPwd === self.dto.pwd) {
@@ -344,6 +344,7 @@ export default {
             .then(function (res) {
               if (res.status == 200) {
                 if (res.data.id) {
+
                   if (res.data.id == 1) { //카카오톡이라면 
                     self.$axios.delete('http://localhost:8181/tokensave/deltoken/' + self.email)
                       .then(function (res) {
@@ -356,21 +357,10 @@ export default {
                         }
                       });
                   }
-                  else { //네이버라면 
-                    self.$axios.delete('http://localhost:8181/members/' + self.email, { headers: { 'token': token } })
-                      .then(function (res) {
-                        if (res.status == 200) {
-                          if (res.data.flag) {
-                            alert('탈퇴완료')
-                            self.logout()
-                            location.href = '/'
-                          } else if (res.data.message) {
-                            alert(res.data.message);
-                          }
-                        } else {
-                          alert('에러')
-                        }
-                      });
+                  else {
+                    alert('탈퇴완료')
+                    self.logout()
+                    location.href = '/'
                   }
                 }
               }
